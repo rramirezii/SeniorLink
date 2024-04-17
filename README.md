@@ -15,7 +15,12 @@
     * Create first a user in your mysql with name "senior_link_admin" @ "localhost"
     * Password is "Senior1234*"
     * Migrate the dump found in MISC_FILES/senior_link_DDL.sql.
-* I will create another dump for DML for testing.
+* For DML, it is safe to copy each DML statement and paste it to the mysql terminal. It contains:
+    * establishment
+    * super_admin
+    * town
+    * barangay
+    * senior
 
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
