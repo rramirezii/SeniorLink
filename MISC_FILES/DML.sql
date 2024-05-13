@@ -1,15 +1,15 @@
 -- Insert 10 establishments into the table
-INSERT INTO establishment (name, code, address, password) VALUES
-('Establishment 1', 'EST001', '123 Main St, Cityville', 'password1'),
-('Establishment 2', 'EST002', '456 Elm St, Townsville', 'password2'),
-('Establishment 3', 'EST003', '789 Oak St, Villageton', 'password3'),
-('Establishment 4', 'EST004', '101 Maple St, Hamletown', 'password4'),
-('Establishment 5', 'EST005', '202 Pine St, Countryside', 'password5'),
-('Establishment 6', 'EST006', '303 Cedar St, Suburbia', 'password6'),
-('Establishment 7', 'EST007', '404 Birch St, Ruralville', 'password7'),
-('Establishment 8', 'EST008', '505 Walnut St, Farmland', 'password8'),
-('Establishment 9', 'EST009', '606 Spruce St, Hilltop', 'password9'),
-('Establishment 10', 'EST010', '707 Fir St, Mountainside', 'password10');
+INSERT INTO establishment (name, code, address, username, password) VALUES
+('Establishment 1', 'EST001', '123 Main St, Cityville', 'eest001', 'password1'),
+('Establishment 2', 'EST002', '456 Elm St, Townsville', 'eest002', 'password2'),
+('Establishment 3', 'EST003', '789 Oak St, Villageton', 'eest003', 'password3'),
+('Establishment 4', 'EST004', '101 Maple St, Hamletown', 'eest004', 'password4'),
+('Establishment 5', 'EST005', '202 Pine St, Countryside', 'eest005', 'password5'),
+('Establishment 6', 'EST006', '303 Cedar St, Suburbia',  'eest006', 'password6'),
+('Establishment 7', 'EST007', '404 Birch St, Ruralville', 'eest007', 'password7'),
+('Establishment 8', 'EST008', '505 Walnut St, Farmland', 'eest008', 'password8'),
+('Establishment 9', 'EST009', '606 Spruce St, Hilltop', 'eest009', 'password9'),
+('Establishment 10', 'EST010', '707 Fir St, Mountainside', 'eest010', 'password10');
 
 -- Insert 4 super_admins into the table
 INSERT INTO super_admin (name, password, username) VALUES
@@ -19,12 +19,12 @@ INSERT INTO super_admin (name, password, username) VALUES
 ('Super_Admin 4', 'password4', 'admin4');
 
 -- Insert 5 towns into the table
-INSERT INTO town (name, password, zip_code) VALUES
-('Town 1', 'password1', '12345'),
-('Town 2', 'password2', '23456'),
-('Town 3', 'password3', '34567'),
-('Town 4', 'password4', '45678'),
-('Town 5', 'password5', '56789');
+INSERT INTO town (name, password, zip_code, username) VALUES
+('Town 1', 'password1', '12345', 't12345'),
+('Town 2', 'password2', '23456', 't23456'),
+('Town 3', 'password3', '34567', 't34567'),
+('Town 4', 'password4', '45678', 't45678'),
+('Town 5', 'password5', '56789', 't56789');
 
 -- Insert 25 barangays into the table with town_id assigned for every 5 barangays from 0 to 4
 INSERT INTO barangay (town_id, name, password) VALUES

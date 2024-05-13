@@ -489,3 +489,19 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-04-18  0:30:54
+
+-- Modifications for adding 'username' field to tables
+
+ALTER TABLE `senior`
+ADD COLUMN `username` VARCHAR(255) NOT NULL UNIQUE AFTER `cellphone_number`;
+
+ALTER TABLE `town`
+ADD COLUMN `username` VARCHAR(255) NOT NULL UNIQUE AFTER `zip_code`;
+
+ALTER TABLE `barangay`
+ADD COLUMN `username` VARCHAR(255) NOT NULL UNIQUE AFTER `password`;
+
+ALTER TABLE `establishment`
+ADD COLUMN `username` VARCHAR(255) NOT NULL UNIQUE AFTER `address`;
+
+-- End of modifications

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Senior extends Base
 {
     protected $table = 'senior';
+    protected $primaryKey = 'id';
+    protected $fillable = ['username', 'birthday'];
     protected $guarded = [];
 
     public function barangay()
