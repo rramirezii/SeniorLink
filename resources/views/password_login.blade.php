@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Enter Your Password</h1>
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('test_login') }}">
         @csrf
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>

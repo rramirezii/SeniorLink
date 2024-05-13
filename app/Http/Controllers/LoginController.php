@@ -9,6 +9,8 @@ use App\Models\Town;
 use App\Models\Establishment;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\SuperAdminController;
+
 class LoginController extends Controller
 {
     public function login(Request $request)
@@ -46,7 +48,8 @@ class LoginController extends Controller
 
         // refine to avoid attack on unathorized access
         if ($superAdmin){
-            return view(); // super admin dashboard
+            print("kokoo");
+            return app(SuperAdminController::class)->dashboard();
         }elseif($town){
             return view(); // town dashboard
         }elseif($barangay){
