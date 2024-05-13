@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Password Login</title>
+    <title>SeniorLink - Login</title>
 </head>
 <body>
     <h1>Enter Your Password</h1>

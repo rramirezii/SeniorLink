@@ -9,6 +9,7 @@ use App\Models\Town;
 use App\Models\Establishment;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\SuperAdminController;
 
 class LoginController extends Controller
@@ -48,8 +49,7 @@ class LoginController extends Controller
 
         // refine to avoid attack on unathorized access
         if ($superAdmin){
-            print("kokoo");
-            return app(SuperAdminController::class)->dashboard();
+            return Redirect::route('dashboard');
         }elseif($town){
             return view(); // town dashboard
         }elseif($barangay){

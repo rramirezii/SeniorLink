@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SuperAdminController;
 
 Route::get('/', [LoginController::class, 'index'])->name('index');
 
