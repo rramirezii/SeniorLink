@@ -1,56 +1,39 @@
 <template>
-  <div class="create-client">
+  <div class="senior-link">
     <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div> -->
+      <div class="search-bar">
+        <!-- <input type="text" placeholder="Search..." />
+        <button>Search</button> -->
+      </div>
       <div class="profile">
         <router-link to="/profile" class="profile-button">
         <i class="fas fa-user"></i> Profile
       </router-link>
       </div>
     </header>
-    <h2>Create Client Account</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-container">
-      <div class="form-group">
-        <label for="firstname">First Name:</label>
-        <input type="text" id="firstname" v-model="firstname" required>
-      </div>
-      <div class="form-group">
-        <label for="middle name">Middle Name:</label>
-        <input type="text" id="middlename" v-model="middlename" required>
-      </div>
-      <div class="form-group">
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" v-model="lastname" required>
-      </div>
-      <div class="form-group">
-        <label for="birthday">Birthday:</label>
-        <input type="date" id="birthday" v-model="birthday" required>
-      </div>
-      <div class="form-group">
-        <label for="address">Address:</label>
-        <input type="text" id="address" v-model="address" required>
-      </div>
-      <div class="form-group">
-        <label for="barangay">Barangay:</label>
-        <input type="text" id="barangay" v-model="barangay" required>
-      </div>
-      <div class="form-group">
-        <label for="contactNumber">Contact Number:</label>
-        <input type="tel" id="contactNumber" v-model="contactNumber" required>
-      </div>
-    </div>
-      <div class="form-actions">
-        <button type="submit">Create Account</button>
-      </div>
-    </form>
-  
+    <nav>
+      <ul class="nav-buttons">
+        <li><router-link to="/create">Create Account</router-link></li>
+        <li><router-link to="/view">View Client</router-link></li>
+        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
+          Update Account Info
+          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/update-client">Client</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/update-self">This Account</router-link></li>
+            </ul>
+        </li>
+        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
+          Delete Account
+          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/delete-client">Client</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/delete-self">This Account</router-link></li>
+            </ul>
+        </li>
+        </ul>
+    </nav>
   </div>
 </template>
 
@@ -58,74 +41,38 @@
 export default {
   data() {
     return {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      birthday: '',
-      address: '',
-      barangay: '',
-      contactNumber: '',
+      activeDropdown: null, // Track the currently active dropdown
+      maxWidth: 0,
     };
   },
+  methods: {
+    toggle(dropdown) {
+      // Close other dropdowns if a different one is clicked
+      if (this.activeDropdown && this.activeDropdown !== dropdown) {
+        this.activeDropdown = null;
+      } 
+
+      // Toggle the clicked dropdown
+      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+
+      // Calculate max width when dropdown is opened
+      if (this.active) {
+        this.$nextTick(() => {
+          const links = this.$el.querySelectorAll('.dropdown-content a');
+          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
+        });
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-.create-client {
+.senior-link {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-}
-
-label {
-  display: block;
-  margin: 1rem;
-  font-weight: bold;
-  text-align: left;
-  width: 150px;
-}
-
-form input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0.5rem;
-  flex: 1;            /* Allow input to take up remaining space */
-}
-label, input {
-  float: left;
-}
-button {
-  padding: 1em;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-
-.form-group {
-  display: flex; 
-  align-items: center;  /* Vertically center label and input */
-  width: 600px; 
-}
-
-.form-group label {
-  width: 150px;      /* Set a fixed width for the labels */
-  text-align: right; /* Align the label text to the right */
-  margin-right: 1rem; /* Add some space between label and input */
-}
-
-/* Center the form elements within the form-container */
-.form-container {
-  display: flex;          
-  flex-direction: column; 
-  align-items: center;
-  padding-right: 25%;
 }
 
 .header {
