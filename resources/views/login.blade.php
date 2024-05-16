@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>SeniorLink - Login</title>
 </head>
 <body>
     <form method="POST" action="{{ route('login') }}">
