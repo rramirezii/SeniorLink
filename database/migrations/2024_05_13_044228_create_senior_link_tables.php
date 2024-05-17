@@ -91,12 +91,9 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
-        // Switch back to the default database
         config(['database.connections.mysql.database' => null]);
 
         Schema::connection('mysql')->dropIfExists('town');

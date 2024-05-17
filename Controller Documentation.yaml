@@ -1,0 +1,28 @@
+SuperAdmin:
+  dashboard(): 
+    method: get /dashboard
+    returns: the super admin dashboard
+    status code: status 200 when ok # needs to include session soon
+  
+  create():
+    method: get /create
+    returns: the create page
+    status code: status 200
+
+  create($request):
+    method: post /create
+    returns: nothing
+    status code: depends on the validation success
+    $request:
+      [
+        "type" => "town | establishment | super_admin",
+        "content" => 
+        [
+          "name" => "",
+          "username" => "", #usernames must be automatically created in the frontend, uneditable field, towns should have t+zipcode, establishment should have e+code, superadmin should have sa+name
+          "password" => "",
+          "zip_code" => "", #used for town
+          "code" => "" , #used for establishment
+          "address" => "", #used for establishment
+        ],
+      ]
