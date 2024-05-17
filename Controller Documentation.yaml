@@ -26,3 +26,10 @@ SuperAdmin:
           "address" => "", #used for establishment
         ],
       ]
+
+  read($client):
+    method: get /{$client}
+    returns: list of $client may it be towns, seniors, barangays, establishments, or super_admins
+    statusc code: depends on validation
+
+  
