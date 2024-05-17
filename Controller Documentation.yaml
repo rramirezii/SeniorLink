@@ -32,4 +32,14 @@ SuperAdmin:
     returns: list of $client may it be towns, seniors, barangays, establishments, or super_admins
     statusc code: depends on validation
 
+  read($client, $parent):
+    method: get /{$parent}/{$client}
+    returns: list of $client may it be seniors, barangays; parents corresponds to their immediated connection
+    statusc code: depends on validation
+
+  read($client, $parent, $grandparent):
+    method: get /{$grandparent}/{$parent}/{$client}
+    returns: list of $client may it be seniors; parents corresponds to their immediated connection
+    statusc code: depends on validation
+
   
