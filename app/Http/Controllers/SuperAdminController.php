@@ -11,7 +11,7 @@ class SuperAdminController extends Controller
     // on success login; get method show dashboard
     public function dashboard()
     {
-        return response()->json(["message" => "User found.", "client_type" => "admin_0"], 200); //edit to return session as well
+        return response()->json(["client_type" => "admin_0"], 200); //edit to return session as well
     }
 
     // get method show create; /create route
@@ -25,7 +25,7 @@ class SuperAdminController extends Controller
     {
         // first step validation 
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string|in:town,establishment,superadmin',
+            'type' => 'required|string|in:town,establishment,super_admin',
             'contents' => 'required|array'
         ]);
 
