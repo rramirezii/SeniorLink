@@ -25,9 +25,9 @@ class LoginController extends Controller
         $establishment = Establishment::where('username', $userName)->first();
 
         if ($senior) {
-            return response()->json(["message" => "User found.", "client_type" => "basic"], 200);
+            return response()->json(["message" => "User found.", "role" => "basic"], 200);
         } elseif ($superAdmin || $barangay || $town || $establishment) {
-            return response()->json(["message" => "User found.", "client_type" => "admin"], 200);
+            return response()->json(["message" => "User found.", "role" => "admin"], 200);
         } else {
             return response()->json(["message" => "User not found."], 404);
         }
@@ -49,13 +49,13 @@ class LoginController extends Controller
 
         // refine to avoid attack on unathorized access
         if ($superAdmin){
-            return response()->json(["message" => "Success", "client_type" => "admin_0"], 200);
+            return response()->json(["message" => "Success", "role" => "admin_0"], 200);
         }elseif($town){
-            return response()->json(["message" => "Success", "client_type" => "admin_1"], 200);
+            return response()->json(["message" => "Success", "role" => "admin_1"], 200);
         }elseif($barangay){
-            return response()->json(["message" => "Success", "client_type" => "admin_2"], 200);
+            return response()->json(["message" => "Success", "role" => "admin_2"], 200);
         }elseif($establishment){
-            return response()->json(["message" => "Success", "client_type" => "establishment"], 200); 
+            return response()->json(["message" => "Success", "role" => "establishment"], 200); 
         }else {
             return response()->json(["message" => "Invalid password"], 401);
         }
