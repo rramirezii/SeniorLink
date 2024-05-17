@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SuperAdminController extends Controller
 {
@@ -42,13 +43,28 @@ class SuperAdminController extends Controller
         try {
             switch ($type) {
                 case 'town':
-                    $this->createTown($contents);
+                    $this->createEntity($contents, 'town', [
+                        'name' => 'required|string|max:255',
+                        'zip_code' => 'required|integer|unique:town',
+                        'username' => 'required|string|unique:town|max:255',
+                        'password' => 'required|string|max:255',
+                    ]);
                     break;
                 case 'establishment':
-                    $this->createEstablishment($contents);
+                    $this->createEntity($contents, 'establishment', [
+                        'name' => 'required|string|max:255',
+                        'code' => 'required|integer|unique:establishment',
+                        'address' => 'required|string|max:255',
+                        'username' => 'required|string|unique:establishment|max:255',
+                        'password' => 'required|string|max:255',
+                    ]);
                     break;
                 case 'superadmin':
-                    $this->createSuperAdmin($contents);
+                    $this->createEntity($contents, 'super_admin', [
+                        'name' => 'required|string|max:255',
+                        'username' => 'required|string|unique:super_admin|max:255',
+                        'password' => 'required|string|max:255',
+                    ]);
                     break;
                 default:
                     return response()->json(['error' => 'Unknown type'], 400);
@@ -60,36 +76,17 @@ class SuperAdminController extends Controller
         }
     }
 
-    private function createTown($contents)
+    private function createEntity($contents, $table, $rules)
     {
-        // specific validation
-        $validator = Validator::make($contents->all(), [
-            'type' => 'required|string|in:town,establishment,superadmin',
-            'contents' => 'required|array',
-            'contents.name' => 'required|string|max:255',
-            'contents.population' => 'required_if:type,town|integer|min:0',
-            
-            'name' => 'required|string|max:255',
-
-        ]);
+        // Specific validation
+        $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
-            $messages = $validator->errors()->all();
-            $errorMessage = implode(', ', $messages);
-            throw new \Exception($errorMessage);
+            throw new \Exception($this->generateErrorMessage($validator));
         }
-        
-        //given the contents create a town in the town table
-    }
 
-    private function createEstablishment($contents)
-    {
-        //given the contents create a establishment in the establishment table
-    }
-
-    private function createSuperAdmin($contents)
-    {
-        //given the contents create a super admin in the superadmin table
+        // Insert into the database
+        DB::table($table)->insert($contents);
     }
 
     //get method read; return a list of clients
@@ -101,5 +98,11 @@ class SuperAdminController extends Controller
     private function readTown()
     {
 
+    }
+
+    private function generateErrorMessage($originator)
+    {
+        $messages = $originator->errors()->all();
+        return implode(', ', $messages);
     }
 }
