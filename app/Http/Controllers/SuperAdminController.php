@@ -22,12 +22,10 @@ class SuperAdminController extends Controller
     // post method create; request must include what type of creation; /create
     public function create(Request $request)
     {
+        // first step validation 
         $validator = Validator::make($request->all(), [
             'type' => 'required|string|in:town,establishment,superadmin',
-            'contents' => 'required|array',
-            'contents.name' => 'required|string|max:255',
-            'contents.population' => 'required_if:type,town|integer|min:0',
-            // Add more validation rules based on your table schema
+            'contents' => 'required|array'
         ]);
 
         if ($validator->fails()) {
@@ -64,6 +62,23 @@ class SuperAdminController extends Controller
 
     private function createTown($contents)
     {
+        // specific validation
+        $validator = Validator::make($contents->all(), [
+            'type' => 'required|string|in:town,establishment,superadmin',
+            'contents' => 'required|array',
+            'contents.name' => 'required|string|max:255',
+            'contents.population' => 'required_if:type,town|integer|min:0',
+            
+            'name' => 'required|string|max:255',
+
+        ]);
+
+        if ($validator->fails()) {
+            $messages = $validator->errors()->all();
+            $errorMessage = implode(', ', $messages);
+            throw new \Exception($errorMessage);
+        }
+        
         //given the contents create a town in the town table
     }
 
