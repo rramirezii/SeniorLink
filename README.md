@@ -1,3 +1,25 @@
+# SeniorLink Project
+
+### Stack versions
+- PHP 8.3.6
+- Node.js 20.12.2
+- NPM 10.5.0
+- Composer 2.7.2
+- Laravel 11.4.0
+    - Lumen Framework
+- Vue
+- MySQL 
+
+### Note
+* Please try to install Vue.js in this repository and push it for reflection
+* For Database access, please migrate the dump file. 
+    * Create first a user in your mysql with name "senior_link_admin" @ "localhost"
+    * Password is "Senior1234*"
+    * In migrating the database use the following command:
+        1. php artisan migrate:fresh
+        2. php artisan db:seed
+
+
 # Lumen PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
