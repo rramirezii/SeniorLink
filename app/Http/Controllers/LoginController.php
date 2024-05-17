@@ -25,20 +25,20 @@ class LoginController extends Controller
         $establishment = Establishment::where('username', $userName)->first();
 
         if ($senior) {
-            return view('birthdate_selector');
+            return response()->json(["message" => "User found.", "client_type" => "basic"], 200);
         } elseif ($superAdmin || $barangay || $town || $establishment) {
-            return view('password_login');
+            return response()->json(["message" => "User found.", "client_type" => "admin"], 200);
         } else {
-            return redirect()->back()->with('error', 'User ID not found.');
+            return response()->json(["message" => "User not found."], 404);
         }
     }
 
     public function index()
     {
-        return response()->json(["index"=>"Hello Index"]);
+        return response()->json([], 200);
     }
 
-    public function test_login(Request $request)
+    public function validateLogin(Request $request)
     {
         $password = $request->input('password');
 
@@ -49,15 +49,15 @@ class LoginController extends Controller
 
         // refine to avoid attack on unathorized access
         if ($superAdmin){
-            return Redirect::route('dashboard');
+            return response()->json(["message" => "Success", "client_type" => "admin_0"], 200);
         }elseif($town){
-            return view(); // town dashboard
+            return response()->json(["message" => "Success", "client_type" => "admin_1"], 200);
         }elseif($barangay){
-            return view(); // barangay dashboard
+            return response()->json(["message" => "Success", "client_type" => "admin_2"], 200);
         }elseif($establishment){
-                return view(); // establishment dashboard   
+            return response()->json(["message" => "Success", "client_type" => "establishment"], 200); 
         }else {
-            return redirect()->back()->with('error', 'Invalid password.');
+            return response()->json(["message" => "Invalid password"], 401);
         }
     }
 

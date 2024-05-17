@@ -13,6 +13,8 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+$router->get('/', 'LoginController@index');
+
+$router->post('/login', 'LoginController@login');
+
+$router->post('/validate', 'LoginController@validateLogin');
