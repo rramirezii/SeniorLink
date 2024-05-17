@@ -15,9 +15,10 @@
 * For Database access, please migrate the dump file. 
     * Create first a user in your mysql with name "senior_link_admin" @ "localhost"
     * Password is "Senior1234*"
-    * In migrating the database use the following command:
-        1. php artisan migrate:fresh
-        2. php artisan db:seed
+    * In migrating the database use the following command: 
+        1. First time migrating:    php artisan migrate:install
+        2. Resetting the migration: php artisan migrate:fresh 
+        3. Feed the seeds:          php artisan db:seed
 
 
 # Lumen PHP Framework
