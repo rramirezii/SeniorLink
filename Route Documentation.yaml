@@ -8,10 +8,10 @@ Login route
     On success:
         Senior:
             Status code: 200
-            Client type: basic
+            Role: basic
         Super Admin, Town, Barangay, Establishment:
             Status code: 200
-            Client type: admin
+            Role: admin
     On failure:  
         Status code: 404
 
@@ -20,16 +20,16 @@ Validation route
     On success:
         Super Admin:
             Status code: 200
-            Client type: admin_0
+            Role: admin_0
         Town:
             Status code: 200
-            Client type: admin_1
+            Role: admin_1
         Barangay:
             Status code: 200
-            Client type: admin_2
+            Role: admin_2
         Establishment:
             Status code: 200
-            Client type: establishment            
+            Role: establishment            
     On failure:  
         Status code: 401
 
