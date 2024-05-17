@@ -1,0 +1,36 @@
+Index route
+    Method: get /
+    On success: Returns nothing.
+    On failure: Reutrns nothing.
+
+Login route
+    Method: post /login
+    On success:
+        Senior:
+            Status code: 200
+            Client type: basic
+        Super Admin, Town, Barangay, Establishment:
+            Status code: 200
+            Client type: admin
+    On failure:  
+        Status code: 404
+
+Validation route
+    Method: post /validate
+    On success:
+        Super Admin:
+            Status code: 200
+            Client type: admin_0
+        Town:
+            Status code: 200
+            Client type: admin_1
+        Barangay:
+            Status code: 200
+            Client type: admin_2
+        Establishment:
+            Status code: 200
+            Client type: establishment            
+    On failure:  
+        Status code: 401
+
+    
