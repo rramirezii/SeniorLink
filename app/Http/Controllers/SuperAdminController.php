@@ -28,43 +28,22 @@ class SuperAdminController extends Controller
         $contents = $request->input('contents');
 
         try {
-            switch ($type) {
-                case 'town':
-                    $this->createEntity($contents, 'town', [
-                        'name' => 'required|string|max:255',
-                        'zip_code' => 'required|integer|unique:town',
-                        'username' => 'required|string|unique:town|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                case 'establishment':
-                    $this->createEntity($contents, 'establishment', [
-                        'name' => 'required|string|max:255',
-                        'code' => 'required|integer|unique:establishment',
-                        'address' => 'required|string|max:255',
-                        'username' => 'required|string|unique:establishment|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                case 'superadmin':
-                    $this->createEntity($contents, 'super_admin', [
-                        'name' => 'required|string|max:255',
-                        'username' => 'required|string|unique:super_admin|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                default:
-                    return response()->json(['error' => 'Unknown type'], 400);
-            }
-
-            return response()->json(['message' => 'Creation successful'], 200);
+            $id = $this->createEntity($type, $contents);
+            return response()->json(['message' => 'Created successfully', 'id' => $id], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Creation failed', 'message' => $e->getMessage()], 400);
         }
     }
 
-    private function createEntity($contents, $table, $rules)
+    private function createEntity($table, $contents)
     {
+        $rules = $this->getRules($table);
+
+        if (empty($rules)) {
+            throw new \Exception('Invalid table name or missing validation rules.');
+        }
+
+        $rules = $this -> makeRulesRequired($rules);
         $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
@@ -72,6 +51,8 @@ class SuperAdminController extends Controller
         }
 
         DB::table($table)->insert($contents);
+        
+        return $id; // Return the newly created entity's ID
     }
 
     public function read($client)
@@ -281,5 +262,49 @@ class SuperAdminController extends Controller
     {
         $messages = $originator->errors()->all();
         return implode(', ', $messages);
+    }
+
+    // move this out soon for other controllers to use
+    private function makeRulesRequired($rules) 
+    {
+        $requiredRules = [];
+      
+        foreach ($rules as $key => $value) {
+          $requiredRules[$key] = 'required|' . $value;
+        }
+      
+        return $requiredRules;
+    }
+
+    // move this out soon for other controllers to use
+    private function getRules($table)
+    {
+        switch ($table) {
+            case 'town':
+                return [
+                    'name' => 'string|max:255',
+                    'zip_code' => 'integer|unique:town',
+                    'username' => 'string|unique:town|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            case 'establishment':
+                return [
+                    'name' => 'string|max:255',
+                    'code' => 'integer|unique:establishment',
+                    'address' => 'string|max:255',
+                    'username' => 'string|unique:establishment|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            case 'superadmin':
+                return [
+                    'name' => 'string|max:255',
+                    'username' => 'string|unique:super_admin|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            default:
+                return [];
     }
 }
