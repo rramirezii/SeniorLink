@@ -11,7 +11,7 @@ class SuperAdminController extends Controller
 
     public function dashboard()
     {
-        return response()->json(["client_type" => "admin_0"], 200); //edit to return session as well
+        return response()->json(["role" => "admin_0"], 200); //edit to return session as well
     }
 
     // post
