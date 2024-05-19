@@ -18,7 +18,7 @@ class SuperAdminController extends Controller
     public function create(Request $request)
     {
         // first step validation 
-        $validation = $this -> checkRequest($request);
+        $validation = $this -> checkRequest($request, $this->getScope());
 
         if($validation['status'] !== 200) {        
             return response()->json($response['data'], $response['status']);
@@ -149,7 +149,7 @@ class SuperAdminController extends Controller
     public function update(Request $request)
     {
         // first step validation 
-        $validation = $this -> checkRequest($request);
+        $validation = $this -> checkRequest($request, $this->getScope());
 
         if($validation['status'] !== 200) {        
             return response()->json($response['data'], $response['status']);
@@ -203,7 +203,7 @@ class SuperAdminController extends Controller
     }
 
     public function delete(Request $request){
-        $validation = $this -> checkRequest($request);
+        $validation = $this -> checkRequest($request, $this->getScope());
 
         if($validation['status'] !== 200) {        
             return response()->json($response['data'], $response['status']);
@@ -235,110 +235,8 @@ class SuperAdminController extends Controller
         }
     }
 
-    private function checkRequest($request)
+    private function getScope()
     {
-        
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|string|in:town,establishment,super_admin',
-            'contents' => 'required|array'
-        ]);
-    
-        if ($validator->fails()) {
-            return [
-                'status' => 400,
-                'data' => ['error' => 'Invalid request', 'messages' => $validator->errors()]
-            ];
-        }
-    
-        return [
-            'status' => 200,
-            'data' => []
-        ];
-    }
-
-    private function generateReadResponse($fields, $extraClause, $table)
-    {
-        $result = DB::select("SELECT $fields FROM $table $extraClause");
-
-        if(empty($result)){
-            return response()->json(['error' => 'No data found'], 404);
-        }
-
-        return response()->json($result, 200);
-    }
-
-    private function generateErrorMessage($originator)
-    {
-        $messages = $originator->errors()->all();
-        return implode(', ', $messages);
-    }
-
-    // move this out soon for other controllers to use
-    private function makeRulesRequired($rules) 
-    {
-        $requiredRules = [];
-      
-        foreach ($rules as $key => $value) {
-          $requiredRules[$key] = 'required|' . $value;
-        }
-      
-        return $requiredRules;
-    }
-
-    // move this out soon for other controllers to use
-    private function getRules($table)
-    {
-        switch ($table) {
-            case 'town':
-                return [
-                    'name' => 'string|max:255',
-                    'zip_code' => 'integer|unique:town',
-                    'username' => 'string|unique:town|max:255',
-                    'password' => 'string|max:255',
-                ];
-                break;
-            case 'establishment':
-                return [
-                    'name' => 'string|max:255',
-                    'code' => 'integer|unique:establishment',
-                    'address' => 'string|max:255',
-                    'username' => 'string|unique:establishment|max:255',
-                    'password' => 'string|max:255',
-                ];
-                break;
-            case 'superadmin':
-                return [
-                    'name' => 'string|max:255',
-                    'username' => 'string|unique:super_admin|max:255',
-                    'password' => 'string|max:255',
-                ];
-                break;
-            default:
-                return [];
-        }
-    }
-
-    function transformRulesForUpdate($rules, $contents)
-    {
-        $updatedRules = [];
-
-        // add the id field
-        if (!isset($updatedRules['id'])) {
-            $updatedRules['id'] = 'required|integer';
-        }
-
-        foreach ($rules as $field => $rule) {
-            $updatedRules[$field] = $rule;
-
-            // unique fields must add validation 
-            if (strpos($rule, 'unique:') !== false) {
-                list($validator, $uniqueConstraint) = explode(':', $rule);
-                $tableColumn = explode(',', $uniqueConstraint)[0];
-
-                $updatedRules[$field] = "$validator:{$tableColumn}," . $contents['id'];
-            }
-        }
-
-        return $updatedRules;
+        return 'required|string|in:town,establishment,super_admin';
     }
 }

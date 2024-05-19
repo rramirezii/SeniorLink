@@ -12,4 +12,9 @@ class TownController extends Controller
     {
         return response()->json(["role" => "admin_1"], 200); //edit to return session as well
     }
+
+    private function getScope()
+    {
+        return "required|string|in:barangay,town";
+    }
 }
