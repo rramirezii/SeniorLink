@@ -28,43 +28,22 @@ class SuperAdminController extends Controller
         $contents = $request->input('contents');
 
         try {
-            switch ($type) {
-                case 'town':
-                    $this->createEntity($contents, 'town', [
-                        'name' => 'required|string|max:255',
-                        'zip_code' => 'required|integer|unique:town',
-                        'username' => 'required|string|unique:town|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                case 'establishment':
-                    $this->createEntity($contents, 'establishment', [
-                        'name' => 'required|string|max:255',
-                        'code' => 'required|integer|unique:establishment',
-                        'address' => 'required|string|max:255',
-                        'username' => 'required|string|unique:establishment|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                case 'superadmin':
-                    $this->createEntity($contents, 'super_admin', [
-                        'name' => 'required|string|max:255',
-                        'username' => 'required|string|unique:super_admin|max:255',
-                        'password' => 'required|string|max:255',
-                    ]);
-                    break;
-                default:
-                    return response()->json(['error' => 'Unknown type'], 400);
-            }
-
-            return response()->json(['message' => 'Creation successful'], 200);
+            $id = $this->createEntity($type, $contents);
+            return response()->json(['message' => 'Created successfully', 'id' => $id], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Creation failed', 'message' => $e->getMessage()], 400);
         }
     }
 
-    private function createEntity($contents, $table, $rules)
+    private function createEntity($table, $contents)
     {
+        $rules = $this->getRules($table);
+
+        if (empty($rules)) {
+            throw new \Exception('Invalid table name or missing validation rules.');
+        }
+
+        $rules = $this -> makeRulesRequired($rules);
         $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
@@ -72,6 +51,8 @@ class SuperAdminController extends Controller
         }
 
         DB::table($table)->insert($contents);
+
+        return $id; // Return the newly created entity's ID
     }
 
     public function read($client)
@@ -164,6 +145,7 @@ class SuperAdminController extends Controller
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }
 
+    // this is a post or put request
     public function update(Request $request)
     {
         // first step validation 
@@ -176,7 +158,81 @@ class SuperAdminController extends Controller
         $type = $request->input('type');
         $contents = $request->input('contents');
         
+        try {
+            $this->updateEntity($contents, $type);
+            return response()->json(['message' => 'Update successful'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Update failed', 'message' => $e->getMessage()], 400);
+        }
+    }
 
+    private function updateEntity($contents, $table, $rules)
+    {
+        $rules = $this->getRules($table);
+
+        if (empty($rules)) {
+            throw new \Exception('Invalid table name or missing validation rules.');
+        }
+        $rules = $this->transformRulesForUpdate($rules, $contents);
+        $validator = Validator::make($contents, $rules);
+
+        if ($validator->fails()) {
+            throw new \Exception($this->generateErrorMessage($validator));
+        }
+
+        if (!isset($contents['id'])) {
+            throw new \Exception('ID not provided for update');
+        }
+
+        $id = $contents['id'];
+        unset($contents['id']); // remove id from content to avoid update of id
+        
+        $contents = array_filter($contents, function ($value) { // remove the empty fields
+            return $value !== "" && $value !== null;
+        });
+
+        $affected = DB::table($type)->where('id', $id)->update($contents);
+
+        if ($affected === 0) {
+            if (empty($contents)) {
+              throw new \Exception('No changes provided for update.');
+            } else {
+              throw new \Exception('No record found to update or no valid changes made');
+            }
+          }
+    }
+
+    public function delete(Request $request){
+        $validation = $this -> checkRequest($request);
+
+        if($validation['status'] !== 200) {        
+            return response()->json($response['data'], $response['status']);
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->deleteEntity($contents, $type);
+            return response()->json(['message' => 'Deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
+        }
+    }
+        
+    private function deleteEntity($contents, $table)
+    {
+        if (!isset($contents['id'])) {
+            throw new \Exception('Missing id.');
+        }
+    
+        $id = $contents['id'];
+    
+        $affectedRows = DB::table($table)->where('id', $id)->delete();
+    
+        if ($affectedRows === 0) {
+            throw new \Exception('Record not found or no rows deleted.');
+        }
     }
 
     private function checkRequest($request)
@@ -215,5 +271,74 @@ class SuperAdminController extends Controller
     {
         $messages = $originator->errors()->all();
         return implode(', ', $messages);
+    }
+
+    // move this out soon for other controllers to use
+    private function makeRulesRequired($rules) 
+    {
+        $requiredRules = [];
+      
+        foreach ($rules as $key => $value) {
+          $requiredRules[$key] = 'required|' . $value;
+        }
+      
+        return $requiredRules;
+    }
+
+    // move this out soon for other controllers to use
+    private function getRules($table)
+    {
+        switch ($table) {
+            case 'town':
+                return [
+                    'name' => 'string|max:255',
+                    'zip_code' => 'integer|unique:town',
+                    'username' => 'string|unique:town|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            case 'establishment':
+                return [
+                    'name' => 'string|max:255',
+                    'code' => 'integer|unique:establishment',
+                    'address' => 'string|max:255',
+                    'username' => 'string|unique:establishment|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            case 'superadmin':
+                return [
+                    'name' => 'string|max:255',
+                    'username' => 'string|unique:super_admin|max:255',
+                    'password' => 'string|max:255',
+                ];
+                break;
+            default:
+                return [];
+        }
+    }
+
+    function transformRulesForUpdate($rules, $contents)
+    {
+        $updatedRules = [];
+
+        // add the id field
+        if (!isset($updatedRules['id'])) {
+            $updatedRules['id'] = 'required|integer';
+        }
+
+        foreach ($rules as $field => $rule) {
+            $updatedRules[$field] = $rule;
+
+            // unique fields must add validation 
+            if (strpos($rule, 'unique:') !== false) {
+                list($validator, $uniqueConstraint) = explode(':', $rule);
+                $tableColumn = explode(',', $uniqueConstraint)[0];
+
+                $updatedRules[$field] = "$validator:{$tableColumn}," . $contents['id'];
+            }
+        }
+
+        return $updatedRules;
     }
 }
