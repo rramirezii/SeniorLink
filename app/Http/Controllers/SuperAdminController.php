@@ -51,7 +51,7 @@ class SuperAdminController extends Controller
         }
 
         DB::table($table)->insert($contents);
-        
+
         return $id; // Return the newly created entity's ID
     }
 
@@ -158,37 +158,7 @@ class SuperAdminController extends Controller
         $contents = $request->input('contents');
         
         try {
-            switch ($type) {
-                case 'town':
-                    $this->updateEntity($contents, 'town', [
-                        'id' => 'required|integer',
-                        'name' => 'string|max:255',
-                        'zip_code' => 'integer|unique:town,zip_code,' . $contents['id'],
-                        'username' => 'string|unique:town,username,' . $contents['id'] . '|max:255',
-                        'password' => 'string|max:255',
-                    ]);
-                    break;
-                case 'establishment':
-                    $this->updateEntity($contents, 'establishment', [
-                        'id' => 'required|integer',
-                        'name' => 'string|max:255',
-                        'code' => 'integer|unique:establishment,code,' . $contents['id'],
-                        'address' => 'string|max:255',
-                        'username' => 'string|unique:establishment,username,' . $contents['id'] . '|max:255',
-                        'password' => 'string|max:255',
-                    ]);
-                    break;
-                case 'super_admin':
-                    $this->updateEntity($contents, 'super_admin', [
-                        'id' => 'required|integer',
-                        'name' => 'string|max:255',
-                        'username' => 'string|unique:super_admin,username,' . $contents['id'] . '|max:255',
-                        'password' => 'string|max:255',
-                    ]);
-                    break;
-                default:
-                    return response()->json(['error' => 'Unknown type'], 400);
-            }
+            $this->updateEntity($contents, $type);
             return response()->json(['message' => 'Update successful'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Update failed', 'message' => $e->getMessage()], 400);
@@ -197,11 +167,16 @@ class SuperAdminController extends Controller
 
     private function updateEntity($contents, $table, $rules)
     {
-        // another validation for the rules
+        $rules = $this->getRules($table);
+
+        if (empty($rules)) {
+            throw new \Exception('Invalid table name or missing validation rules.');
+        }
+        $rules = $this->transformRulesForUpdate($rules, $contents);
         $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
-            throw new \Exception('Validation failed: ' . json_encode($validator->errors()));
+            throw new \Exception($this->generateErrorMessage($validator));
         }
 
         if (!isset($contents['id'])) {
@@ -213,7 +188,7 @@ class SuperAdminController extends Controller
         
         $contents = array_filter($contents, function ($value) { // remove the empty fields
             return $value !== "" && $value !== null;
-          });
+        });
 
         $affected = DB::table($type)->where('id', $id)->update($contents);
 
@@ -306,5 +281,30 @@ class SuperAdminController extends Controller
                 break;
             default:
                 return [];
+        }
+    }
+
+    function transformRulesForUpdate($rules, $contents)
+    {
+        $updatedRules = [];
+
+        // add the id field
+        if (!isset($updatedRules['id'])) {
+            $updatedRules['id'] = 'required|integer';
+        }
+
+        foreach ($rules as $field => $rule) {
+            $updatedRules[$field] = $rule;
+
+            // unique fields must add validation 
+            if (strpos($rule, 'unique:') !== false) {
+                list($validator, $uniqueConstraint) = explode(':', $rule);
+                $tableColumn = explode(',', $uniqueConstraint)[0];
+
+                $updatedRules[$field] = "$validator:{$tableColumn}," . $contents['id'];
+            }
+        }
+
+        return $updatedRules;
     }
 }
