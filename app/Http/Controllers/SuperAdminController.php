@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
-class SuperAdminController extends Controller
+class SuperAdminController extends BaseController
 {
+    // /admin/dashboard
     public function dashboard()
     {
         return response()->json(["role" => "admin_0"], 200); //edit to return session as well
     }
 
+    // post /admin/create/{client} ;include the client in the request
     public function create(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());
@@ -52,6 +52,7 @@ class SuperAdminController extends Controller
         return $id; // Return the newly created entity's ID
     }
 
+    // get /admin/show/{clients}
     public function read($client)
     {
         $fields = '*';
@@ -82,6 +83,7 @@ class SuperAdminController extends Controller
         return $this->generateReadResponse($fields, $extraClause, $client);
     }
 
+    // get /admin/show/{$parent}/{$client} ; parent is a valid town or barangay name
     public function readFromParent($client, $parent)
     {
         switch ($client) {
@@ -118,6 +120,7 @@ class SuperAdminController extends Controller
         return $this->generateReadResponse($fields, $extraClause, $client);
     }
 
+    // get /admin/show/{$grandparent}/{$parent}/{$client}
     public function readFromGrandparent($client, $parent, $grandparent)
     {
         if ($client != "senior") {
@@ -140,6 +143,30 @@ class SuperAdminController extends Controller
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }
 
+    // get /admin/getall/{client} ; show the list of clients for updating and deleting
+    public function getAll($client)
+    {
+        $fields = '*';
+        $extraClause = '';
+
+        switch ($client) {
+            case 'town':
+                $fields = 'id, name, zip_code, username';
+                break;
+            case 'establishment':
+                $fields = 'id, name, code, address, username';
+                break;
+            case 'super_admin':
+                $fields = 'id, name, username';
+                break;
+            default:
+                return response()->json(['error' => 'Client not part of scope'], 404);
+        }
+
+        return $this->generateReadResponse($fields, $extraClause, $client);
+    }
+
+    // post /admin/update/{client}
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());
@@ -192,6 +219,7 @@ class SuperAdminController extends Controller
         }
     }
 
+    // post /admin/delete/{client}
     public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());

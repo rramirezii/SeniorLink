@@ -3,18 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
-class TownController extends Controller
+class TownController extends BaseController
 {
+    // get /town/dashboard
     public function dashboard()
     {
         return response()->json(["role" => "admin_1"], 200); //edit to return session as well
     }
 
-    // post
-    // only contains the creation of barangay
+    // post /town/create/{client}
     public function create(Request $request)
     {
         $validation = $this -> checkRequest($request,$this->getScope());
@@ -54,7 +52,7 @@ class TownController extends Controller
         return $id; // Return the newly created entity's ID
     }
 
-    // reads only barangays and senior
+    // get /town/show/{clients}
     public function read($client, $town_id=null)
     {
         $fields = '*';
@@ -80,14 +78,54 @@ class TownController extends Controller
         return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $town_id]);
     }
 
-    //reads only seniors and transactions
+    // get /town/show/{parent}/{client}
     public function readFromParent($client, $parent)
     {
 
     }
 
-    // reads only transactions
+    // get /town/show/{grandparent}/{parent}/{client}
     public function readFromGrandparent($client, $parent, $grandparent)
+    {
+
+    }
+
+    // get /town/getall/{client} ; show the list of clients for updating and deleting
+    public function getAll($client)
+    {
+        $fields = '*';
+        $extraClause = '';
+
+        switch ($client) {
+            case 'barangay':
+                $fields = 'id, name, username';
+                $extraClause = 'WHERE town_id= :town_id';
+                break;
+            default:
+                return response()->json(['error' => 'Client not part of scope'], 404);
+        }
+
+        return $this->generateReadResponse($fields, $extraClause, $client);
+    }
+
+    // post /town/update/{clietnt}
+    public function update(Request $request)
+    {
+
+    }
+
+    private function updateEntity($table, $contents)
+    {
+
+    }
+
+    // post /town/delete/{client}
+    public function delete(Request $request)
+    {
+
+    }
+
+    private function deleteEntity($table, $contents)
     {
 
     }
