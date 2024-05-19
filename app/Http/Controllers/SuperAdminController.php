@@ -176,7 +176,66 @@ class SuperAdminController extends Controller
         $type = $request->input('type');
         $contents = $request->input('contents');
         
+        try {
+            switch ($type) {
+                case 'town':
+                    $this->updateEntity($contents, 'town', [
+                        'id' => 'required|integer',
+                        'name' => 'string|max:255',
+                        'zip_code' => 'integer|unique:town,zip_code,' . $contents['id'],
+                        'username' => 'string|unique:town,username,' . $contents['id'] . '|max:255',
+                        'password' => 'string|max:255',
+                    ]);
+                    break;
+                case 'establishment':
+                    $this->updateEntity($contents, 'establishment', [
+                        'id' => 'required|integer',
+                        'name' => 'string|max:255',
+                        'code' => 'integer|unique:establishment,code,' . $contents['id'],
+                        'address' => 'string|max:255',
+                        'username' => 'string|unique:establishment,username,' . $contents['id'] . '|max:255',
+                        'password' => 'string|max:255',
+                    ]);
+                    break;
+                case 'super_admin':
+                    $this->updateEntity($contents, 'super_admin', [
+                        'id' => 'required|integer',
+                        'name' => 'string|max:255',
+                        'username' => 'string|unique:super_admin,username,' . $contents['id'] . '|max:255',
+                        'password' => 'string|max:255',
+                    ]);
+                    break;
+                default:
+                    return response()->json(['error' => 'Unknown type'], 400);
+            }
+            return response()->json(['message' => 'Update successful'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Update failed', 'message' => $e->getMessage()], 400);
+        }
+    }
 
+    private function updateEntity($contents, $table, $rules)
+    {
+        // another validation for the rules
+        $validator = Validator::make($contents, $rules);
+
+        if ($validator->fails()) {
+            throw new \Exception('Validation failed: ' . json_encode($validator->errors()));
+        }
+
+        if (!isset($contents['id'])) {
+            throw new \Exception('ID not provided for update');
+        }
+
+        $id = $contents['id'];
+
+        unset($contents['id']); // remove id from content to avoid update of id
+
+        $affected = \DB::table($table)->where('id', $id)->update($contents);
+
+        if ($affected === 0) {
+            throw new \Exception('No record found to update or no changes made');
+        }
     }
 
     private function checkRequest($request)
