@@ -25,10 +25,10 @@ abstract class Controller
         return null;
     }
 
-    protected function generateReadResponse($fields, $extraClause, $table)
+    protected function generateReadResponse($fields, $extraClause, $table, $bindings = [])
     {
         $query = "SELECT $fields FROM $table $extraClause";
-        $result = DB::select($query);
+        $result = DB::select($query, $bindings);
 
         if (empty($result)) {
             return response()->json(['error' => 'No data found'], 404);

@@ -55,7 +55,7 @@ class TownController extends Controller
     }
 
     // reads only barangays and senior
-    public function read($client)
+    public function read($client, $town_id=null)
     {
         $fields = '*';
         $extraClause = '';
@@ -63,17 +63,21 @@ class TownController extends Controller
         switch($client){
             case 'barangay': // maybe add statistics on the number of seniors
                 $fields = 'id, name, username';
-                $extraClause = 'WHERE town_id='; // dynamic suppmentation
+                $extraClause = 'WHERE town_id= :town_id'; // dynamic suppmentation
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id WHERE town_id =';
+                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id WHERE town_id = :town_id';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client);
+        if (is_null($town_id)) {
+            return response()->json(['error' => 'town_id parameter is required'], 400);
+        }
+
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $town_id]);
     }
 
     //reads only seniors and transactions
