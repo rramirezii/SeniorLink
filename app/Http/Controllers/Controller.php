@@ -4,35 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 abstract class Controller
 {
-    protected function checkRequest($request, $scope)
+    protected function checkRequest(Request $request, $scope)
     {
-        
         $validator = Validator::make($request->all(), [
             'type' => $scope,
             'contents' => 'required|array'
         ]);
-    
+
         if ($validator->fails()) {
-            return [
-                'status' => 400,
-                'data' => ['error' => 'Invalid request', 'messages' => $validator->errors()]
-            ];
+            return response()->json([
+                'error' => 'Invalid request',
+                'messages' => $validator->errors()
+            ], 400);
         }
-    
-        return [
-            'status' => 200,
-            'data' => []
-        ];
+
+        return null;
     }
 
     protected function generateReadResponse($fields, $extraClause, $table)
     {
-        $result = DB::select("SELECT $fields FROM $table $extraClause");
+        $query = "SELECT $fields FROM $table $extraClause";
+        $result = DB::select($query);
 
-        if(empty($result)){
+        if (empty($result)) {
             return response()->json(['error' => 'No data found'], 404);
         }
 
@@ -45,18 +43,17 @@ abstract class Controller
         return implode(', ', $messages);
     }
 
-    protected function makeRulesRequired($rules) 
+    protected function makeRulesRequired($rules)
     {
         $requiredRules = [];
-      
+
         foreach ($rules as $key => $value) {
-          $requiredRules[$key] = 'required|' . $value;
+            $requiredRules[$key] = 'required|' . $value;
         }
-      
+
         return $requiredRules;
     }
 
-    // move this out soon for other controllers to use
     protected function getRules($table)
     {
         switch ($table) {
@@ -67,7 +64,6 @@ abstract class Controller
                     'username' => 'string|unique:town|max:255',
                     'password' => 'string|max:255',
                 ];
-                break;
             case 'establishment':
                 return [
                     'name' => 'string|max:255',
@@ -76,14 +72,19 @@ abstract class Controller
                     'username' => 'string|unique:establishment|max:255',
                     'password' => 'string|max:255',
                 ];
-                break;
             case 'superadmin':
                 return [
                     'name' => 'string|max:255',
                     'username' => 'string|unique:super_admin|max:255',
                     'password' => 'string|max:255',
                 ];
-                break;
+            case 'barangay':
+                return [
+                    'name' => 'string|max:255',
+                    'town_id' => 'integer|exists:towns,id',
+                    'username' => 'string|unique:super_admin|max:255',
+                    'password' => 'string|max:255',
+                ];
             default:
                 return [];
         }
@@ -91,22 +92,16 @@ abstract class Controller
 
     protected function transformRulesForUpdate($rules, $contents)
     {
-        $updatedRules = [];
-
-        // add the id field
-        if (!isset($updatedRules['id'])) {
-            $updatedRules['id'] = 'required|integer';
-        }
+        $updatedRules = ['id' => 'required|integer'];
 
         foreach ($rules as $field => $rule) {
-            $updatedRules[$field] = $rule;
-
-            // unique fields must add validation 
             if (strpos($rule, 'unique:') !== false) {
                 list($validator, $uniqueConstraint) = explode(':', $rule);
                 $tableColumn = explode(',', $uniqueConstraint)[0];
 
                 $updatedRules[$field] = "$validator:{$tableColumn}," . $contents['id'];
+            } else {
+                $updatedRules[$field] = $rule;
             }
         }
 
