@@ -228,14 +228,21 @@ class SuperAdminController extends Controller
         }
 
         $id = $contents['id'];
-
         unset($contents['id']); // remove id from content to avoid update of id
+        
+        $contents = array_filter($contents, function ($value) { // remove the empty fields
+            return $value !== "" && $value !== null;
+          });
 
-        $affected = \DB::table($table)->where('id', $id)->update($contents);
+        $affected = DB::table($type)->where('id', $id)->update($contents);
 
         if ($affected === 0) {
-            throw new \Exception('No record found to update or no changes made');
-        }
+            if (empty($contents)) {
+              throw new \Exception('No changes provided for update.');
+            } else {
+              throw new \Exception('No record found to update or no valid changes made');
+            }
+          }
     }
 
     private function checkRequest($request)
