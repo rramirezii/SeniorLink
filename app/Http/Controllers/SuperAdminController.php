@@ -145,6 +145,7 @@ class SuperAdminController extends Controller
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }
 
+    // this is a post or put request
     public function update(Request $request)
     {
         // first step validation 
@@ -199,6 +200,39 @@ class SuperAdminController extends Controller
               throw new \Exception('No record found to update or no valid changes made');
             }
           }
+    }
+
+    public function delete(Request $request){
+        $validation = $this -> checkRequest($request);
+
+        if($validation['status'] !== 200) {        
+            return response()->json($response['data'], $response['status']);
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->deleteEntity($contents, $type);
+            return response()->json(['message' => 'Deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
+        }
+    }
+        
+    private function deleteEntity($contents, $table)
+    {
+        if (!isset($contents['id'])) {
+            throw new \Exception('Missing id.');
+        }
+    
+        $id = $contents['id'];
+    
+        $affectedRows = DB::table($table)->where('id', $id)->delete();
+    
+        if ($affectedRows === 0) {
+            throw new \Exception('Record not found or no rows deleted.');
+        }
     }
 
     private function checkRequest($request)
