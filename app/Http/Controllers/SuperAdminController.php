@@ -14,29 +14,18 @@ class SuperAdminController extends Controller
         return response()->json(["client_type" => "admin_0"], 200); //edit to return session as well
     }
 
-    public function create()
-    {
-        return response()->json(["client_type" => "admin_0"], 200);
-    }
-
+    // post
     public function create(Request $request)
     {
         // first step validation 
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|string|in:town,establishment,super_admin',
-            'contents' => 'required|array'
-        ]);
+        $validation = $this -> checkRequest($request);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => 'Invalid request', 'messages' => $validator->errors()], 400);
+        if($validation['status'] !== 200) {        
+            return response()->json($response['data'], $response['status']);
         }
-        
+
         $type = $request->input('type');
         $contents = $request->input('contents');
-
-        if (!$type || !$contents) {
-            return response()->json(['error' => 'Invalid request'], 400);
-        }
 
         try {
             switch ($type) {
@@ -92,21 +81,21 @@ class SuperAdminController extends Controller
 
         switch($client){
             case 'town':
-                $fields = 'name, zip_code, username';
+                $fields = 'id, name, zip_code, username';
                 break;
             case 'barangay':
-                $fields = 'barangay.name, town.name as town, barangay.username';
+                $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
                 $extraClause = 'JOIN town ON town.id = barangay.town_id';
                 break;
             case 'senior':
-                $fields = 'senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
                 break;
             case 'establishment':
-                $fields = 'name, code, address, username';
+                $fields = 'id, name, code, address, username';
                 break;
             case 'super_admin':
-                $fields = 'name, username';
+                $fields = 'id, name, username';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
@@ -116,7 +105,7 @@ class SuperAdminController extends Controller
     }
 
     // route should be get /$parent/$client
-    public function read($client, $parent) //only for barangay and senior; if $client = barangay, $parent is name of town; if $client = senior, $parent is name of barangay
+    public function readFromParent($client, $parent) //only for barangay and senior; if $client = barangay, $parent is name of town; if $client = senior, $parent is name of barangay
     {
         switch ($client){
             case 'barangay':
@@ -140,11 +129,11 @@ class SuperAdminController extends Controller
     
         switch ($client){
             case 'barangay':
-                $fields = 'barangay.name, town.name as town, barangay.username';
+                $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
                 $extraClause = 'JOIN town ON town.id = barangay.town_id';
                 break;
             case 'senior':
-                $fields = 'senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
                 break;
         }    
@@ -153,7 +142,7 @@ class SuperAdminController extends Controller
     }
 
     //rout should be get /$grandparent/$parent/$client
-    public function read($client, $parent, $grandparent)
+    public function readFromGrandparent($client, $parent, $grandparent)
     {
         if($client != "senior"){
             return response()->json(['error' => 'Invalid client type.'], 404);
@@ -169,10 +158,46 @@ class SuperAdminController extends Controller
             return response()->json(['error' => 'Invalid barangay.'], 404);
         }
 
-        $fields = 'senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
         $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
 
         return $this->generateReadResponse($fields, $extraClause, "senior");
+    }
+
+    public function update(Request $request)
+    {
+        // first step validation 
+        $validation = $this -> checkRequest($request);
+
+        if($validation['status'] !== 200) {        
+            return response()->json($response['data'], $response['status']);
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+        
+
+    }
+
+    private function checkRequest($request)
+    {
+        
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|string|in:town,establishment,super_admin',
+            'contents' => 'required|array'
+        ]);
+    
+        if ($validator->fails()) {
+            return [
+                'status' => 400,
+                'data' => ['error' => 'Invalid request', 'messages' => $validator->errors()]
+            ];
+        }
+    
+        return [
+            'status' => 200,
+            'data' => []
+        ];
     }
 
     private function generateReadResponse($fields, $extraClause, $table)
