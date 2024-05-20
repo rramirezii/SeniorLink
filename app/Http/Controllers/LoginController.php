@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Senior;
-use App\Models\SuperAdmin;
-use App\Models\Barangay;
-use App\Models\Town;
-use App\Models\Establishment;
+// use App\Models\Senior;
+// use App\Models\SuperAdmin;
+// use App\Models\Barangay;
+// use App\Models\Town;
+// use App\Models\Establishment;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\SuperAdminController;
 

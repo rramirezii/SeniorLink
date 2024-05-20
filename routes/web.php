@@ -18,3 +18,7 @@ $router->get('/', 'LoginController@index');
 $router->post('/login', 'LoginController@login');
 
 $router->post('/validate', 'LoginController@validateLogin');
+
+$router->get('/admin/dashboard', 'SuperAdminController@dashboard');
+
+$router->get('/admin/getall/{client}', 'SuperAdminController@getAll');
