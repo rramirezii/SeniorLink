@@ -111,12 +111,54 @@ class TownController extends BaseController
     // post /town/update/{clietnt}
     public function update(Request $request)
     {
+        $validation = $this->checkRequest($request, $this->getStrictScope());
 
+        if ($validation !== null) {
+            return $validation;
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->updateEntity($type, $contents);
+            return response()->json(['message' => 'Update successful'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Update failed', 'message' => $e->getMessage()], 400);
+        }
     }
 
     private function updateEntity($table, $contents)
     {
+        $rules = $this->getRules($table);
 
+        if (empty($rules)) {
+            throw new \Exception('Invalid table name or missing validation rules.');
+        }
+
+        $rules = $this->transformRulesForUpdate($rules, $contents);
+        $validator = Validator::make($contents, $rules);
+
+        if ($validator->fails()) {
+            throw new \Exception($this->generateErrorMessage($validator));
+        }
+
+        if (!isset($contents['id'])) {
+            throw new \Exception('ID not provided for update');
+        }
+
+        $id = $contents['id'];
+        unset($contents['id']); // remove id from content to avoid update of id
+
+        $contents = array_filter($contents, function ($value) {
+            return $value !== "" && $value !== null;
+        });
+
+        $affected = DB::table($table)->where('id', $id)->update($contents);
+
+        if ($affected === 0) {
+            throw new \Exception('No record found to update or no valid changes made');
+        }
     }
 
     // post /town/delete/{client}
