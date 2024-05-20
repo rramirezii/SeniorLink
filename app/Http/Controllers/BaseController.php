@@ -5,19 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Factory as ValidatorFactory;
-use Illuminate\Database\ConnectionInterface as DBConnection;
+// use Illuminate\Validation\Factory as ValidatorFactory;
+// use Illuminate\Database\ConnectionInterface as DBConnection;
 
 class BaseController extends Controller
 {
-    protected $validator;
-    protected $db;
+    // protected $validator;
+    // protected $db;
 
-    public function __construct(ValidatorFactory $validator, DBConnection $db)
-    {
-        $this->validator = $validator;
-        $this->db = $db;
-    }
+    // public function __construct(ValidatorFactory $validator, DBConnection $db)
+    // {
+    //     $this->validator = $validator;
+    //     $this->db = $db;
+    // }
     
     protected function checkRequest(Request $request, $scope)
     {
