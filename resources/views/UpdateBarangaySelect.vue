@@ -11,8 +11,13 @@
         </div>
           <div class="profile">
             <router-link to="/profile" class="profile-button">
-              <i class="fas fa-user"></i> Profile
-            </router-link>
+            <div class="profile-icon">
+              <v-avatar color="primary" size="32">
+                <i class="fas fa-user">Profile</i>
+              </v-avatar> 
+            </div>
+            
+          </router-link>
           </div>
         </div> 
     </header>
@@ -276,7 +281,7 @@
   .profile-button {
     display: inline-flex;   /* Use inline-flex to align icon and text */
     align-items: center;
-    padding: 0.5rem 1rem; 
+    /* padding: 0.5rem 1rem;  */
     margin-right: 1rem;
     background-color: #2c3e50;
     color: white;
