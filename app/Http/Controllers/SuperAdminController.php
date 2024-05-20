@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SuperAdminController extends BaseController
 {
@@ -64,11 +66,15 @@ class SuperAdminController extends BaseController
                 break;
             case 'barangay':
                 $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town ON town.id = barangay.town_id';
+                $extraClause = 'JOIN town 
+                                ON town.id = barangay.town_id';
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                LEFT JOIN town 
+                                ON barangay.town_id = town.id';
                 break;
             case 'establishment':
                 $fields = 'id, name, code, address, username';
@@ -88,13 +94,13 @@ class SuperAdminController extends BaseController
     {
         switch ($client) {
             case 'barangay':
-                $townExists = DB::table('town')->where('name', $parent)->exists();
+                $townExists = DB::table('town')->where('username', $parent)->exists();
                 if (!$townExists) {
                     return response()->json(['error' => 'Invalid parent.'], 404);
                 }
                 break;
             case 'senior':
-                $barangayExists = DB::table('barangay')->where('name', $parent)->exists();
+                $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
                 if (!$barangayExists) {
                     return response()->json(['error' => 'Invalid parent.'], 404);
                 }
@@ -109,11 +115,15 @@ class SuperAdminController extends BaseController
         switch ($client) {
             case 'barangay':
                 $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town ON town.id = barangay.town_id';
+                $extraClause = 'JOIN town 
+                                ON town.id = barangay.town_id';
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                LEFT JOIN town 
+                                ON barangay.town_id = town.id';
                 break;
         }
 
@@ -127,18 +137,21 @@ class SuperAdminController extends BaseController
             return response()->json(['error' => 'Invalid client type.'], 404);
         }
 
-        $townExists = DB::table('town')->where('name', $grandparent)->exists();
+        $townExists = DB::table('town')->where('username', $grandparent)->exists();
         if (!$townExists) {
             return response()->json(['error' => 'Invalid town.'], 404);
         }
 
-        $barangayExists = DB::table('barangay')->where('name', $parent)->exists();
+        $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
         if (!$barangayExists) {
             return response()->json(['error' => 'Invalid barangay.'], 404);
         }
 
         $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+        $extraClause = 'LEFT JOIN barangay 
+                        ON senior.barangay_id = barangay.id 
+                        LEFT JOIN town 
+                        ON barangay.town_id = town.id';
 
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }

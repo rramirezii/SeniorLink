@@ -5,20 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-// use Illuminate\Validation\Factory as ValidatorFactory;
-// use Illuminate\Database\ConnectionInterface as DBConnection;
 
 class BaseController extends Controller
-{
-    // protected $validator;
-    // protected $db;
-
-    // public function __construct(ValidatorFactory $validator, DBConnection $db)
-    // {
-    //     $this->validator = $validator;
-    //     $this->db = $db;
-    // }
-    
+{   
     protected function checkRequest(Request $request, $scope)
     {
         $validator = Validator::make($request->all(), [
@@ -65,6 +54,17 @@ class BaseController extends Controller
         return $requiredRules;
     }
 
+    protected function removeRequiredFromRules($rules)
+    {
+        $modifiedRules = [];
+
+        foreach ($rules as $key => $value) {
+            $modifiedRules[$key] = preg_replace('/^required\|/', '', $value);
+        }
+
+        return $modifiedRules;
+    }
+
     protected function getRules($table)
     {
         switch ($table) {
@@ -75,6 +75,7 @@ class BaseController extends Controller
                     'username' => 'string|unique:town|max:255',
                     'password' => 'string|max:255',
                 ];
+                break;
             case 'establishment':
                 return [
                     'name' => 'string|max:255',
@@ -83,12 +84,14 @@ class BaseController extends Controller
                     'username' => 'string|unique:establishment|max:255',
                     'password' => 'string|max:255',
                 ];
+                break;
             case 'superadmin':
                 return [
                     'name' => 'string|max:255',
                     'username' => 'string|unique:super_admin|max:255',
                     'password' => 'string|max:255',
                 ];
+                break;
             case 'barangay':
                 return [
                     'name' => 'string|max:255',
@@ -96,6 +99,21 @@ class BaseController extends Controller
                     'username' => 'string|unique:super_admin|max:255',
                     'password' => 'string|max:255',
                 ];
+                break;
+            case 'senior':
+                return [
+                    'osca_id' => 'required|string|max:255',
+                    'fname' => 'required|string|max:255',
+                    'mname' => 'nullable|string|max:255',
+                    'lname' => 'required|string|max:255',
+                    'barangay_id' => 'required|integer|exists:barangay,id',
+                    'birthdate' => 'required|date',
+                    'contact_number' => 'required|string|size:11',
+                    'username' => 'required|string|unique:senior|max:255',
+                    'profile_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'qr_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ];
+                break;
             default:
                 return [];
         }
