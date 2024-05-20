@@ -66,11 +66,15 @@ class SuperAdminController extends BaseController
                 break;
             case 'barangay':
                 $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town ON town.id = barangay.town_id';
+                $extraClause = 'JOIN town 
+                                ON town.id = barangay.town_id';
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                LEFT JOIN town 
+                                ON barangay.town_id = town.id';
                 break;
             case 'establishment':
                 $fields = 'id, name, code, address, username';
@@ -111,11 +115,15 @@ class SuperAdminController extends BaseController
         switch ($client) {
             case 'barangay':
                 $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town ON town.id = barangay.town_id';
+                $extraClause = 'JOIN town 
+                                ON town.id = barangay.town_id';
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                LEFT JOIN town 
+                                ON barangay.town_id = town.id';
                 break;
         }
 
@@ -140,7 +148,10 @@ class SuperAdminController extends BaseController
         }
 
         $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+        $extraClause = 'LEFT JOIN barangay 
+                        ON senior.barangay_id = barangay.id 
+                        LEFT JOIN town 
+                        ON barangay.town_id = town.id';
 
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }

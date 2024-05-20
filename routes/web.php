@@ -30,6 +30,8 @@ $router->get('/admin/show/{grandparent}/{parent}/{client}', 'SuperAdminControlle
 $router->get('/admin/getall/{client}', 'SuperAdminController@getAll');
 
 // towns
-$router->get('/town/show/{client}', 'TownController@read');
+// $router->get('/town/{}/dash', 'TownController@read');
 
-$router->get('/town/getall/{client}', 'TownController@getAll');
+$router->get('/town/{townID}/show/{client}', 'TownController@read');
+
+$router->get('/town/{townID}/getall/{client}', 'TownController@getAll');

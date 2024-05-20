@@ -53,7 +53,7 @@ class TownController extends BaseController
     }
 
     // get /town/show/{clients}
-    public function read($client, $town_id=null)
+    public function read($client, $townID)
     {
         $fields = '*';
         $extraClause = '';
@@ -65,27 +65,31 @@ class TownController extends BaseController
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id WHERE town_id = :town_id';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                WHERE town_id = :town_id';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
 
-        if (is_null($town_id)) {
-            return response()->json(['error' => 'town_id parameter is required'], 400);
+        if (is_null($townID)) {
+            return response()->json(['error' => 'townID parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $town_id]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $townID]);
     }
 
+    // NOT YET Functional
     // get /town/show/{parent}/{client}
     public function readFromParent($client, $parent)
     {
 
     }
 
-    // get /town/show/{grandparent}/{parent}/{client}   --- For transactions only under a senior with the username, brgy with the username
-    public function readFromGrandparent($client, $parent, $grandparent)
+    //Not yet functional
+    // get /town/{townID}/show/{grandparent}/{parent}/{client}   --- For transactions only under a senior with the username, brgy with the username
+    public function readFromGrandparent($client, $parent, $grandparent, $townID)
     {
         if ($client != "transaction") {
             return response()->json(['error' => 'Invalid client type.'], 404);
@@ -101,8 +105,12 @@ class TownController extends BaseController
             return response()->json(['error' => 'Invalid senior.'], 404);
         }
 
-        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image, products.name as product_name, products.quantity as product_quantity, products.price as product_price, transaction.date as transaction_date';
+        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id 
+                        LEFT JOIN town ON barangay.town_id = town.id 
+                        LEFT JOIN transaction ON senior.id = transaction.senior_id 
+                        LEFT JOIN product_transaction ON transaction.id = product_transaction.transaction_id 
+                        LEFT JOIN products ON product_transaction.products_id = products.id';
 
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }
