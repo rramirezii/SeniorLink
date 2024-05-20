@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class TownController extends BaseController
+class BarangayController extends BaseController
 {
     // get /town/dashboard
     public function dashboard()
