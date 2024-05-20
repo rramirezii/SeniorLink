@@ -115,8 +115,8 @@ class TownController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, "senior");
     }
 
-    // get /town/{townID}/getall/{client} ; show the list of clients for updating and deleting
-    public function getAll($client, $townID)
+    // get /barangay/getall/{client} ; show the list of clients for updating and deleting
+    public function getAll($client)
     {
         $fields = '*';
         $extraClause = '';
@@ -130,10 +130,10 @@ class TownController extends BaseController
                 return response()->json(['error' => 'Client not part of scope'], 404);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $townID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => 1]);
     }
 
-    // post /town/update/{clietnt}
+    // post /barangay/update/{clietnt}
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -186,7 +186,7 @@ class TownController extends BaseController
         }
     }
 
-    // post /town/delete/{client}
+    // post /barangay/delete/{client}
     public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -223,11 +223,11 @@ class TownController extends BaseController
 
     private function getScope()
     {
-        return "required|string|in:barangay,town";
+        return "required|string|in:barangay,senior";
     }
 
     private function getStrictScope()
     {
-        return "required|string|in:barangay";
+        return "required|string|in:senior";
     }
 }
