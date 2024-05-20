@@ -21,4 +21,15 @@ $router->post('/validate', 'LoginController@validateLogin');
 
 $router->get('/admin/dashboard', 'SuperAdminController@dashboard');
 
+$router->get('/admin/show/{client}', 'SuperAdminController@read');
+
+$router->get('/admin/show/{parent}/{client}', 'SuperAdminController@readFromParent');
+
+$router->get('/admin/show/{grandparent}/{parent}/{client}', 'SuperAdminController@readFromGrandparent');
+
 $router->get('/admin/getall/{client}', 'SuperAdminController@getAll');
+
+// towns
+$router->get('/town/show/{client}', 'TownController@read');
+
+$router->get('/town/getall/{client}', 'TownController@getAll');

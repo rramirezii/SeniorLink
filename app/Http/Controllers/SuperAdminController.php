@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SuperAdminController extends BaseController
 {
@@ -88,13 +90,13 @@ class SuperAdminController extends BaseController
     {
         switch ($client) {
             case 'barangay':
-                $townExists = DB::table('town')->where('name', $parent)->exists();
+                $townExists = DB::table('town')->where('username', $parent)->exists();
                 if (!$townExists) {
                     return response()->json(['error' => 'Invalid parent.'], 404);
                 }
                 break;
             case 'senior':
-                $barangayExists = DB::table('barangay')->where('name', $parent)->exists();
+                $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
                 if (!$barangayExists) {
                     return response()->json(['error' => 'Invalid parent.'], 404);
                 }
@@ -127,12 +129,12 @@ class SuperAdminController extends BaseController
             return response()->json(['error' => 'Invalid client type.'], 404);
         }
 
-        $townExists = DB::table('town')->where('name', $grandparent)->exists();
+        $townExists = DB::table('town')->where('username', $grandparent)->exists();
         if (!$townExists) {
             return response()->json(['error' => 'Invalid town.'], 404);
         }
 
-        $barangayExists = DB::table('barangay')->where('name', $parent)->exists();
+        $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
         if (!$barangayExists) {
             return response()->json(['error' => 'Invalid barangay.'], 404);
         }

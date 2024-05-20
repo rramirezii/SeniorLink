@@ -84,10 +84,27 @@ class TownController extends BaseController
 
     }
 
-    // get /town/show/{grandparent}/{parent}/{client}
+    // get /town/show/{grandparent}/{parent}/{client}   --- For transactions only under a senior with the username, brgy with the username
     public function readFromGrandparent($client, $parent, $grandparent)
     {
+        if ($client != "transaction") {
+            return response()->json(['error' => 'Invalid client type.'], 404);
+        }
 
+        $barangayExists = DB::table('barangay')->where('username', $grandparent)->exists();
+        if (!$barangayExists) {
+            return response()->json(['error' => 'Invalid barangay.'], 404);
+        }
+
+        $seniorExists = DB::table('senior')->where('username', $parent)->exists();
+        if (!$seniorExists) {
+            return response()->json(['error' => 'Invalid senior.'], 404);
+        }
+
+        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
+
+        return $this->generateReadResponse($fields, $extraClause, "senior");
     }
 
     // get /town/getall/{client} ; show the list of clients for updating and deleting
@@ -105,7 +122,7 @@ class TownController extends BaseController
                 return response()->json(['error' => 'Client not part of scope'], 404);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => 1]);
     }
 
     // post /town/update/{clietnt}
