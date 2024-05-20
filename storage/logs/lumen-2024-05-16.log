@@ -1,0 +1,17 @@
+[2024-05-16 03:06:22] local.ERROR: There are no commands defined in the "config" namespace. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\NamespaceNotFoundException(code: 0): There are no commands defined in the \"config\" namespace. at /home/samsonrollolocal/SeniorLink/vendor/symfony/console/Application.php:669)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/symfony/console/Application.php(720): Symfony\\Component\\Console\\Application->findNamespace()
+#1 /home/samsonrollolocal/SeniorLink/vendor/symfony/console/Application.php(266): Symfony\\Component\\Console\\Application->find()
+#2 /home/samsonrollolocal/SeniorLink/vendor/symfony/console/Application.php(175): Symfony\\Component\\Console\\Application->doRun()
+#3 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Console/Kernel.php(160): Symfony\\Component\\Console\\Application->run()
+#4 /home/samsonrollolocal/SeniorLink/artisan(35): Laravel\\Lumen\\Console\\Kernel->handle()
+#5 {main}
+"} 
+[2024-05-16 03:15:50] local.ERROR: Class "Route" not found {"exception":"[object] (Error(code: 0): Class \"Route\" not found at /home/samsonrollolocal/SeniorLink/routes/web.php:6)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/bootstrap/app.php(112): require()
+#1 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Routing/Router.php(62): {closure}()
+#2 /home/samsonrollolocal/SeniorLink/bootstrap/app.php(109): Laravel\\Lumen\\Routing\\Router->group()
+#3 /home/samsonrollolocal/SeniorLink/public/index.php(14): require('...')
+#4 {main}
+"} 

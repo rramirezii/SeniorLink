@@ -122,16 +122,45 @@ class TownController extends BaseController
     // post /town/delete/{client}
     public function delete(Request $request)
     {
+        $validation = $this->checkRequest($request, $this->getStrictScope());
 
+        if ($validation !== null) {
+            return $validation;
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->deleteEntity($type, $contents);
+            return response()->json(['message' => 'Deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
+        }
     }
 
     private function deleteEntity($table, $contents)
     {
+        if (!isset($contents['id'])) {
+            throw new \Exception('Missing id.');
+        }
 
+        $id = $contents['id'];
+
+        $affectedRows = DB::table($table)->where('id', $id)->delete();
+
+        if ($affectedRows === 0) {
+            throw new \Exception('Record not found or no rows deleted.');
+        }
     }
 
     private function getScope()
     {
         return "required|string|in:barangay,town";
+    }
+
+    private function getStrictScope()
+    {
+        return "required|string|in:barangay";
     }
 }
