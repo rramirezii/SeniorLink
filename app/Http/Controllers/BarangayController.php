@@ -9,7 +9,7 @@ class TownController extends BaseController
     // get /town/dashboard
     public function dashboard()
     {
-        return response()->json(["role" => "admin_1"], 200); //edit to return session as well
+        return response()->json(["role" => "admin_2"], 200); //edit to return session as well
     }
 
     // post /town/create/{client}
@@ -122,9 +122,11 @@ class TownController extends BaseController
         $extraClause = '';
 
         switch ($client) {
-            case 'barangay':
-                $fields = 'id, name, username';
-                $extraClause = 'WHERE town_id= :town_id';
+            case 'senior':
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+                $extraClause = 'LEFT JOIN barangay 
+                                ON senior.barangay_id = barangay.id 
+                                WHERE town_id = :town_id';
                 break;
             default:
                 return response()->json(['error' => 'Client not part of scope'], 404);
