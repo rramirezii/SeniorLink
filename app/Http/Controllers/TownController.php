@@ -12,13 +12,13 @@ class TownController extends BaseController
         return response()->json(["role" => "admin_1"], 200); //edit to return session as well
     }
 
-    // post /town/create/{client}
+    // post /town/create
     public function create(Request $request)
     {
         $validation = $this -> checkRequest($request,$this->getScope());
 
-        if($validation['status'] !== 200) {        
-            return response()->json($response['data'], $response['status']);
+        if ($validation !== null) {
+            return $validation;
         }
 
         $type = $request->input('type');
@@ -52,7 +52,7 @@ class TownController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /town/show/{clients}
+    // get /town/{townID}/show/{clients}
     public function read($client, $townID)
     {
         $fields = '*';
