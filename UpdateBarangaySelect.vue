@@ -1,5 +1,5 @@
 <template>
-    <div class="view-barangay">
+    <div class="select-barangay">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -9,16 +9,16 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-          <<div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
-      </div>
+          <div class="profile">
+            <router-link to="/profile" class="profile-button">
+            <div class="profile-icon">
+              <v-avatar color="primary" size="32">
+                <i class="fas fa-user">Profile</i>
+              </v-avatar> 
+            </div>
+            
+          </router-link>
+          </div>
         </div> 
     </header>
     <div>
@@ -28,20 +28,26 @@
         <table v-if="filteredTableData.length" class="table">
           <thead>
             <tr>
-              <th v-for="header in tableHeaders" :key="header">
-                {{ header }}
-              </th>
-            </tr>
-          </thead>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
+            <th>Actions</th> </tr>
+        </thead>
           <tbody v-if="filteredTableData.length">
             <tr v-for="item in filteredTableData" :key="item.id">
             <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td> 
+              <span v-if="header === 'Password'">********</span>
+              <span v-else>{{ item[header] }}</span>
+            </td>
+            <td>
+              <router-link :to="{ name: 'UpdateBarangay', params: { id: item.id }}">
+                <button class="update-button" @click="navigate">Update</button>
+              </router-link>
+            </td>
           </tr>
-          </tbody>
-        </table>
-        <p colspan="2" class="no-results">No results found.</p>
+        </tbody>
+      </table>
+        <p v-else class="no-results">No results found.</p>
       </div>
     </div>
   </template>
@@ -52,7 +58,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
+        tableHeaders: ['Name', 'Town ID', 'Password'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -64,10 +70,10 @@
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
+            if (header.toLowerCase() !== 'id' && header.toLowerCase() !== 'password') { 
             return String(item[header]).toLowerCase().includes(query);
             } else {
-            return false; // Don't include "id" in the search
+            return false; // Don't include "id" or "Password" in the search
             }
         });
         });
@@ -94,7 +100,7 @@
   </script>
   
   <style scoped>
-  .view-barangay {
+  .select-barangay {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -272,25 +278,28 @@
     white-space: nowrap; /* Prevent text from wrapping */
   }
   
-  .profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
-}
-
-.profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
-}
-.profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
-}
-
+  .profile-button {
+    display: inline-flex;   /* Use inline-flex to align icon and text */
+    align-items: center;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none; /* Remove default underline from link */
+  }
+  
+  .profile-button:hover {
+    background-color: #ccc;
+    transition: background-color 0.25s;
+    color: rgb(75, 69, 69);
+  }
+  
+  .profile-button i {
+    margin-right: 0.5rem; /* Add some space between the icon and text */
+  }
 
   .table-container {
   margin-top: 60px; /* Adjust as needed */
@@ -308,6 +317,15 @@
   padding: 8px;
 }
 
+.update-button{
+    padding: 0.5rem 1rem;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0cm;
+}
   </style>
   
     <style>
