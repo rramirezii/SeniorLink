@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BarangayController extends BaseController
 {
@@ -14,7 +15,6 @@ class BarangayController extends BaseController
         return response()->json(["role" => "admin_2"], 200); //edit to return session as well
     }
 
-    // creates a senior account
     // post /barangay/create
     public function create(Request $request)
     {
@@ -54,7 +54,6 @@ class BarangayController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // reads all seniors
     // get /barangay/{$barangay_username}/show/{client}
     public function read($client, $barangay_username)
     {
@@ -63,32 +62,69 @@ class BarangayController extends BaseController
 
         switch($client){
             case 'barangay':
-                //create a $fields and $extraClause here for retrievign the current brangay instance
+                $fields = 'barangay.id, barangay.name, barangay.town_id, barangay.username';
+                $extraClause = 'WHERE barangay.username = :barangay_identification';
                 break;
-            case 'senior': // craete a query returning this field using the bID
-                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id 
-                                WHERE  = :b_id'; // to fix this
+            case 'senior':
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+                $extraClause = 'WHERE senior.barangay_id = :barangay_identification';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
 
-        if (is_null($bID)) {
-            return response()->json(['error' => 'bID parameter is required'], 400);
+        if (is_null($barangay_username)) {
+            return response()->json(['error' => 'barangay_username parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['bar_username' => $bar_username]);
+        if($client !== 'barangay'){
+            try {
+                $barangay_username = getIdByUsername('example_username', 'users');
+            } catch (ModelNotFoundException $exception) {
+                return response()->json(['error' => $exception->getMessage()], 400);
+            }
+        }
+
+        return $this->generateReadResponse($fields, $extraClause, $client, ['barangay_identification' => $barangay_username]);
     }
 
-    // DO THIS
+    // get /barangay/{barangay_username}/show/senior/{senior_username}/{client}
     public function readTransaction($client, $barangay_username, $senior_username)
     {
-        // for retreiveing  transactions from a specific senior in barangay
+        if($client !== 'transaction'){
+            return response()->json(['error' => 'Unknown client type'], 404);
+        }
+
+        $barangay = DB::table('barangay')
+                  ->where('username', $barangay_username)
+                  ->first();
+
+        if (!$barangay) {
+            return response()->json(['error' => 'Barangay not found'], 404);
+        }
+
+        $senior = DB::table('senior')
+                ->where('username', $senior_username)
+                ->where('barangay_id', $barangay->id)
+                ->first();
+        
+        if (!$senior) {
+            return response()->json(['error' => 'Senior not part of barangay'], 400);
+        }
+
+        $table = 'senior';
+        $fields = 'products.name as product_name, products.quantity, products.price, transaction.date, establishment.name as establishment_name';
+        $extraClause = 'JOIN transaction ON senior.id = transaction.senior_id
+                        JOIN product_transaction ON transaction.id = product_transaction.transaction_id
+                        JOIN products ON product_transaction.products_id = products.id
+                        JOIN establishment ON transaction.establishment_id = establishment.id
+                        WHERE senior.username = :senior_identification
+                        GROUP BY transaction.date, products.name, products.quantity, products.price, establishment.name';
+
+ 
+        return $this->generateReadResponse($fields, $extraClause, $table, ['senior_identification' => $senior_username]);
     }
 
-    // update the senior other credentials; update the barangay password
     // post /barangay/update
     public function update(Request $request)
     {

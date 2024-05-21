@@ -1,0 +1,9 @@
+[2024-05-21 16:22:40] local.ERROR: Call to undefined method Laravel\Lumen\Routing\Router::prefix() {"exception":"[object] (Error(code: 0): Call to undefined method Laravel\\Lumen\\Routing\\Router::prefix() at /home/samsonrollolocal/SeniorLink/vendor/illuminate/support/Facades/Facade.php:355)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/routes/web.php(25): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#1 /home/samsonrollolocal/SeniorLink/bootstrap/app.php(112): require('...')
+#2 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Routing/Router.php(62): {closure}()
+#3 /home/samsonrollolocal/SeniorLink/bootstrap/app.php(109): Laravel\\Lumen\\Routing\\Router->group()
+#4 /home/samsonrollolocal/SeniorLink/public/index.php(14): require('...')
+#5 {main}
+"} 
