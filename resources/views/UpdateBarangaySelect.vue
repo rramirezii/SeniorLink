@@ -9,16 +9,16 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-          <div class="profile">
-            <router-link to="/profile" class="profile-button">
-            <div class="profile-icon">
-              <v-avatar color="primary" size="32">
-                <i class="fas fa-user">Profile</i>
-              </v-avatar> 
-            </div>
-            
-          </router-link>
-          </div>
+        <div class="profile-container" @click="toggleProfileDropdown"> 
+        <router-link to="/profile">
+          <div class="profile-placeholder"></div>
+        </router-link>
+        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
+          <li class="dropdown-buttons">
+            <a href="#" @click.prevent="signOut">Sign Out</a>
+          </li>
+        </ul> -->
+      </div>
         </div> 
     </header>
     <div>
@@ -281,7 +281,7 @@
   .profile-button {
     display: inline-flex;   /* Use inline-flex to align icon and text */
     align-items: center;
-    /* padding: 0.5rem 1rem;  */
+    padding: 0.5rem 1rem;
     margin-right: 1rem;
     background-color: #2c3e50;
     color: white;
@@ -326,6 +326,25 @@
     cursor: pointer;
     margin-top: 0cm;
 }
+.profile-placeholder {
+  width: 55px;         
+  height: 55px;
+  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+  border-radius: 10%;      /* Make it a square */
+  cursor: pointer;
+  transition: background-color 0.25s; /* Smooth transition */
+  display: inline-flex;   /* Use inline-flex to align icon and text */
+  margin-right: 2rem;
+  margin-top: 1ex;
+}
+
+.profile-placeholder:hover {
+  background-color: #808080; /* Slightly darker on hover */
+}
+.profile-container {
+  position: relative; /* Allows absolute positioning of the dropdown */
+}
+
   </style>
   
     <style>

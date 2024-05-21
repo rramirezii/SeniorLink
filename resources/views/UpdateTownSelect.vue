@@ -1,5 +1,5 @@
 <template>
-      <div class="update-town">
+      <div class="update-select-town">
         <header class="header">
           <div class="brand">
             <h1>SeniorLink</h1>
@@ -9,11 +9,16 @@
             <input type="text" placeholder="Search..." v-model="searchQuery" />
             <button @click="performSearch">Search</button>
           </div>
-            <div class="profile">
-              <router-link to="/profile" class="profile-button">
-                <i class="fas fa-user"></i> Profile
-              </router-link>
-            </div>
+          <div class="profile-container" @click="toggleProfileDropdown"> 
+        <router-link to="/profile">
+          <div class="profile-placeholder"></div>
+        </router-link>
+        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
+          <li class="dropdown-buttons">
+            <a href="#" @click.prevent="signOut">Sign Out</a>
+          </li>
+        </ul> -->
+      </div>
           </div> 
       </header>
       <div>
@@ -95,7 +100,7 @@
     </script>
   
   <style scoped>
-  .update-town {
+  .update-select-town {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -321,6 +326,25 @@
     cursor: pointer;
     margin-top: 0cm;
 }
+.profile-placeholder {
+  width: 55px;         
+  height: 55px;
+  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+  border-radius: 10%;      /* Make it a square */
+  cursor: pointer;
+  transition: background-color 0.25s; /* Smooth transition */
+  display: inline-flex;   /* Use inline-flex to align icon and text */
+  margin-right: 2rem;
+  margin-top: 1ex;
+}
+
+.profile-placeholder:hover {
+  background-color: #808080; /* Slightly darker on hover */
+}
+.profile-container {
+  position: relative; /* Allows absolute positioning of the dropdown */
+}
+
   </style>
   
     <style>

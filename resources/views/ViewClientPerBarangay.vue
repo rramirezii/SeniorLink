@@ -1,5 +1,5 @@
 <template>
-    <div class="view-select-barangay">
+    <div class="view-select-client">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Towns List</h2>
+    <h2>Barangays List</h2>
   </div>
     <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
@@ -39,8 +39,8 @@
           <tr v-for="item in filteredTableData" :key="item.id">
             <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
             <td>
-              <router-link :to="{ name: 'ViewTown', params: { id: item.id }}">
-                <button class="view-button" @click="navigateToTown(item.id)">View</button>
+              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
+                <button class="view-button" @click="navigateToBarangay(item.id)">View</button>
               </router-link>
             </td>
           </tr>
@@ -59,7 +59,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
+        tableHeaders: ['Name', 'Town ID'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -82,7 +82,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
+        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;
@@ -105,7 +105,7 @@
   </script>
 
 <style scoped>
-.view-select-barangay {
+.view-select-client {
   display: flex;
   flex-direction: column;
   align-items: center;

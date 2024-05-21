@@ -9,11 +9,16 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-          <div class="profile">
-            <router-link to="/profile" class="profile-button">
-              <i class="fas fa-user"></i> Profile
-            </router-link>
-          </div>
+        <div class="profile-container" @click="toggleProfileDropdown"> 
+        <router-link to="/profile">
+          <div class="profile-placeholder"></div>
+        </router-link>
+        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
+          <li class="dropdown-buttons">
+            <a href="#" @click.prevent="signOut">Sign Out</a>
+          </li>
+        </ul> -->
+      </div>
         </div> 
     </header>
     <div>
@@ -36,7 +41,7 @@
           </tr>
           </tbody>
         </table>
-        <p v-else class="no-results">No results found.</p>
+        <p colspan="3" class="no-results">No results found.</p>
       </div>
     </div>
   </template>
@@ -304,6 +309,24 @@
 .table th, .table td {
   border: 1px solid #ddd;
   padding: 8px;
+}
+.profile-placeholder {
+  width: 55px;         
+  height: 55px;
+  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+  border-radius: 10%;      /* Make it a square */
+  cursor: pointer;
+  transition: background-color 0.25s; /* Smooth transition */
+  display: inline-flex;   /* Use inline-flex to align icon and text */
+  margin-right: 2rem;
+  margin-top: 1ex;
+}
+
+.profile-placeholder:hover {
+  background-color: #808080; /* Slightly darker on hover */
+}
+.profile-container {
+  position: relative; /* Allows absolute positioning of the dropdown */
 }
 
   </style>

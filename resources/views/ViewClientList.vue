@@ -1,5 +1,5 @@
 <template>
-    <div class="view-barangay">
+    <div class="view-client">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -9,7 +9,7 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-          <<div class="profile-container" @click="toggleProfileDropdown"> 
+        <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -22,29 +22,32 @@
         </div> 
     </header>
     <div>
-    <h2>Barangays List</h2>
+    <h2>Seniors List</h2>
     </div>
     <div class="table-container">
-        <table v-if="filteredTableData.length" class="table">
-          <thead>
-            <tr>
-              <th v-for="header in tableHeaders" :key="header">
-                {{ header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody v-if="filteredTableData.length">
-            <tr v-for="item in filteredTableData" :key="item.id">
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td> 
+      <p v-if="loading" class="loading-message">Loading...</p>
+      <table v-else class="table">
+        <thead>
+          <tr>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
           </tr>
-          </tbody>
-        </table>
-        <p colspan="2" class="no-results">No results found.</p>
-      </div>
+        </thead>
+        <tbody>
+          <tr v-if="filteredTableData.length === 0">
+            <td colspan="9" class="no-results">No results found.</td>
+          </tr>
+          <tr v-for="item in filteredTableData" :key="item.id"> 
+            <td v-for="header in tableHeaders" :key="header">
+              {{ item[header] }} 
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
@@ -52,7 +55,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
+        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -64,7 +67,7 @@
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
+            if (header.toLowerCase() !== 'id' && header !== 'Birthday') { // Exclude the "id" column
             return String(item[header]).toLowerCase().includes(query);
             } else {
             return false; // Don't include "id" in the search
@@ -75,7 +78,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
+        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;
@@ -94,7 +97,7 @@
   </script>
   
   <style scoped>
-  .view-barangay {
+  .view-client {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -272,7 +275,45 @@
     white-space: nowrap; /* Prevent text from wrapping */
   }
   
-  .profile-placeholder {
+  .profile-button {
+    display: inline-flex;   /* Use inline-flex to align icon and text */
+    align-items: center;
+    padding: 0.5rem 1rem; 
+    margin-right: 1rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none; /* Remove default underline from link */
+  }
+  
+  .profile-button:hover {
+    background-color: #ccc;
+    transition: background-color 0.25s;
+    color: rgb(75, 69, 69);
+  }
+  
+  .profile-button i {
+    margin-right: 0.5rem; /* Add some space between the icon and text */
+  }
+
+  .table-container {
+  margin-top: 60px; /* Adjust as needed */
+  width: 80%; /* Or set a specific width */
+  margin: 0 auto;  /* Center the table horizontally */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+.profile-placeholder {
   width: 55px;         
   height: 55px;
   background-color: #d3d3d3;  /* Placeholder background color (light gray) */
@@ -289,23 +330,6 @@
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
-}
-
-
-  .table-container {
-  margin-top: 60px; /* Adjust as needed */
-  width: 80%; /* Or set a specific width */
-  margin: 0 auto;  /* Center the table horizontally */
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
 }
 
   </style>
