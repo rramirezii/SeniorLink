@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SeniorController extends BaseController
 {
@@ -13,21 +15,37 @@ class SeniorController extends BaseController
     }
 
     // show all transactions
-    // get /senior/{$sID}/show/
-    public function read($client, $sID)
+    // get /senior/{$senior_username}/show/{$client}
+    public function read($client, $senior_username)
     {
         $fields = '*';
         $extraClause = '';
 
         switch($client){
-            case 'senior': // create a query that retrieves the field using the sID; make sure to include the town name as well as the barangay name
-                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+            case 'senior':
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id 
-                                WHERE  = :b_id'; // to fix this
+                                ON senior.barangay_id = barangay.id
+                                LEFT JOIN town 
+                                ON barangay.town_id = town.id
+                                WHERE senior.username = :senior_username';
+
                 break;
-            case 'transaction': // get all products per transaction, and compute the total per month given the bID
-                //transactions with products
+            case 'transaction':
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, 
+                            barangay.name as barangay_name, town.name as town_name, senior.birthdate, 
+                            senior.contact_number, senior.username, senior.profile_image, senior.qr_image, 
+                            transaction.date as transaction_date, 
+                            GROUP_CONCAT(products.name SEPARATOR \', \') as product_names,
+                            GROUP_CONCAT(products.quantity SEPARATOR \', \') as product_quantities,
+                            GROUP_CONCAT(products.price SEPARATOR \', \') as product_prices';
+                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id
+                            LEFT JOIN town ON barangay.town_id = town.id
+                            LEFT JOIN transaction ON senior.id = transaction.senior_id
+                            LEFT JOIN product_transaction ON transaction.id = product_transaction.transaction_id
+                            LEFT JOIN products ON product_transaction.products_id = products.id
+                            WHERE senior.username = :senior_username
+                            GROUP BY transaction.id';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
@@ -37,7 +55,7 @@ class SeniorController extends BaseController
             return response()->json(['error' => 'bID parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['senior_username' => $senior_username]);
     }
 
     // updates a the phone number and profile 
