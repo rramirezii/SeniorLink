@@ -13,6 +13,7 @@ class EstablishmentController extends BaseController
     }
 
     //creating transaction
+    // recieves date, products array[name, quantity, price], estab id, senior id
     // post /establishment/create
     public function create(Request $request)
     {
@@ -53,8 +54,8 @@ class EstablishmentController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /barangay/{$bID}/show/
-    public function read($client, $bID)
+    // get /establishment/{$sID}/show/
+    public function read($client, $sID)
     {
         $fields = '*';
         $extraClause = '';
@@ -77,7 +78,7 @@ class EstablishmentController extends BaseController
             return response()->json(['error' => 'bID parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['bID' => $bID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
     // updates a recent transaction made at the store
@@ -134,8 +135,29 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // post /barangay/delete/{client}
-    public function delete(Request $request)
+    // transactions
+    // post /establishment/delete/{client}
+    public function deleteTransaction(Request $request)
+    {
+        $validation = $this->checkRequest($request, $this->getStrictScope());
+
+        if ($validation !== null) {
+            return $validation;
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->deleteEntity($type, $contents);
+            return response()->json(['message' => 'Deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
+        }
+    }
+
+    // post establishment/delete/{client}
+    public function deleteProducts(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
 
@@ -171,11 +193,11 @@ class EstablishmentController extends BaseController
 
     private function getScope()
     {
-        return "required|string|in:barangay,senior";
+        return "required|string|in:senior,transaction, products";
     }
 
     private function getStrictScope()
     {
-        return "required|string|in:senior";
+        return "required|string|in:transaction, products";
     }
 }
