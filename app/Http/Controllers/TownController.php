@@ -12,10 +12,11 @@ class TownController extends BaseController
         return response()->json(["role" => "admin_1"], 200); //edit to return session as well
     }
 
+    // creates a barangay
     // post /town/create
     public function create(Request $request)
     {
-        $validation = $this -> checkRequest($request,$this->getScope());
+        $validation = $this -> checkRequest($request,$this->getStrictScope());
 
         if ($validation !== null) {
             return $validation;
@@ -63,7 +64,7 @@ class TownController extends BaseController
                 $fields = 'id, name, username';
                 $extraClause = 'WHERE town_id= :town_id'; // dynamic suppmentation
                 break;
-            case 'senior':
+            case 'senior': //fix this to return seniors using the townID and take the barangay name
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
@@ -80,14 +81,16 @@ class TownController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $townID]);
     }
 
-    // NOT YET Functional
-    // get /town/show/{parent}/{client}
-    public function readFromParent($client, $parent)
+    // reads the seniors in each barangay
+    // given the bID
+    // get /town/{townID}/show/barangay/{parent}/senior
+    public function readFromBarangayParent($client, $parent)
     {
 
     }
 
-    //Not yet functional
+    // might not show the transactions of
+    //Not yet functional 
     // get /town/{townID}/show/{grandparent}/{parent}/{client}   --- For transactions only under a senior with the username, brgy with the username
     public function readFromGrandparent($client, $parent, $grandparent, $townID)
     {
@@ -186,6 +189,7 @@ class TownController extends BaseController
         }
     }
 
+    // delete a barangay
     // post /town/delete/{client}
     public function delete(Request $request)
     {

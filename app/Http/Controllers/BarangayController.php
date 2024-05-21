@@ -6,16 +6,17 @@ use Illuminate\Http\Request;
 
 class BarangayController extends BaseController
 {
-    // get /town/dashboard
+    // get /brgy/dashboard
     public function dashboard()
     {
         return response()->json(["role" => "admin_2"], 200); //edit to return session as well
     }
 
+    // creates a senior account
     // post /barangay/create
     public function create(Request $request)
     {
-        $validation = $this -> checkRequest($request,$this->getScope());
+        $validation = $this -> checkRequest($request,$this->getStrictScope());
 
         if ($validation !== null) {
             return $validation;
@@ -40,7 +41,6 @@ class BarangayController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        // $rules = $this -> makeRulesRequired($rules);
         $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
@@ -52,14 +52,15 @@ class BarangayController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /barangay/{$bID}/show/
+    // reads all seniors
+    // get /barangay/{$bID}/show/senior
     public function read($client, $bID)
     {
         $fields = '*';
         $extraClause = '';
 
         switch($client){
-            case 'senior':
+            case 'senior': // craete a query returning this field using the bID
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
@@ -76,19 +77,20 @@ class BarangayController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['bID' => $bID]);
     }
 
-    // NOT YET Functional
-    // get /barangay/{bID}/show/{parent}/{client}
+    // reads the transactions of a senior using the bID and sID
+    // get /barangay/{bID}/show/senior/{parent}/{client}
     public function readFromParent($client, $parent)
     {
 
     }
 
-    // function getAll is the same with read()
+    //to the list of seniors use the read method
 
+    // update the senior other credentials; update the barangay password
     // post /barangay/{bID}/update
     public function update(Request $request)
     {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
+        $validation = $this->checkRequest($request, $this->getScope());
 
         if ($validation !== null) {
             return $validation;
@@ -138,6 +140,7 @@ class BarangayController extends BaseController
         }
     }
 
+    //  delete a senior
     // post /barangay/delete/{client}
     public function delete(Request $request)
     {

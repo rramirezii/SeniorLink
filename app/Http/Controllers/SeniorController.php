@@ -20,13 +20,13 @@ class SeniorController extends BaseController
         $extraClause = '';
 
         switch($client){
-            case 'senior':
+            case 'senior': // create a query that retrieves the field using the sID; make sure to include the town name as well as the barangay name
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
                                 WHERE  = :b_id'; // to fix this
                 break;
-            case 'transaction':
+            case 'transaction': // get all products per transaction, and compute the total per month given the bID
                 //transactions with products
                 break;
             default:
@@ -40,7 +40,7 @@ class SeniorController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    // updates a the phone number only
+    // updates a the phone number and profile 
     // post /senior/{sID}/update
     public function update(Request $request)
     {
@@ -96,11 +96,16 @@ class SeniorController extends BaseController
 
     private function getScope()
     {
-        return "required|string|in:senior,transaction, products";
+        return "required|string|in:senior, transaction, products";
     }
 
     private function getStrictScope()
     {
         return "required|string|in: senior";
+    }
+
+    private function getUpdateScope()
+    {
+        return "";
     }
 }
