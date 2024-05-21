@@ -19,19 +19,56 @@ $router->post('/login', 'LoginController@login');
 
 $router->post('/validate', 'LoginController@validateLogin');
 
-$router->get('/admin/dashboard', 'SuperAdminController@dashboard');
+// admin routes
+$router->post('/admin/create', 'SuperAdminController@create'); // create
 
-$router->get('/admin/show/{client}', 'SuperAdminController@read');
+$router->get('/admin/{superadmin_username}/show/{client}', 'SuperAdminController@read'); // read
 
-$router->get('/admin/show/{parent}/{client}', 'SuperAdminController@readFromParent');
+$router->get('/admin/{superadmin_username}/show/town/{town_username}/{client}', 'SuperAdminController@readBarangay'); // read
 
-$router->get('/admin/show/{grandparent}/{parent}/{client}', 'SuperAdminController@readFromGrandparent');
+$router->get('/admin/{superadmin_username}/show/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read
 
-$router->get('/admin/getall/{client}', 'SuperAdminController@getAll');
+$router->get('/admin/{superadmin_username}/show/town/{town_username}/barangay/{barangay_username}/{client}', 'SuperAdminController@readSeniorBarangay'); // read
 
-// towns
-// $router->get('/town/{}/dash', 'TownController@read');
+$router->post('/admin/update', 'SuperAdminController@update'); // update
 
-$router->get('/town/{townID}/show/{client}', 'TownController@read');
+$router->post('/admin/delete', 'SuperAdminController@delete'); // delete
 
-$router->get('/town/{townID}/getall/{client}', 'TownController@getAll');
+// establishment routes
+$router->post('/establishment/create', 'EstablishmentController@create'); // create
+
+$router->get('/establishment/{establishment_username}/show/{client}', 'EstablishmentController@read'); // read
+
+$router->get('/establishment/{establishment_username}/show/senior/{senior_username}/{client}', 'EstablishmentController@readSenior'); // read
+
+$router->post('/establishment/update', 'EstablishmentController@update'); // update
+
+$router->post('/establishment/delete', 'EstablishmentController@delete'); // delete
+
+
+// town routes
+$router->post('/town/create', 'TownController@create'); // create
+
+$router->get('/town/{town_username}/show/{client}', 'TownController@read'); // read
+
+$router->get('/town/{town_username}/show/barangay/{barangay_username}/{client}', 'TownController@readSenior'); // read
+
+$router->post('/town/update', 'TownController@update'); // update
+
+$router->post('/town/delete', 'TownController@delete'); // delete
+
+// barangay routes
+$router->post('/barangay/create', 'BarangayController@create'); //create
+
+$router->get('/barangay/{barangay_username}/show/{client}', 'BarangayController@read'); //read
+
+$router->get('/barangay/{barangay_username}/show/senior/{senior_username}/{client}', 'BarangayController@readTransaction'); //read
+
+$router->post('/barangay/update', 'BarangayController@update'); //udpate
+
+$router->post('/barangay/delete', 'BarangayController@delete'); //delete
+
+// senior routes
+$router->get('/senior/{senior_username}/show/{client}', 'SeniorController@read'); //read
+
+$router->post('/senior/update', 'SeniorController@update'); //update

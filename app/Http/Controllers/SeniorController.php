@@ -14,7 +14,6 @@ class SeniorController extends BaseController
         return response()->json(["role" => "basic"], 200); //edit to return session as well
     }
 
-    // show all transactions
     // get /senior/{$senior_username}/show/{$client}
     public function read($client, $senior_username)
     {
@@ -59,7 +58,7 @@ class SeniorController extends BaseController
     }
 
     // updates a the phone number and profile 
-    // post /senior/{sID}/update
+    // post /senior/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());

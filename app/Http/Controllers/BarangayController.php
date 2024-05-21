@@ -55,8 +55,8 @@ class BarangayController extends BaseController
     }
 
     // reads all seniors
-    // get /barangay/{$bID}/show/senior
-    public function read($client, $bID)
+    // get /barangay/{$bar_username}/show/senior
+    public function read($client, $barangay_username)
     {
         $fields = '*';
         $extraClause = '';
@@ -76,14 +76,12 @@ class BarangayController extends BaseController
             return response()->json(['error' => 'bID parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['bID' => $bID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['bar_username' => $bar_username]);
     }
 
-    // reads the transactions of a senior using the bID and sID
-    // get /barangay/{bID}/show/senior/{parent}/{client}
-    public function readFromParent($client, $parent)
+    public function readTransaction($client, $barangay_username, $senior_username)
     {
-
+        // for retreiveing  transactions from a specific senior in barangay
     }
 
     //to the list of seniors use the read method
