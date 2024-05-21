@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BaseController extends Controller
 {   
@@ -142,8 +143,16 @@ class BaseController extends Controller
         return $updatedRules;
     }
 
-    protected function retrieveIDUsingUsername($userame, $table)
-    {
-        
+    protected function getIdByUsername($username, $table) {
+        try {
+            $id = DB::table($table)->where('username', $username)->value('id');
+            if ($id === null) {
+                throw new ModelNotFoundException("User with username '$username' not found in table '$table'");
+            }
+            return $id;
+        } catch (ModelNotFoundException $exception) {
+            throw $exception;
+        }
     }
+
 }
