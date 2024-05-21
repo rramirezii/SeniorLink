@@ -88,13 +88,9 @@ class BarangayController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['barangay_identification' => $barangay_username]);
     }
 
-    // get /barangay/{barangay_username}/show/senior/{senior_username}/{client}
-    public function readTransaction($client, $barangay_username, $senior_username)
+    // get /barangay/{barangay_username}/show/senior/{senior_username}/transaction
+    public function readTransaction($barangay_username, $senior_username)
     {
-        if($client !== 'transaction'){
-            return response()->json(['error' => 'Unknown client type'], 404);
-        }
-
         $barangay = DB::table('barangay')
                   ->where('username', $barangay_username)
                   ->first();

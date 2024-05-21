@@ -89,51 +89,25 @@ class SuperAdminController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client);
     }
 
-    public function readBarangay($town_username, $client)
+    // get /admin/show/town/{town_username}/barangay
+    public function readBarangay($town_username)
     {
+        $town = DB::table('town')
+                  ->where('username', $town_username)
+                  ->first();
 
-    }
-
-    // get /admin/show/{$parent}/{$client} ; parent is a valid town or barangay name
-    public function readFromParent($client, $parent)
-    {
-        switch ($client) {
-            case 'barangay':
-                $townExists = DB::table('town')->where('username', $parent)->exists();
-                if (!$townExists) {
-                    return response()->json(['error' => 'Invalid parent.'], 404);
-                }
-                break;
-            case 'senior':
-                $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
-                if (!$barangayExists) {
-                    return response()->json(['error' => 'Invalid parent.'], 404);
-                }
-                break;
-            default:
-                return response()->json(['error' => 'Unknown client type'], 404);
+        if (!$town) {
+            return response()->json(['error' => 'Barangay not found'], 404);
         }
 
-        $fields = "*";
-        $extraClause = "";
+        $table = 'barangay';
+        $fields = 'barangay.id, barangay.username, barangay.name';
+        $extraClause = 'JOIN town on town.id = :town_identification';
 
-        switch ($client) {
-            case 'barangay':
-                $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town 
-                                ON town.id = barangay.town_id';
-                break;
-            case 'senior':
-                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id 
-                                LEFT JOIN town 
-                                ON barangay.town_id = town.id';
-                break;
-        }
-
-        return $this->generateReadResponse($fields, $extraClause, $client);
+        return $this->generateReadResponse($fields, $extraClause, $table, ['town_identification' => $town_username]);
     }
+
+    
 
     // get /admin/show/{$grandparent}/{$parent}/{$client}
     public function readFromGrandparent($client, $parent, $grandparent)
