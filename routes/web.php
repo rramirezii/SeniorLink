@@ -26,8 +26,8 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
     $router->group(['prefix' => 'show'], function () use ($router) {
         $router->get('/{client}', 'SuperAdminController@read'); // read
-        $router->get('/town/{town_username}/{client}', 'SuperAdminController@readBarangay'); // read
-        $router->get('/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read
+        $router->get('/town/{town_username}/barangay', 'SuperAdminController@readBarangay'); // read
+        $router->get('/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read //REMOVE
         $router->get('/town/{town_username}/barangay/{barangay_username}/{client}', 'SuperAdminController@readSeniorBarangay'); // read
     });
 
