@@ -7,3 +7,122 @@
 #4 /home/samsonrollolocal/SeniorLink/public/index.php(14): require('...')
 #5 {main}
 "} 
+[2024-05-21 16:59:35] local.ERROR: Call to undefined function App\Http\Controllers\getIdByUsername() {"exception":"[object] (Error(code: 0): Call to undefined function App\\Http\\Controllers\\getIdByUsername() at /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BarangayController.php:82)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\BarangayController->read()
+#1 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#3 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#4 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#5 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#6 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#7 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#8 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#9 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(239): Laravel\\Lumen\\Application->handleFoundRoute()
+#10 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(174): Laravel\\Lumen\\Application->handleDispatcherResponse()
+#11 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#12 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#13 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#14 /home/samsonrollolocal/SeniorLink/public/index.php(28): Laravel\\Lumen\\Application->run()
+#15 {main}
+"} 
+[2024-05-21 17:02:01] local.ERROR: Call to undefined function App\Http\Controllers\getIdByUsername() {"exception":"[object] (Error(code: 0): Call to undefined function App\\Http\\Controllers\\getIdByUsername() at /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BarangayController.php:82)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\BarangayController->read()
+#1 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#3 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#4 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#5 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#6 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#7 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#8 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#9 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(239): Laravel\\Lumen\\Application->handleFoundRoute()
+#10 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(174): Laravel\\Lumen\\Application->handleDispatcherResponse()
+#11 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#12 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#13 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#14 /home/samsonrollolocal/SeniorLink/public/index.php(28): Laravel\\Lumen\\Application->run()
+#15 {main}
+"} 
+[2024-05-21 17:02:03] local.ERROR: Call to undefined function App\Http\Controllers\getIdByUsername() {"exception":"[object] (Error(code: 0): Call to undefined function App\\Http\\Controllers\\getIdByUsername() at /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BarangayController.php:82)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\BarangayController->read()
+#1 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#3 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#4 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#5 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#6 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#7 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#8 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#9 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(239): Laravel\\Lumen\\Application->handleFoundRoute()
+#10 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(174): Laravel\\Lumen\\Application->handleDispatcherResponse()
+#11 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#12 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#13 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#14 /home/samsonrollolocal/SeniorLink/public/index.php(28): Laravel\\Lumen\\Application->run()
+#15 {main}
+"} 
+[2024-05-21 17:08:53] local.ERROR: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'senior_link.senior.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by (Connection: mysql, SQL: SELECT senior.id as senior_id, senior.osca_id, senior.username as senior_username, CONCAT(senior.fname, " ", senior.mname, " ", senior.lname) as senior_name, products.name as product_name, products.quantity, products.price, transaction.date, establishment.name as establishment_name FROM senior JOIN transaction ON senior.id = transaction.senior_id
+                        JOIN product_transaction ON transaction.id = product_transaction.transaction_id
+                        JOIN products ON product_transaction.products_id = products.id
+                        JOIN establishment ON transaction.establishment_id = establishment.id
+                        WHERE senior.username = :senior_identification
+                        GROUP BY transaction.date, products.name, products.quantity, products.price, establishment.name) {"exception":"[object] (Illuminate\\Database\\QueryException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'senior_link.senior.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by (Connection: mysql, SQL: SELECT senior.id as senior_id, senior.osca_id, senior.username as senior_username, CONCAT(senior.fname, \" \", senior.mname, \" \", senior.lname) as senior_name, products.name as product_name, products.quantity, products.price, transaction.date, establishment.name as establishment_name FROM senior JOIN transaction ON senior.id = transaction.senior_id
+                        JOIN product_transaction ON transaction.id = product_transaction.transaction_id
+                        JOIN products ON product_transaction.products_id = products.id
+                        JOIN establishment ON transaction.establishment_id = establishment.id
+                        WHERE senior.username = :senior_identification
+                        GROUP BY transaction.date, products.name, products.quantity, products.price, establishment.name) at /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php:829)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(783): Illuminate\\Database\\Connection->runQueryCallback()
+#1 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(414): Illuminate\\Database\\Connection->run()
+#2 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/DatabaseManager.php(509): Illuminate\\Database\\Connection->select()
+#3 /home/samsonrollolocal/SeniorLink/vendor/illuminate/support/Facades/Facade.php(355): Illuminate\\Database\\DatabaseManager->__call()
+#4 /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BaseController.php(32): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#5 /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BarangayController.php(125): App\\Http\\Controllers\\BaseController->generateReadResponse()
+#6 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\BarangayController->readTransaction()
+#7 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#8 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#9 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#10 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#11 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#12 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#13 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#14 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#15 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(239): Laravel\\Lumen\\Application->handleFoundRoute()
+#16 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(174): Laravel\\Lumen\\Application->handleDispatcherResponse()
+#17 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#18 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#19 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#20 /home/samsonrollolocal/SeniorLink/public/index.php(28): Laravel\\Lumen\\Application->run()
+#21 {main}
+
+[previous exception] [object] (PDOException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'senior_link.senior.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by at /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php:423)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(423): PDO->prepare()
+#1 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(816): Illuminate\\Database\\Connection->Illuminate\\Database\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(783): Illuminate\\Database\\Connection->runQueryCallback()
+#3 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/Connection.php(414): Illuminate\\Database\\Connection->run()
+#4 /home/samsonrollolocal/SeniorLink/vendor/illuminate/database/DatabaseManager.php(509): Illuminate\\Database\\Connection->select()
+#5 /home/samsonrollolocal/SeniorLink/vendor/illuminate/support/Facades/Facade.php(355): Illuminate\\Database\\DatabaseManager->__call()
+#6 /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BaseController.php(32): Illuminate\\Support\\Facades\\Facade::__callStatic()
+#7 /home/samsonrollolocal/SeniorLink/app/Http/Controllers/BarangayController.php(125): App\\Http\\Controllers\\BaseController->generateReadResponse()
+#8 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\BarangayController->readTransaction()
+#9 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#10 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#11 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#12 /home/samsonrollolocal/SeniorLink/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#13 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#14 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#15 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#16 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#17 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(239): Laravel\\Lumen\\Application->handleFoundRoute()
+#18 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(174): Laravel\\Lumen\\Application->handleDispatcherResponse()
+#19 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(431): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#20 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#21 /home/samsonrollolocal/SeniorLink/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#22 /home/samsonrollolocal/SeniorLink/public/index.php(28): Laravel\\Lumen\\Application->run()
+#23 {main}
+"} 
