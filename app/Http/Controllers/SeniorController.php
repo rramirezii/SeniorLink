@@ -6,55 +6,14 @@ use Illuminate\Http\Request;
 
 class SeniorController extends BaseController
 {
-    // get /establishment/dashboard
+    // get /senior/dashboard
     public function dashboard()
     {
-        return response()->json(["role" => "establishment"], 200); //edit to return session as well
+        return response()->json(["role" => "basic"], 200); //edit to return session as well
     }
 
-    //creating transaction
-    // recieves date, products array[name, quantity, price], estab id, senior id
-    // post /establishment/create
-    public function create(Request $request)
-    {
-        $validation = $this -> checkRequest($request,$this->getScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
-        $type = $request->input('type');
-        $contents = $request->input('contents');
-
-        try {
-            $id = $this->createEntity($type, $contents);
-            return response()->json(['message' => 'Created successfully', 'id' => $id], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Creation failed', 'message' => $e->getMessage()], 400);
-        }
-    }
-
-    private function createEntity($table, $contents)
-    {
-        $rules = $this->getRules($table);
-
-        if (empty($rules)) {
-            throw new \Exception('Invalid table name or missing validation rules.');
-        }
-
-        // $rules = $this -> makeRulesRequired($rules);
-        $validator = Validator::make($contents, $rules);
-
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
-
-        DB::table($table)->insert($contents);
-
-        return $id; // Return the newly created entity's ID
-    }
-
-    // get /establishment/{$sID}/show/
+    // show all transactions
+    // get /senior/{$sID}/show/
     public function read($client, $sID)
     {
         $fields = '*';
@@ -81,8 +40,8 @@ class SeniorController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    // updates a recent transaction made at the store
-    // post /establishment/{eID}/update
+    // updates a the phone number only
+    // post /senior/{sID}/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -135,62 +94,6 @@ class SeniorController extends BaseController
         }
     }
 
-    // transactions
-    // post /establishment/delete/{client}
-    public function deleteTransaction(Request $request)
-    {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
-        $type = $request->input('type');
-        $contents = $request->input('contents');
-
-        try {
-            $this->deleteEntity($type, $contents);
-            return response()->json(['message' => 'Deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
-        }
-    }
-
-    // post establishment/delete/{client}
-    public function deleteProducts(Request $request)
-    {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
-        $type = $request->input('type');
-        $contents = $request->input('contents');
-
-        try {
-            $this->deleteEntity($type, $contents);
-            return response()->json(['message' => 'Deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
-        }
-    }
-
-    private function deleteEntity($table, $contents)
-    {
-        if (!isset($contents['id'])) {
-            throw new \Exception('Missing id.');
-        }
-
-        $id = $contents['id'];
-
-        $affectedRows = DB::table($table)->where('id', $id)->delete();
-
-        if ($affectedRows === 0) {
-            throw new \Exception('Record not found or no rows deleted.');
-        }
-    }
-
     private function getScope()
     {
         return "required|string|in:senior,transaction, products";
@@ -198,6 +101,6 @@ class SeniorController extends BaseController
 
     private function getStrictScope()
     {
-        return "required|string|in:transaction, products";
+        return "required|string|in: senior";
     }
 }
