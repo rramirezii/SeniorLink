@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class BarangayController extends BaseController
+class EstablishmentController extends BaseController
 {
-    // get /town/dashboard
+    // get /establishment/dashboard
     public function dashboard()
     {
-        return response()->json(["role" => "admin_2"], 200); //edit to return session as well
+        return response()->json(["role" => "establishment"], 200); //edit to return session as well
     }
 
-    // post /barangay/create
+    //creating transaction
+    // recieves date, products array[name, quantity, price], estab id, senior id
+    // post /establishment/create
     public function create(Request $request)
     {
         $validation = $this -> checkRequest($request,$this->getScope());
@@ -52,8 +54,8 @@ class BarangayController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /barangay/{$bID}/show/
-    public function read($client, $bID)
+    // get /establishment/{$sID}/show/
+    public function read($client, $sID)
     {
         $fields = '*';
         $extraClause = '';
@@ -65,6 +67,9 @@ class BarangayController extends BaseController
                                 ON senior.barangay_id = barangay.id 
                                 WHERE  = :b_id'; // to fix this
                 break;
+            case 'transaction':
+                //transactions with products
+                break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
@@ -73,19 +78,11 @@ class BarangayController extends BaseController
             return response()->json(['error' => 'bID parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['bID' => $bID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    // NOT YET Functional
-    // get /barangay/{bID}/show/{parent}/{client}
-    public function readFromParent($client, $parent)
-    {
-
-    }
-
-    // function getAll is the same with read()
-
-    // post /barangay/{bID}/update
+    // updates a recent transaction made at the store
+    // post /establishment/{eID}/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -138,8 +135,29 @@ class BarangayController extends BaseController
         }
     }
 
-    // post /barangay/delete/{client}
-    public function delete(Request $request)
+    // transactions
+    // post /establishment/delete/{client}
+    public function deleteTransaction(Request $request)
+    {
+        $validation = $this->checkRequest($request, $this->getStrictScope());
+
+        if ($validation !== null) {
+            return $validation;
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        try {
+            $this->deleteEntity($type, $contents);
+            return response()->json(['message' => 'Deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
+        }
+    }
+
+    // post establishment/delete/{client}
+    public function deleteProducts(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
 
@@ -175,11 +193,11 @@ class BarangayController extends BaseController
 
     private function getScope()
     {
-        return "required|string|in:barangay,senior";
+        return "required|string|in:senior,transaction, products";
     }
 
     private function getStrictScope()
     {
-        return "required|string|in:senior";
+        return "required|string|in:transaction, products";
     }
 }
