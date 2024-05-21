@@ -13,14 +13,14 @@ class SeniorController extends BaseController
     }
 
     // show all transactions
-    // get /senior/{$sID}/show/
+    // get /senior/{$senior_username}/show/{$client}
     public function read($client, $senior_username)
     {
         $fields = '*';
         $extraClause = '';
 
         switch($client){
-            case 'senior': // create a query that retrieves the field using the sID; make sure to include the town name as well as the barangay name
+            case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id
@@ -29,7 +29,7 @@ class SeniorController extends BaseController
                                 WHERE senior.username = :senior_username';
 
                 break;
-            case 'transaction': // get all products per transaction, and compute the total per month given the bID
+            case 'transaction':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, 
                             barangay.name as barangay_name, town.name as town_name, senior.birthdate, 
                             senior.contact_number, senior.username, senior.profile_image, senior.qr_image, 
@@ -84,6 +84,8 @@ class SeniorController extends BaseController
         if (empty($rules)) {
             throw new \Exception('Invalid table name or missing validation rules.');
         }
+
+        //truncate the content to only contain cell number and profile
 
         $rules = $this->transformRulesForUpdate($rules, $contents);
         $validator = Validator::make($contents, $rules);
