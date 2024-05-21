@@ -30,7 +30,20 @@ class SeniorController extends BaseController
 
                 break;
             case 'transaction': // get all products per transaction, and compute the total per month given the bID
-                //transactions with products
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, 
+                            barangay.name as barangay_name, town.name as town_name, senior.birthdate, 
+                            senior.contact_number, senior.username, senior.profile_image, senior.qr_image, 
+                            transaction.date as transaction_date, 
+                            GROUP_CONCAT(products.name SEPARATOR \', \') as product_names,
+                            GROUP_CONCAT(products.quantity SEPARATOR \', \') as product_quantities,
+                            GROUP_CONCAT(products.price SEPARATOR \', \') as product_prices';
+                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id
+                            LEFT JOIN town ON barangay.town_id = town.id
+                            LEFT JOIN transaction ON senior.id = transaction.senior_id
+                            LEFT JOIN product_transaction ON transaction.id = product_transaction.transaction_id
+                            LEFT JOIN products ON product_transaction.products_id = products.id
+                            WHERE senior.username = :senior_username
+                            GROUP BY transaction.id';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
