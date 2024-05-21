@@ -55,13 +55,16 @@ class BarangayController extends BaseController
     }
 
     // reads all seniors
-    // get /barangay/{$bar_username}/show/senior
+    // get /barangay/{$barangay_username}/show/{client}
     public function read($client, $barangay_username)
     {
         $fields = '*';
         $extraClause = '';
 
         switch($client){
+            case 'barangay':
+                //create a $fields and $extraClause here for retrievign the current brangay instance
+                break;
             case 'senior': // craete a query returning this field using the bID
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
@@ -79,15 +82,14 @@ class BarangayController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['bar_username' => $bar_username]);
     }
 
+    // DO THIS
     public function readTransaction($client, $barangay_username, $senior_username)
     {
         // for retreiveing  transactions from a specific senior in barangay
     }
 
-    //to the list of seniors use the read method
-
     // update the senior other credentials; update the barangay password
-    // post /barangay/{bID}/update
+    // post /barangay/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());
@@ -140,8 +142,7 @@ class BarangayController extends BaseController
         }
     }
 
-    //  delete a senior
-    // post /barangay/delete/{client}
+    // post /barangay/delete
     public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());

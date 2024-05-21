@@ -37,14 +37,19 @@ $router->post('/admin/delete', 'SuperAdminController@delete'); // delete
 // establishment routes
 $router->post('/establishment/create', 'EstablishmentController@create'); // create
 
+$router->post('/establishment/create/product', 'EstablishmentController@createProduct'); // create
+
 $router->get('/establishment/{establishment_username}/show/{client}', 'EstablishmentController@read'); // read
 
 $router->get('/establishment/{establishment_username}/show/senior/{senior_username}/{client}', 'EstablishmentController@readSenior'); // read
 
 $router->post('/establishment/update', 'EstablishmentController@update'); // update
 
+$router->post('/establishment/update/product', 'EstablishmentController@updateProduct'); // update
+
 $router->post('/establishment/delete', 'EstablishmentController@delete'); // delete
 
+$router->post('/establishment/delete/product', 'EstablishmentController@deleteProduct'); // delete
 
 // town routes
 $router->post('/town/create', 'TownController@create'); // create
