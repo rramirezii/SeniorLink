@@ -1,45 +1,197 @@
-SuperAdmin:
-  dashboard(): 
-    method: get /dashboard
-    returns: the super admin dashboard
-    status code: status 200 when ok # needs to include session soon
-  
-  create():
-    method: get /create
-    returns: the create page
-    status code: status 200
-
-  create($request):
-    method: post /create
-    returns: nothing
-    status code: depends on the validation success
-    $request:
-      [
-        "type" => "town | establishment | super_admin",
-        "content" => 
-        [
-          "name" => "",
-          "username" => "", #usernames must be automatically created in the frontend, uneditable field, towns should have t+zipcode, establishment should have e+code, superadmin should have sa+name
-          "password" => "",
-          "zip_code" => "", #used for town
-          "code" => "" , #used for establishment
-          "address" => "", #used for establishment
-        ],
-      ]
-
-  read($client):
-    method: get /{$client}
-    returns: list of $client may it be towns, seniors, barangays, establishments, or super_admins
-    statusc code: depends on validation
-
-  read($client, $parent):
-    method: get /{$parent}/{$client}
-    returns: list of $client may it be seniors, barangays; parents corresponds to their immediated connection
-    statusc code: depends on validation
-
-  read($client, $parent, $grandparent):
-    method: get /{$grandparent}/{$parent}/{$client}
-    returns: list of $client may it be seniors; parents corresponds to their immediated connection
-    statusc code: depends on validation
-
-  
+CREATE
+	Senior
+		None
+	Barangay
+		Senior 	
+			method: 	post /barangay/create
+			payload:	type: senior
+					contents: [senior contents, barangay_id]
+	Town
+		Barangay 
+			method: 	post /town/create
+			payload:	type: barangay
+					content: [barangay content, town_id]
+	Establishment
+		Transaction
+			method:		post /establishment/create
+			payload:	type: transaction
+					contents: [products: [], date: [], senior_id, establishment_id]
+		Product
+			method:		post /establishment/create/product
+			payload:	type: product
+					contents: [products content]
+	Super Admin
+		Town
+			method:		post /establishment/create
+			payload:	type: town
+					contents: [town content]
+		Establishment
+			method:		post /establishment/create
+			payload:	type: establishment
+					contents: [establishment content]
+		Super Admin
+			method:		post /establishment/create
+			payload:	type: super_admin
+					contents: [super admin content]
+					
+READ; {client} is either senior, transaction, town, barangay, super_admin, establishmetn
+	Senior
+		Senior
+			method:		get /senior/{senior_username}/show/{client}
+			payload:	None
+		Transaction
+			method:		get /senior/{senior_username}/show/{client}
+			payload:	None
+	Barangay
+		Barangay
+			method:		get /barangay/{barangay_username}/show/{client}
+			payload:	None
+		Senior
+			method:		get /barangay/{barangay_username}/show/{client}
+			payload:	None
+		Transaction
+			method:		get /barangay/{barangay_username}/show/{client}
+			payload:	None
+		Transaction by a selected Senior
+			method:		get /barangay/{barangay_username}/show/senior/{senior_username}/{client}
+			payload:	None
+	Town
+		Town
+			method:		get /town/{town_username}/show/{client}
+			payload:	None
+		Barangay
+			method:		get /town/{town_username}/show/{client}
+			payload:	None
+		Senior
+			method:		get /town/{town_username}/show/{client}
+			payload:	None
+		Senior by a selected barangay
+			method:		get /town/{town_username}/show/barangay/{barangay_username}/{client}
+			payload:	None
+	Establishment
+		Establishment
+			method:		get /establishment/{establishment_username}/show/{client}
+			payload:	None
+		Senior
+			method:		get /establishment/{establishment_username}/show/{client}
+			payload:	None
+		Transaction by a selected Senior
+			method:		get /establishment/{establishment_username}/show/senior/{senior_username}/{client}
+			payload:	None
+	Super Admin
+		Super Admin
+			method:		get /admin/show/{client}
+			payload:	None
+		Town
+			method:		get /admin/show/{client}
+			payload:	None
+		Establishment
+			method:		get /admin/show/{client}
+			payload:	None
+		Barangay
+			method:		get /admin/show/{client}
+			payload:	None
+		Senior
+			method:		get /admin/show/{client}
+			payload:	None
+		Barangay in selected Town
+			method:		get /admin/show/town/{town_username}/{client}
+			payload:	None
+		Senior in selected Barangay
+			method:		get /admin/show/barangay/{barangay_username}/{client}
+			payload:	None
+		Senior in selected Barangay in selected Town
+			method:		get /admin/show/town/{town_username}/barangay/{barangay_username}/{client}
+			payload:	None
+	
+UPDATE
+	Senior
+		Senior
+			method:		post /senior/update
+			payload:	type: senior
+					contents: [senior number, senior profile pic]
+	Barangay
+		Barangay
+			method:		post /barangay/update
+			payload:	type: barangay
+					contents: [barangay pass]
+		Senior
+			method:		post /barangay/update
+			payload:	type: senior
+					contents: [senior content]
+	Town
+		Town
+			method:		post /town/update
+			payload:	type: town
+					contents: [town pass]
+		Barangay
+			method:		post /town/update
+			payload:	type: barangay
+					contents: [barangay content]
+	Establishment
+		Establishment
+			method:		post /establishment/update
+			payload:	type: establishment
+					contents: [establishment pass]
+		Transaction
+			method:		post /establishment/update
+			payload:	type: transaction
+					contents: [transaction id, date, products [], senior_id]
+		Product
+			method:		post /establishment/update/product
+			payload:	type: product
+					contents: [transaction id, date, products [],  senior_id]
+	Super Admin
+		Super Admin
+			method:		post /admin/update
+			payload:	type: super_admin
+					contents: [super_admin content]
+		Town
+			method:		post /admin/update
+			payload:	type: town
+					contents: [town content]
+		Establishment
+			method:		post /admin/update
+			payload:	type: establishment
+					contents: [establishment content]
+DELETE
+	Senior
+		None
+	Barangay
+		Senior
+			method:		post /barangay/delete
+			payload:	type: senior
+					contents: [senior_id]
+	Town
+		Barangay
+			method:		post /town/delete
+			payload:	type: barangay
+					contents: [barangay_id]
+	Establishment //deleting a product will only update the transaction
+		Transaction
+			method:		post /establishment/delete
+			payload:	type: transaction
+					contents: [transaction_id] //cascade on delete
+		Product	
+			method:		post /admin/delete
+			payload:	type: product
+					contents: [product id]
+	Super Admin
+		Super Admin
+			method:		post /admin/delete
+			payload:	type: super_admin
+					contents: [super_admin_id] //verify atleast 1 admin left
+		Town
+			method:		post /admin/delete
+			payload:	type: town
+					contents: [town_id]
+		Establishment
+				method:		post /admin/delete
+				payload:	type: establishment
+						contents: [establishment_id]
+		
+		
+		
+			
+		
+		

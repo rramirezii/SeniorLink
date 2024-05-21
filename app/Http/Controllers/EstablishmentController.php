@@ -14,8 +14,6 @@ class EstablishmentController extends BaseController
         return response()->json(["role" => "establishment"], 200); //edit to return session as well
     }
 
-    //creating transaction and products and transaction_products
-    // recieves date, products array[name, quantity, price], estab id, senior id
     // post /establishment/create
     public function create(Request $request)
     {
@@ -34,6 +32,10 @@ class EstablishmentController extends BaseController
         } catch (\Exception $e) {
             return response()->json(['error' => 'Creation failed', 'message' => $e->getMessage()], 400);
         }
+    }
+
+    public function createProduct(Request $request){
+        //create a product
     }
 
     private function createEntity($table, $contents)
@@ -60,8 +62,8 @@ class EstablishmentController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /establishment/{$sID}/show/
-    public function read($client, $sID)
+    // get /establishment/{establishment_username}/show/{client}
+    public function read($client, $establishment_username)
     {
         $fields = '*';
         $extraClause = '';
@@ -87,10 +89,13 @@ class EstablishmentController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    // add two layer read for transaction of the senior
+    //get /establishment/{establishment_username}/show/senior/{senior_username}/{client}
+    public function readSenior($client, $establishment_username, $senior_username)
+    {
+        //create a reader here
+    }
 
-    // updates transaction given date, products array[name, quantity, price], estab id, senior id
-    // post /establishment/{eID}/update
+    // post /establishment/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -108,6 +113,12 @@ class EstablishmentController extends BaseController
         } catch (\Exception $e) {
             return response()->json(['error' => 'Update failed', 'message' => $e->getMessage()], 400);
         }
+    }
+
+    // post /establishment/update/product
+    public function updateProduct(Request $request)
+    {
+        //create here
     }
 
     private function updateEntity($table, $contents)
@@ -145,9 +156,8 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // given the sID, transactionID delete a transaction
     // post /establishment/delete
-    public function deleteTransaction(Request $request)
+    public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
 
@@ -166,25 +176,10 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // given the sID, transactionID, and productID
-    // post establishment/delete
-    public function deleteProducts(Request $request)
+    // post establishment/delete/product
+    public function deleteProduct(Request $request)
     {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
-        $type = $request->input('type');
-        $contents = $request->input('contents');
-
-        try {
-            $this->deleteEntity($type, $contents);
-            return response()->json(['message' => 'Deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
-        }
+        //createa a function
     }
 
     private function deleteEntity($table, $contents)

@@ -55,8 +55,8 @@ class TownController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /town/{townID}/show/{clients}
-    public function read($client, $townID)
+    // get /town/{town_username}/show/{clients}
+    public function read($client, $town_username)
     {
         $fields = '*';
         $extraClause = '';
@@ -66,7 +66,7 @@ class TownController extends BaseController
                 $fields = 'id, name, username';
                 $extraClause = 'WHERE town_id= :town_id'; // dynamic suppmentation
                 break;
-            case 'senior': //fix this to return seniors using the townID and take the barangay name
+            case 'senior': //fix this to return seniors using the town_username and take the barangay name
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
@@ -76,72 +76,24 @@ class TownController extends BaseController
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
 
-        if (is_null($townID)) {
-            return response()->json(['error' => 'townID parameter is required'], 400);
+        if (is_null($town_username)) {
+            return response()->json(['error' => 'town_username parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $townID]);
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $town_username]);
     }
 
-    // reads the seniors in each barangay
-    // given the bID
-    // get /town/{townID}/show/barangay/{parent}/senior
-    public function readFromBarangayParent($client, $parent)
+    //read seniors from a barangay
+   // get /town/{town_username}/show/barangay/{barangay_username}/{client}
+    public function readSenior($client, $town_username, $barangay_username)
     {
-
+        //create a reader here
     }
 
-    // might not show the transactions of
-    //Not yet functional 
-    // get /town/{townID}/show/{grandparent}/{parent}/{client}   --- For transactions only under a senior with the username, brgy with the username
-    public function readFromGrandparent($client, $parent, $grandparent, $townID)
-    {
-        if ($client != "transaction") {
-            return response()->json(['error' => 'Invalid client type.'], 404);
-        }
-
-        $barangayExists = DB::table('barangay')->where('username', $grandparent)->exists();
-        if (!$barangayExists) {
-            return response()->json(['error' => 'Invalid barangay.'], 404);
-        }
-
-        $seniorExists = DB::table('senior')->where('username', $parent)->exists();
-        if (!$seniorExists) {
-            return response()->json(['error' => 'Invalid senior.'], 404);
-        }
-
-        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image, products.name as product_name, products.quantity as product_quantity, products.price as product_price, transaction.date as transaction_date';
-        $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id 
-                        LEFT JOIN town ON barangay.town_id = town.id 
-                        LEFT JOIN transaction ON senior.id = transaction.senior_id 
-                        LEFT JOIN product_transaction ON transaction.id = product_transaction.transaction_id 
-                        LEFT JOIN products ON product_transaction.products_id = products.id';
-
-        return $this->generateReadResponse($fields, $extraClause, "senior");
-    }
-
-    // get /town/{townID}/getall/{client} ; show the list of clients for updating and deleting
-    public function getAll($client, $townID)
-    {
-        $fields = '*';
-        $extraClause = '';
-
-        switch ($client) {
-            case 'barangay':
-                $fields = 'id, name, username';
-                $extraClause = 'WHERE town_id= :town_id';
-                break;
-            default:
-                return response()->json(['error' => 'Client not part of scope'], 404);
-        }
-
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $townID]);
-    }
-
-    // post /town/update/{clietnt}
+    // post /town/update
     public function update(Request $request)
     {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
+        $validation = $this->checkRequest($request, $this->getScope());
 
         if ($validation !== null) {
             return $validation;
@@ -192,7 +144,7 @@ class TownController extends BaseController
     }
 
     // delete a barangay
-    // post /town/delete/{client}
+    // post /town/delete
     public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
