@@ -12,12 +12,12 @@ class EstablishmentController extends BaseController
         return response()->json(["role" => "establishment"], 200); //edit to return session as well
     }
 
-    //creating transaction
+    //creating transaction and products and transaction_products
     // recieves date, products array[name, quantity, price], estab id, senior id
     // post /establishment/create
     public function create(Request $request)
     {
-        $validation = $this -> checkRequest($request,$this->getScope());
+        $validation = $this -> checkRequest($request,$this->getStrictScope());
 
         if ($validation !== null) {
             return $validation;
@@ -42,13 +42,17 @@ class EstablishmentController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        // $rules = $this -> makeRulesRequired($rules);
-        $validator = Validator::make($contents, $rules);
+        // add additional validation for transaction
+
+        // add additional validation for productts
+
+        $validator = Validator::make($contents, $rules); // edit content to contain only the product array or the transaction array
 
         if ($validator->fails()) {
             throw new \Exception($this->generateErrorMessage($validator));
         }
 
+        // make this transaction so that create must be made to product, transaction, and transaction_products table at once
         DB::table($table)->insert($contents);
 
         return $id; // Return the newly created entity's ID
@@ -81,7 +85,9 @@ class EstablishmentController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    // updates a recent transaction made at the store
+    // add two layer read for transaction of the senior
+
+    // updates transaction given date, products array[name, quantity, price], estab id, senior id
     // post /establishment/{eID}/update
     public function update(Request $request)
     {
@@ -110,7 +116,9 @@ class EstablishmentController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this->transformRulesForUpdate($rules, $contents);
+        // create validator for product and transaction
+
+        $rules = $this->transformRulesForUpdate($rules, $contents); // check for this validaty 
         $validator = Validator::make($contents, $rules);
 
         if ($validator->fails()) {
@@ -135,8 +143,8 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // transactions
-    // post /establishment/delete/{client}
+    // given the sID, transactionID delete a transaction
+    // post /establishment/delete
     public function deleteTransaction(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
@@ -156,7 +164,8 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // post establishment/delete/{client}
+    // given the sID, transactionID, and productID
+    // post establishment/delete
     public function deleteProducts(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getStrictScope());
