@@ -89,6 +89,11 @@ class SuperAdminController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client);
     }
 
+    public function readBarangay($town_username, $client)
+    {
+
+    }
+
     // get /admin/show/{$parent}/{$client} ; parent is a valid town or barangay name
     public function readFromParent($client, $parent)
     {

@@ -94,9 +94,6 @@ READ; {client} is either senior, transaction, town, barangay, super_admin, estab
 		Barangay in selected Town
 			method:		get /admin/show/town/{town_username}/{client}
 			payload:	None
-		Senior in selected Barangay
-			method:		get /admin/show/barangay/{barangay_username}/{client}
-			payload:	None
 		Senior in selected Barangay in selected Town
 			method:		get /admin/show/town/{town_username}/barangay/{barangay_username}/{client}
 			payload:	None
