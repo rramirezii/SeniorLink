@@ -107,58 +107,36 @@ class SuperAdminController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $table, ['town_identification' => $town_username]);
     }
 
-    
-
-    // get /admin/show/{$grandparent}/{$parent}/{$client}
-    public function readFromGrandparent($client, $parent, $grandparent)
+    // get /admin/show/town/{town_username}/barangay/{barangay_username}/senior
+    public function readSeniorBarangay($town_username, $barangay_username)
     {
-        if ($client != "senior") {
-            return response()->json(['error' => 'Invalid client type.'], 404);
+        $town = DB::table('town')
+        ->where('username', $town_username)
+        ->first();
+
+        if (!$town) {
+        return response()->json(['error' => 'Town not found'], 404);
         }
 
-        $townExists = DB::table('town')->where('username', $grandparent)->exists();
-        if (!$townExists) {
-            return response()->json(['error' => 'Invalid town.'], 404);
+        $barangay = DB::table('barangay')
+            ->where('username', $barangay_username)
+            ->where('town_id', $town->id)
+            ->first();
+
+        if (!$barangay) {
+        return response()->json(['error' => 'Barangay is not part of town.'], 400);
         }
 
-        $barangayExists = DB::table('barangay')->where('username', $parent)->exists();
-        if (!$barangayExists) {
-            return response()->json(['error' => 'Invalid barangay.'], 404);
-        }
-
-        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+        $table = 'senior';
+        $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
         $extraClause = 'LEFT JOIN barangay 
-                        ON senior.barangay_id = barangay.id 
-                        LEFT JOIN town 
-                        ON barangay.town_id = town.id';
+                        ON senior.barangay_id = barangay.id
+                        WHERE senior.barangay_id = :barangay_identification';
 
-        return $this->generateReadResponse($fields, $extraClause, "senior");
+        return $this->generateReadResponse($fields, $extraClause, $table, ['barangay_identification' => $barangay_username]);
     }
 
-    // get /admin/getall/{client} ; show the list of clients for updating and deleting
-    public function getAll($client)
-    {
-        $fields = '*';
-        $extraClause = '';
-
-        switch ($client) {
-            case 'town':
-                $fields = 'id, name, zip_code, username';
-                break;
-            case 'establishment':
-                $fields = 'id, name, code, address, username';
-                break;
-            case 'super_admin':
-                $fields = 'id, name, username';
-                break;
-            default:
-                return response()->json(['error' => 'Client not part of scope'], 404);
-        }
-
-        return $this->generateReadResponse($fields, $extraClause, $client);
-    }
-
-    // post /admin/update/{client}
+    // post /admin/update
     public function update(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());
@@ -211,7 +189,7 @@ class SuperAdminController extends BaseController
         }
     }
 
-    // post /admin/delete/{client}
+    // post /admin/delete
     public function delete(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());
