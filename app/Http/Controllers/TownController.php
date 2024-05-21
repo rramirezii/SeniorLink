@@ -70,13 +70,13 @@ class TownController extends BaseController
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
-                                WHERE town_id = :town_id';
+                                WHERE barangay.town_id = :town_id';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
 
-        if (is_null($town_username)) {
+        if (is_null($town_username)||empty($town_username)) {
             return response()->json(['error' => 'town_username parameter is required'], 400);
         }
 
@@ -88,6 +88,62 @@ class TownController extends BaseController
     public function readSenior($client, $town_username, $barangay_username)
     {
         //create a reader here
+        // Validate the client type
+        if ($client !== 'senior') {
+            return response()->json(['error' => 'Unknown client type'], 404);
+        }
+
+        // Validate town_username and barangay_username parameters
+        if (is_null($town_username) || empty($town_username) || is_null($barangay_username) || empty($barangay_username)) {
+            return response()->json(['error' => 'town_username and barangay_username parameters are required'], 400);
+        }
+
+        // Fetch the town_id using town_username
+        $town = DB::table('town')->where('username', $town_username)->first();
+        if (!$town) {
+            return response()->json(['error' => 'Invalid town username'], 404);
+        }
+        $town_id = $town->id;
+
+        // Fetch the barangay_id using barangay_username and town_id
+        $barangay = DB::table('barangay')
+            ->where('username', $barangay_username)
+            ->where('town_id', $town_id)
+            ->first();
+        if (!$barangay) {
+            return response()->json(['error' => 'Invalid barangay username or town_id'], 404);
+        }
+        $barangay_id = $barangay->id;
+
+        // Define the fields to be selected
+        $fields = [
+            'senior.id',
+            'senior.osca_id',
+            'senior.fname',
+            'senior.mname',
+            'senior.lname',
+            'barangay.name as barangay_name',
+            'senior.birthdate',
+            'senior.contact_number',
+            'senior.username',
+            'senior.profile_image',
+            'senior.qr_image'
+        ];
+
+        // Fetch the senior data based on barangay_id
+        $seniors = DB::table('senior')
+            ->select($fields)
+            ->leftJoin('barangay', 'senior.barangay_id', '=', 'barangay.id')
+            ->where('barangay.id', $barangay_id)
+            ->get();
+
+        // Check if any seniors were found
+        if ($seniors->isEmpty()) {
+            return response()->json(['error' => 'No seniors found for the given barangay'], 404);
+        }
+
+        // Return the fetched senior data
+        return response()->json($seniors, 200);
     }
 
     // post /town/update
