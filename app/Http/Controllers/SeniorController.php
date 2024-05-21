@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class SeniorController extends BaseController
 {
@@ -84,8 +86,6 @@ class SeniorController extends BaseController
         if (empty($rules)) {
             throw new \Exception('Invalid table name or missing validation rules.');
         }
-
-        //truncate the content to only contain cell number and profile
 
         $rules = $this->transformRulesForUpdate($rules, $contents);
         $validator = Validator::make($contents, $rules);
