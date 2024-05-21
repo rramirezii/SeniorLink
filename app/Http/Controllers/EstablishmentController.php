@@ -11,7 +11,7 @@ class EstablishmentController extends BaseController
     // get /establishment/dashboard
     public function dashboard()
     {
-        return response()->json(["role" => "establishment"], 200); //edit to return session as well
+        return response()->json(["role" => "establishment", "session" => session()->all()], 200); //edit to return session as well ==>> already added session
     }
 
     // post /establishment/create
@@ -35,7 +35,31 @@ class EstablishmentController extends BaseController
     }
 
     public function createProduct(Request $request){
-        //create a product
+        //create a product  ==>> created the content for this createProduct function
+        
+        // Validate request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'quantity' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        // Handle validation errors (return 422 with error messages)
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // Create a new product instance
+        $product = new Product;
+        $product->name = $request->input('name');
+        $product->quantity = $request->input('quantity');
+        $product->price = $request->input('price');
+
+        // Save the product to the database
+        $product->save();
+
+        // Return a success response with the created product data
+        return response()->json(['message' => 'Product created successfully!', 'data' => $product], 201); // Created status code        
     }
 
     private function createEntity($table, $contents)
@@ -46,9 +70,23 @@ class EstablishmentController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        // add additional validation for transaction; must contain date, senior_id, estab_id
+        // add additional validation for transaction; must contain date, senior_id, estab_id    ==>> Added the following code block
+        if ($table === 'transaction') {
+            $rules = array_merge($rules, [
+              'date' => 'required|date',
+              'senior_id' => 'required|integer|exists:seniors,id',
+              'establishment_id' => 'required|integer|exists:establishments,id',
+            ]);
+          }
 
-        // add additional validation for productts
+        // add additional validation for products   ==>> Added the following code block
+        if ($table === 'products') {
+            $rules = array_merge($rules, [
+              'name' => 'required|string|max:255', // Product name is required and has a max length
+              'quantity' => 'required|integer|min:0', // Quantity is required, must be an integer, and cannot be negative
+              'price' => 'required|numeric|min:0', // Price is required, must be a numeric value, and cannot be negative
+            ]);
+          }
 
         $validator = Validator::make($contents, $rules); // edit content to contain only the product array or the transaction array
 
@@ -92,7 +130,29 @@ class EstablishmentController extends BaseController
     //get /establishment/{establishment_username}/show/senior/{senior_username}/{client}
     public function readSenior($client, $establishment_username, $senior_username)
     {
-        //create a reader here
+        //create a reader here ==>> created the content for this readSenior function
+
+        // Check for missing parameters
+        if (is_null($client) || is_null($establishment_username) || is_null($senior_username)) {
+            return response()->json(['error' => 'Missing required parameters'], 400);
+        }
+        
+        // Validate client type (optional, can be modified for more client types)
+        if ($client !== 'establishment') {
+            return response()->json(['error' => 'Unauthorized access'], 403);
+        }
+        
+        // Use query builder to retrieve senior data with establishment relation
+        $query = DB::table('senior')
+            ->select('senior.id', 'senior.osca_id', 'senior.fname', 'senior.mname', 'senior.lname', 'barangay.name as barangay_name', 'senior.birthdate', 'senior.contact_number', 'senior.username')
+            ->leftJoin('barangay', 'senior.barangay_id', '=', 'barangay.id')
+            ->where('senior.username', $senior_username);
+        
+        // No need to filter by establishment_username since seniors are not directly linked to establishments
+        
+        // Handle data retrieval success or failure (assuming logic in generateReadResponse)
+        $results = $query->get();
+        return $this->generateReadResponse($results, null, $client); // No extraClause needed
     }
 
     // post /establishment/update
