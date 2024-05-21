@@ -79,7 +79,7 @@ class BarangayController extends BaseController
 
         if($client !== 'barangay'){
             try {
-                $barangay_username = getIdByUsername('example_username', 'users');
+                $barangay_username = $this -> getIdByUsername($barangay_username, 'barangay');
             } catch (ModelNotFoundException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 400);
             }
@@ -119,8 +119,7 @@ class BarangayController extends BaseController
                         JOIN products ON product_transaction.products_id = products.id
                         JOIN establishment ON transaction.establishment_id = establishment.id
                         WHERE senior.username = :senior_identification
-                        GROUP BY transaction.date, products.name, products.quantity, products.price, establishment.name';
-
+                        GROUP BY senior.id, senior.osca_id, senior.username, senior.fname, senior.mname, senior.lname, products.name, products.quantity, products.price, transaction.date, establishment.name';
  
         return $this->generateReadResponse($fields, $extraClause, $table, ['senior_identification' => $senior_username]);
     }
