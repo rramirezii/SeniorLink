@@ -113,7 +113,7 @@ class BarangayController extends BaseController
         }
 
         $table = 'senior';
-        $fields = 'products.name as product_name, products.quantity, products.price, transaction.date, establishment.name as establishment_name';
+        $fields = 'senior.id as senior_id, senior.osca_id, senior.username as senior_username, CONCAT(senior.fname, " ", senior.mname, " ", senior.lname) as senior_name, products.name as product_name, products.quantity, products.price, transaction.date, establishment.name as establishment_name';
         $extraClause = 'JOIN transaction ON senior.id = transaction.senior_id
                         JOIN product_transaction ON transaction.id = product_transaction.transaction_id
                         JOIN products ON product_transaction.products_id = products.id
