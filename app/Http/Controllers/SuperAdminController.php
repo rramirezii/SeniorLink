@@ -14,7 +14,7 @@ class SuperAdminController extends BaseController
         return response()->json(["role" => "admin_0"], 200); //edit to return session as well
     }
 
-    // post /admin/create/{client} ;include the client in the request
+    // post /admin/create
     public function create(Request $request)
     {
         $validation = $this->checkRequest($request, $this->getScope());

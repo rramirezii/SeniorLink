@@ -114,6 +114,11 @@ class BaseController extends Controller
                     'qr_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
                 break;
+            case 'transaction':
+                return [
+                    // add rules
+                ];
+                break;
             default:
                 return [];
         }

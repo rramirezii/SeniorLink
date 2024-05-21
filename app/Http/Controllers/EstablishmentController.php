@@ -44,7 +44,7 @@ class EstablishmentController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        // add additional validation for transaction
+        // add additional validation for transaction; must contain date, senior_id, estab_id
 
         // add additional validation for productts
 
