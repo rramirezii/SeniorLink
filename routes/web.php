@@ -13,7 +13,6 @@
 |
 */
 
-use Illuminate\Support\Facades\Route;
 
 $router->get('/', 'LoginController@index');
 
@@ -22,71 +21,65 @@ $router->post('/login', 'LoginController@login');
 $router->post('/validate', 'LoginController@validateLogin');
 
 // admin routes;
-Route::prefix('admin')->group(function () {
-    Route::post('/create', 'SuperAdminController@create'); // create
+$router->group(['prefix' => 'admin'], function () use ($router) {
+    $router->post('/create', 'SuperAdminController@create'); // create
 
-    Route::prefix('{superadmin_username}/show')->group(function () {
-        Route::get('/{client}', 'SuperAdminController@read'); // read
-
-        Route::get('/town/{town_username}/{client}', 'SuperAdminController@readBarangay'); // read
-
-        Route::get('/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read
-
-        Route::get('/town/{town_username}/barangay/{barangay_username}/{client}', 'SuperAdminController@readSeniorBarangay'); // read
+    $router->group(['prefix' => '{superadmin_username}/show'], function () use ($router) {
+        $router->get('/{client}', 'SuperAdminController@read'); // read
+        $router->get('/town/{town_username}/{client}', 'SuperAdminController@readBarangay'); // read
+        $router->get('/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read
+        $router->get('/town/{town_username}/barangay/{barangay_username}/{client}', 'SuperAdminController@readSeniorBarangay'); // read
     });
 
-    Route::post('/update', 'SuperAdminController@update'); // update
-
-    Route::post('/delete', 'SuperAdminController@delete'); // delete
+    $router->post('/update', 'SuperAdminController@update'); // update
+    $router->post('/delete', 'SuperAdminController@delete'); // delete
 });
 
 // establishment routes
-Route::prefix('establishment')->group(function () {
-    Route::post('/create', 'EstablishmentController@create'); // create
-    Route::post('/create/product', 'EstablishmentController@createProduct'); // create
+$router->group(['prefix' => 'establishment'], function () use ($router) {
+    $router->post('/create', 'EstablishmentController@create'); // create
+    $router->post('/create/product', 'EstablishmentController@createProduct'); // create
 
-    Route::prefix('{establishment_username}/show')->group(function () {
-        Route::get('/{client}', 'EstablishmentController@read'); // read
-        Route::get('/senior/{senior_username}/{client}', 'EstablishmentController@readSenior'); // read
+    $router->group(['prefix' => '{establishment_username}/show'], function () use ($router) {
+        $router->get('/{client}', 'EstablishmentController@read'); // read
+        $router->get('/senior/{senior_username}/{client}', 'EstablishmentController@readSenior'); // read
     });
 
-    Route::post('/update', 'EstablishmentController@update'); // update
-    Route::post('/update/product', 'EstablishmentController@updateProduct'); // update
+    $router->post('/update', 'EstablishmentController@update'); // update
+    $router->post('/update/product', 'EstablishmentController@updateProduct'); // update
 
-    Route::post('/delete', 'EstablishmentController@delete'); // delete
-    Route::post('/delete/product', 'EstablishmentController@deleteProduct'); // delete
+    $router->post('/delete', 'EstablishmentController@delete'); // delete
+    $router->post('/delete/product', 'EstablishmentController@deleteProduct'); // delete
 });
 
 // town routes
-Route::prefix('town')->group(function () {
-    Route::post('/create', 'TownController@create'); // create
+$router->group(['prefix' => 'town'], function () use ($router) {
+    $router->post('/create', 'TownController@create'); // create
 
-    Route::prefix('{town_username}/show')->group(function () {
-        Route::get('/{client}', 'TownController@read'); // read
-        Route::get('/barangay/{barangay_username}/{client}', 'TownController@readSenior'); // read
+    $router->group(['prefix' => '{town_username}/show'], function () use ($router) {
+        $router->get('/{client}', 'TownController@read'); // read
+        $router->get('/barangay/{barangay_username}/{client}', 'TownController@readSenior'); // read
     });
 
-    Route::post('/update', 'TownController@update'); // update
-    Route::post('/delete', 'TownController@delete'); // delete
+    $router->post('/update', 'TownController@update'); // update
+    $router->post('/delete', 'TownController@delete'); // delete
 });
 
 
 // barangay routes
-Route::prefix('barangay')->group(function () {
-    Route::post('/create', 'BarangayController@create'); // create
+$router->group(['prefix' => 'barangay'], function () use ($router) {
+    $router->post('/create', 'BarangayController@create'); // create
 
-    Route::get('/{barangay_username}/show/{client}', 'BarangayController@read'); // read
+    $router->get('/{barangay_username}/show/{client}', 'BarangayController@read'); // read
+    $router->get('/{barangay_username}/show/senior/{senior_username}/{client}', 'BarangayController@readTransaction'); // read
 
-    Route::get('/{barangay_username}/show/senior/{senior_username}/{client}', 'BarangayController@readTransaction'); // read
-
-    Route::post('/update', 'BarangayController@update'); // update
-
-    Route::post('/delete', 'BarangayController@delete'); // delete
+    $router->post('/update', 'BarangayController@update'); // update
+    $router->post('/delete', 'BarangayController@delete'); // delete
 });
 
 // senior routes
-Route::prefix('senior')->group(function () {
-    Route::get('/{senior_username}/show/{client}', 'SeniorController@read'); // read
+$router->group(['prefix' => 'senior'], function () use ($router) {
+    $router->get('/{senior_username}/show/{client}', 'SeniorController@read'); // read
 
-    Route::post('/update', 'SeniorController@update'); // update
+    $router->post('/update', 'SeniorController@update'); // update
 });
