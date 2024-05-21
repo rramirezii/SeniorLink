@@ -141,4 +141,9 @@ class BaseController extends Controller
 
         return $updatedRules;
     }
+
+    protected function retrieveIDUsingUsername($userame, $table)
+    {
+        
+    }
 }
