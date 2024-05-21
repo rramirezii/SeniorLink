@@ -24,7 +24,7 @@ $router->post('/validate', 'LoginController@validateLogin');
 $router->group(['prefix' => 'admin'], function () use ($router) {
     $router->post('/create', 'SuperAdminController@create'); // create
 
-    $router->group(['prefix' => '{superadmin_username}/show'], function () use ($router) {
+    $router->group(['prefix' => 'show'], function () use ($router) {
         $router->get('/{client}', 'SuperAdminController@read'); // read
         $router->get('/town/{town_username}/{client}', 'SuperAdminController@readBarangay'); // read
         $router->get('/barangay/{barangay_username}/{client}', 'SuperAdminController@readSenior'); // read
