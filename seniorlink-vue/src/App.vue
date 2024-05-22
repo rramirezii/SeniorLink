@@ -61,32 +61,27 @@ export default {
       }
     },
     async redirectTo(routeName, payload = null) {
-  console.log("Redirecting to:", routeName);
+      try {
+        const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
+        const componentName = routeName;
 
-  try {
-    const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
-    const componentName = routeName;
-
-    console.log("Redirect URL:", redirectUrl);
-    console.log("Component Name:", componentName);
-
-    if (payload) {
-      console.log("Payload:", payload);
-      // Make the API call with payload if provided
-      const response = await apiServices.post(redirectUrl, payload);
-      // Handle the API response here (e.g., save to JSON, update state, etc.)
-      console.log("API Response:", response);
-      this.saveToJson(response.data);
-    }
-    console.log(this.$router.getRoutes());
-    // Redirect to the corresponding Vue file
-    this.$router.push({ name: componentName });
-    console.log("Navigation successful.");
-  } catch (error) {
-    console.error('Error redirecting:', error);
-    // Handle the error appropriately
+        if (payload) {
+          console.log("Payload:", payload);
+          // Make the API call with payload if provided
+          const response = await apiServices.post(redirectUrl, payload);
+          // Handle the API response here (e.g., save to JSON, update state, etc.)
+          console.log("API Response:", response);
+          this.saveToJson(response.data);
+        }
+        console.log(this.$router.getRoutes());
+        // Redirect to the corresponding Vue file
+        this.$router.push({ name: componentName });
+        console.log("Navigation successful.");
+      } catch (error) {
+        console.error('Error redirecting:', error);
+        // Handle the error appropriately
+      }
   }
-}
 
   }
 };
