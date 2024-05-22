@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import api from './axios.config.js'; // Import axios
+import api from '../../axios.config.js'; // Import axios
 
 export default {
   data() {
@@ -96,9 +96,9 @@ export default {
           this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
         });
       }
-    }
-  }, 
-  async redirectTo(routeName, payload = null) { // Add payload parameter
+    
+    },
+    async redirectTo(routeName, payload = null) { // Add payload parameter
       try {
         const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
         const componentName = routeName.toLowerCase();
@@ -116,6 +116,7 @@ export default {
         console.error('Error redirecting:', error);
         // Handle the error appropriately
       }
+    }
   }
 };
 </script>
