@@ -84,8 +84,8 @@ class TownController extends BaseController
     }
 
     //read seniors from a barangay
-   // get /town/{town_username}/show/barangay/{barangay_username}/{client}
-    public function readSenior($client, $town_username, $barangay_username)
+   // get /town/{town_username}/show/barangay/{barangay_username}/senior
+    public function readSenior($town_username, $barangay_username)
     {
         //create a reader here
         // Validate the client type

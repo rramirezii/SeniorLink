@@ -56,7 +56,7 @@ $router->post('/town/create', 'TownController@create'); // create
 
 $router->get('/town/{town_username}/show/{client}', 'TownController@read'); // read
 
-$router->get('/town/{town_username}/show/barangay/{barangay_username}/{client}', 'TownController@readSenior'); // read
+$router->get('/town/{town_username}/show/barangay/{barangay_username}/senior', 'TownController@readSenior'); // read
 
 $router->post('/town/update', 'TownController@update'); // update
 
