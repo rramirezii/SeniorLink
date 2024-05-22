@@ -57,6 +57,29 @@ class SeniorController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['senior_username' => $senior_username]);
     }
 
+    // for test 
+    // get /senior/{senior_username}/show/qr
+    public function getQR($senior_username)
+    {
+        $senior = Senior::where('username', $senior_username)->first();
+
+        if (!$senior) {
+            return response()->json(['error' => 'Senior not found'], 404);
+        }
+
+        if (!$senior->qr_image) {
+            return response()->json(['error' => 'QR image not found for the senior'], 404);
+        }
+
+        return response($senior->qr_image, 200)->header('Content-Type', 'image/jpeg');
+    }
+
+    // post /senior/retrieve
+    public function getDetailFromQR(Request $request)
+    {
+        // process the scanned qr here and return the details
+    }
+
     // updates a the phone number and profile 
     // post /senior/update
     public function update(Request $request)
