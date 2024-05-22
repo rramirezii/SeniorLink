@@ -1,0 +1,58 @@
+[
+    {
+      "id": 1,
+      "First Name": "Juan",
+      "Middle Name": "Santos",
+      "Last Name": "Dela Cruz",
+      "OSCA ID": "123456789",
+      "Barangay": "Poblacion",
+      "Birthday": "1950-05-15",
+      "Contact Number": "09123456789",
+      "QR": "QR_CODE_DATA_1"
+    },
+    {
+      "id": 2,
+      "First Name": "Maria",
+      "Middle Name": "Clara",
+      "Last Name": "Reyes",
+      "OSCA ID": "987654321",
+      "Barangay": "San Isidro",
+      "Birthday": "1948-11-22",
+      "Contact Number": "09987654321",
+      "QR": "QR_CODE_DATA_2"
+    },
+    {
+      "id": 3,
+      "First Name": "Pedro",
+      "Middle Name": "Miguel",
+      "Last Name": "Garcia",
+      "OSCA ID": "567890123",
+      "Barangay": "Santo Niño",
+      "Birthday": "1955-03-08",
+      "Contact Number": "09234567890",
+      "QR": "QR_CODE_DATA_3"
+    },
+    {
+      "id": 4,
+      "First Name": "Ana",
+      "Middle Name": "Marie",
+      "Last Name": "Santos",
+      "OSCA ID": "432109876",
+      "Barangay": "San Roque",
+      "Birthday": "1960-09-12",
+      "Contact Number": "09876543210",
+      "QR": "QR_CODE_DATA_4"
+    },
+    {
+      "id": 5,
+      "First Name": "Jose",
+      "Middle Name": "Rizal",
+      "Last Name": "Castro",
+      "OSCA ID": "210987654",
+      "Barangay": "Santa Cruz",
+      "Birthday": "1952-06-24",
+      "Contact Number": "09345678901",
+      "QR": "QR_CODE_DATA_5"
+    }
+  ]
+  

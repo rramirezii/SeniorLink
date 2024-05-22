@@ -1,0 +1,7 @@
+[
+  { "id": 1, "Name": "Alice Johnson", "Zip Code": 3523, "Password": "New York" },
+  { "id": 2, "Name": "Bob Smith", "Zip Code": 6242, "Password": "Los Angeles" },
+  { "id": 3, "Name": "Carol Williams", "Zip Code": 4854, "Password": "Chicago" },
+  { "id": 4, "Name": "David Brown", "Zip Code": 2953, "Password": "Houston" },
+  { "id": 15, "Name": "Emily Davis", "Zip Code": 5553, "Password": "Philadelphia" }
+]
