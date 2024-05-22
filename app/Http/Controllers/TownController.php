@@ -64,13 +64,13 @@ class TownController extends BaseController
         switch($client){
             case 'barangay': // maybe add statistics on the number of seniors
                 $fields = 'id, name, username';
-                $extraClause = 'WHERE town_id= :town_id'; // dynamic suppmentation
+                $extraClause = 'WHERE town_id= :town_identification'; // dynamic suppmentation
                 break;
             case 'senior': //fix this to return seniors using the town_username and take the barangay name
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
-                                WHERE barangay.town_id = :town_id';
+                                WHERE barangay.town_id = :town_identification';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
@@ -80,19 +80,19 @@ class TownController extends BaseController
             return response()->json(['error' => 'town_username parameter is required'], 400);
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_id' => $town_username]);
+        try {
+            $town_username = $this -> getIdByUsername($town_username, 'barangay');
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 400);
+        }
+
+        return $this->generateReadResponse($fields, $extraClause, $client, ['town_identification' => $town_username]);
     }
 
     //read seniors from a barangay
    // get /town/{town_username}/show/barangay/{barangay_username}/senior
     public function readSenior($town_username, $barangay_username)
     {
-        //create a reader here
-        // Validate the client type
-        if ($client !== 'senior') {
-            return response()->json(['error' => 'Unknown client type'], 404);
-        }
-
         // Validate town_username and barangay_username parameters
         if (is_null($town_username) || empty($town_username) || is_null($barangay_username) || empty($barangay_username)) {
             return response()->json(['error' => 'town_username and barangay_username parameters are required'], 400);
