@@ -45,7 +45,7 @@ import App from './views/ClientMain.vue';
 //create
 // import App from './components/CreateTown.vue';
 
-import api from './axios.config.js'; // Import your configured Axios instance
+import api from '../axios.config.js'; // Import your configured Axios instance
 
 const app = createApp(App);
 
