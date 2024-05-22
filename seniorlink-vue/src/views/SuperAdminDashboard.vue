@@ -1,6 +1,6 @@
 <template>
   <div class="senior-link">
-    <header class="header" @click.stop>
+    <header class="header" @click.stop="toggleProfileDropdown">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
@@ -8,67 +8,65 @@
         <!-- <input type="text" placeholder="Search..." />
         <button>Search</button> -->
       </div>
-      <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
+      <div class="profile-container"> 
+        <div class="profile-placeholder" @click.stop="toggleProfileDropdown"></div>
+        <ul v-if="showProfileDropdown" class="dropdown-profile">
+          <li class="dropdown-profile-item">
             <a href="#" @click.prevent="signOut">Sign Out</a>
           </li>
-        </ul> -->
+        </ul>
       </div>
     </header>
     <nav>
       <ul class="nav-buttons">
-        <li @click="toggle('create')" class="dropdown" :class="{ active: activeDropdown === 'create' }">
+        <li @click="toggle('create')" :class="{ active: activeDropdown === 'create' }" class="dropdown">
           Create Account
           <ul v-if="activeDropdown === 'create'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_TOWN', { /* your payload here */ })">Town</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_ESTABLISHMENT', { /* your payload here */ })">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateSuper')">Super Admin</router-link></li>
-            </ul>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_TOWN')">Town</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_ESTABLISHMENT')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_SUPER')">Super Admin</router-link></li>
+          </ul>
         </li>
-        <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
+        <li @click="toggle('view')" :class="{ active: activeDropdown === 'view' }" class="dropdown">
           View Account
           <ul v-if="activeDropdown === 'view'" class="dropdown-content">
             <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_TOWN')">Towns</router-link></li>
             <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_BARANGAY')">Barangay</router-link></li>
             <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_CLIENT')">Clients</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-super')">Super Admin</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-establish')">Establishment</router-link></li>
-            </ul>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_SUPER')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_ESTABLISH')">Establishment</router-link></li>
+          </ul>
         </li>
-        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
+        <li @click="toggle('update')" :class="{ active: activeDropdown === 'update' }" class="dropdown">
           Update Account Info
           <ul v-if="activeDropdown === 'update'" class="dropdown-content">
             <li class="dropdown-buttons"><router-link to="/update-town">Towns</router-link></li>
             <li class="dropdown-buttons"><router-link to="/update-establish">Establishment</router-link></li>
             <li class="dropdown-buttons"><router-link to="/update-super">Super Admin</router-link></li>
-            </ul>
+          </ul>
         </li>
-        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
+        <li @click="toggle('delete')" :class="{ active: activeDropdown === 'delete' }" class="dropdown">
           Delete Account
           <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
             <li class="dropdown-buttons"><router-link to="/delete-town">Towns</router-link></li>
             <li class="dropdown-buttons"><router-link to="/delete-establish">Establishment</router-link></li>
             <li class="dropdown-buttons"><router-link to="/delete-super">Super Admin</router-link></li>
-            </ul>
+          </ul>
         </li>
-        </ul>
+      </ul>
     </nav>
   </div>
 </template>
 
 <script>
-import api from '../../axios.config.js'; // Import axios
+import api from '../../axios.config.js';
 
 export default {
   data() {
     return {
-      activeDropdown: null, // Track the currently active dropdown
+      activeDropdown: null,
       maxWidth: 0,
-      showProfileDropdown: false, // New property for the profile dropdown
+      showProfileDropdown: false,
     };
   },
   methods: {
@@ -76,41 +74,38 @@ export default {
       this.showProfileDropdown = !this.showProfileDropdown;
     },
     signOut() {
-      // Implement your sign-out logic here
-      // (e.g., clear tokens, redirect to login page)
       console.log("Signing out...");
     },
     toggle(dropdown) {
-      // Close other dropdowns if a different one is clicked
+      console.log('Toggling dropdown:', dropdown);
       if (this.activeDropdown && this.activeDropdown !== dropdown) {
+        console.log('Closing other dropdown:', this.activeDropdown);
         this.activeDropdown = null;
-      } 
+      } else {
+        console.log('Setting activeDropdown:', dropdown);
+        this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+      }
 
-      // Toggle the clicked dropdown
-      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
-
-      // Calculate max width when dropdown is opened
-      if (this.active) {
+      if (this.activeDropdown) {
         this.$nextTick(() => {
           const links = this.$el.querySelectorAll('.dropdown-content a');
           this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
+          console.log('Max width:', this.maxWidth);
         });
       }
-    
     },
-    async redirectTo(routeName, payload = null) { // Add payload parameter
+    async redirectTo(routeName, payload = null) {
       try {
-        const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
+        const redirectName = routeName.toUpperCase();
+        const redirectUrl = process.env[`VUE_APP_${redirectName}_URL`];
         const componentName = routeName.toLowerCase();
 
         if (payload) {
-          // Make the API call with payload if provided
-          const response = await api.post(redirectUrl, payload); 
-          // Handle the API response here (e.g., save to JSON, update state, etc.)
-          this.saveToJson(response.data);
+          const response = await api.post(redirectUrl, payload);
+          console.log(response);
+          // Handle the API response here
         }
 
-        // Redirect to the corresponding Vue file
         this.$router.push({ name: componentName });
       } catch (error) {
         console.error('Error redirecting:', error);
@@ -120,6 +115,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .senior-link {

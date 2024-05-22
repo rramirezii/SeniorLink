@@ -33,3 +33,4 @@ export { default as UpdateClient } from './components/UpdateClient.vue';
 // export { default as UpdateProduct } from './components/UpdateProduct.vue';
 // export { default as UpdateProductTransaction } from './components/UpdateProductTransaction.vue';
 export { default as CreateTown } from './components/CreateTown.vue';
+//lacking create establishment

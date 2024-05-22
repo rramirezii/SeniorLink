@@ -12,7 +12,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { path: '/create-town', component: CreateTown },
-  { path: '/create-establishment', component: CreateEstablishment },
+  // { path: '/create-establishment', component: CreateEstablishment },
   { path: '/view-towns', component: ViewTowns },
   { path: '/view-barangay', component: ViewBarangay },
   { path: '/view-clients', component: ViewClients },

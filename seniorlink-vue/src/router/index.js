@@ -1,12 +1,5 @@
-import { createApp } from 'vue';
-import * as views from "./view.js";
-// import router from './router';
 import { createRouter, createWebHistory } from 'vue-router';
-
-import api from '../axios.config.js'; // Import your configured Axios instance
-
-const app = createApp(views.SuperAdminDashboard); //change this to landing page, the login
-
+import * as views from "../view.js";
 
 const routes = [
     { path: '/', component: views.SuperAdminDashboard},
@@ -27,12 +20,4 @@ const router = createRouter({
     routes
 })
 
-// Make the api instance globally available
-app.config.globalProperties.$api = api; 
-
-app.use(router);
-
-console.log(router);
-
-// Mount the app
-app.mount('#app');
+export default router
