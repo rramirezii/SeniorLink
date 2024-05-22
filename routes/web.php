@@ -84,6 +84,8 @@ $router->group(['prefix' => 'senior'], function () use ($router) {
     $router->post('/retrieve', 'SeniorController@getDetailFromQR');
 
     $router->post('/update', 'SeniorController@update'); // update
+
+    $router->get('/generate_qr/{seniorId}', 'SeniorController@generateQR'); // update
 });
 
 $router->post('/getDetailsFromQR', 'SeniorController@getDetailFromQR');

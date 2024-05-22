@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SeniorController extends BaseController
 {
@@ -184,6 +185,20 @@ class SeniorController extends BaseController
         return $remainingBalance;
     }
 
+    // Generates QR from the 
+    // get /senior/generate_qr/{seniorId}
+    public function generateQR($seniorId)
+    {
+        $senior = DB::table('senior')->where('id', $seniorId)->first();
+
+        if (!$senior) {
+            return 0;
+        }
+
+        $qrCode = QrCode::format('png')->size(300)->generate($senior->username);
+
+        DB::table('senior')->where('id', $seniorId)->update(['qr_image' => $qrCode]);
+    }
 
     private function getScope()
     {
