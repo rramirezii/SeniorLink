@@ -1,104 +1,55 @@
 <template>
-    <div class="view-select-barangay">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
+  <div class="client-start">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
       </div>
-        </div> 
-    </header>
-    <div>
-    <h2>Barangays List</h2>
-  </div>
-  <div class="table-container">
-        <table v-if="filteredTableData.length" class="table">
-          <thead>
-            <tr>
-              <th v-for="header in tableHeaders" :key="header">
-                {{ header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody v-if="filteredTableData.length">
-            <tr v-for="item in filteredTableData" :key="item.id">
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td> 
-          </tr>
-          </tbody>
-        </table>
-        <p colspan="2" class="no-results">No results found.</p>
-      </div>
+  </header>
+  <main class="main-content">
+    <div class="qr-code-container">
+      <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code" class="qr-code" />
+      <img v-else src="/sample_qr.png" alt="QR code placeholder" class="qr-code" /> 
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
+    <button @click="goBack" class="back-button">Back to Home</button>
+  </main>
+</div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      qrCodeUrl: null,
+    };
+  },
+  created() { // Lifecycle hook to fetch the QR code URL
+    this.fetchQRCode();
+  },
+  methods: {
+    async fetchQRCode() {
       try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
+        // Fetch the QR code URL from your API
+        const response = await axios.get('/api/qr-code'); // Replace with your endpoint
+        this.qrCodeUrl = response.data.qrCodeUrl;
       } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
+        console.error("Error fetching QR code:", error);
+        // Handle the error, e.g., show an error message to the user
       }
-    }
-  };
-  </script>
+    },
+    goBack() {
+      this.$router.push('/'); 
+    },
+  }
+};
+</script>
 
 <style scoped>
-.view-select-barangay {
+.client-start {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem;
 }
 
 .header {
@@ -121,7 +72,7 @@ gap: 1rem; /* Add some space between the search and profile elements */
 }
 
 .brand{
-  padding-left: 2%;
+  padding-left: 5%;
 }
 
 .logo {
@@ -155,7 +106,7 @@ gap: 1rem; /* Add some space between the search and profile elements */
 /* buttons */
 nav {
   width: 100%;
-  margin-top: 200px;
+  margin-top: 4rem;
 }
 
 nav ul {
@@ -295,48 +246,128 @@ a:hover {
   margin-right: 0.5rem; /* Add some space between the icon and text */
 }
 
+/* Table Styles for Responsiveness */
 .table-container {
-margin-top: 60px; /* Adjust as needed */
-width: 80%; /* Or set a specific width */
+width: 100%;          /* Make table take up most of screen width */
+overflow-x: auto;    /* Enable horizontal scrolling if needed */
 margin: 0 auto;  /* Center the table horizontally */
 }
 
 .table {
-width: 100%;
+width: 100%; 
+table-layout: fixed; /* Distribute column width evenly */
 border-collapse: collapse;
 }
 
-.table th, .table td {
-border: 1px solid #ddd;
-padding: 8px;
+.table td {
+/* Adjust padding as needed for smaller screens */
+padding: 0.5rem;    
+text-align: center; /* Center text in cells */
+white-space: nowrap; /* Prevent text from wrapping */
+border: 2px solid #acacac;
+overflow: hidden; /* Hide overflowing text */
+text-overflow: ellipsis;      /* Add ellipsis (...) if content overflows */
+max-width: 100px;            /* Adjust max-width as needed */
+}
+.table th{
+/* Adjust padding as needed for smaller screens */
+padding: 0.5rem;    
+text-align: center; /* Center text in cells */
+border: 2px solid #acacac;
+max-width: 100%;
+overflow: hidden;
+box-sizing: border-box;
+min-width: fit-content; /* Shrink to fit text */
+/* text-overflow: ellipsis; */
 }
 
-.view-button{
-  padding: 0.5rem 1rem;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 0cm;
+/* Media Query for Smaller Screens (e.g., phones) */
+@media (max-width: 600px) {
+.table td {
+  font-size: 12px; /* Make font smaller on smaller screens */
+  max-width: 100px;         /* Further reduce max-width on very small screens */
+}
+}
+@media (max-width: 600px) {
+.table th{
+  font-size: 15px; /* Make font smaller on smaller screens */
+  padding-top: 2%;
+  padding-left: 0;
+  padding-right: 0;
+}
 }
 .profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
+width: 150px;         
+height: 150px;
+background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+border-radius: 10%;      /* Make it a square */
+cursor: pointer;
+transition: background-color 0.25s; /* Smooth transition */
+display: inline-flex;   /* Use inline-flex to align icon and text */
+margin-right: 2rem;
+margin-top: 1rem;
+margin-left: 0;
 }
 
 .profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
+background-color: #808080; /* Slightly darker on hover */
 }
 .profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
+position: relative; /* Allows absolute positioning of the dropdown */
+margin: 1rem 0 0 0;
+align-self: auto; /* Align profile to the left within start-frame */
+}
+
+/* Responsive Profile Placeholder */
+@media (min-width: 768px) { /* Adjust breakpoint as needed */
+.profile-placeholder {
+  width: 200px;      /* Increase size on larger screens */
+  height: 200px;
+  margin: 1rem; 
+}
+}
+/* Main Content */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem; /* Adjust padding as needed */
+  width: 80%;
+  justify-content: center;
+  height: 100%;
+  overflow: hidden;
+  max-width: 100%; /* This sets a maximum width to prevent the content from getting too wide on large screens */
+}
+
+button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
+}
+
+.qr-code-container { /* Container for QR code or placeholder */
+  width: 380px; 
+  height: 380px; 
+  margin-bottom: 4rem;
+  margin-top: 3rem;
+  position: relative;
+  overflow: hidden; /* Key: Hide any overflow from the image */
+  background-color: #ffffff; /* Optional background for placeholder */
+}
+
+.qr-code {
+  position: absolute; /* Position inside the container */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 </style>

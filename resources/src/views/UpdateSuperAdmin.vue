@@ -23,8 +23,8 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
       <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name" required>
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" required>
       </div>  
       <div class="form-group">
         <label for="password">Password:</label>
@@ -43,7 +43,7 @@
 export default {
   data() {
     return {
-      name: '',
+      username: '',
       password: '',
     };
   },

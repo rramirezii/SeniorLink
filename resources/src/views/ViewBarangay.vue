@@ -9,7 +9,7 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-          <<div class="profile-container" @click="toggleProfileDropdown"> 
+          <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -25,26 +25,29 @@
     <h2>Barangays List</h2>
     </div>
     <div class="table-container">
-        <table v-if="filteredTableData.length" class="table">
-          <thead>
-            <tr>
-              <th v-for="header in tableHeaders" :key="header">
-                {{ header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody v-if="filteredTableData.length">
-            <tr v-for="item in filteredTableData" :key="item.id">
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td> 
+      <p v-if="loading" class="loading-message">Loading...</p>
+      <table v-else class="table">
+        <thead>
+          <tr>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
           </tr>
-          </tbody>
-        </table>
-        <p colspan="2" class="no-results">No results found.</p>
-      </div>
+        </thead>
+        <tbody>
+          <tr v-if="filteredTableData.length === 0">
+            <td colspan="3" class="no-results">No results found.</td>
+          </tr>
+          <tr v-for="item in filteredTableData" :key="item.id"> 
+            <td v-for="header in tableHeaders" :key="header">
+              {{ item[header] }} 
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';

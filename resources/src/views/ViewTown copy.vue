@@ -1,5 +1,5 @@
 <template>
-    <div class="view-client">
+    <div class="view-town">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -9,95 +9,73 @@
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
-      </div>
+          <div class="profile">
+            <router-link to="/profile" class="profile-button">
+              <i class="fas fa-user"></i> Profile
+            </router-link>
+          </div>
         </div> 
     </header>
     <div>
-    <h2>Seniors List</h2>
+    <h2>Town List</h2>
     </div>
-    <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
+      <div class="table-container">
+        <table v-if="filteredTableData.length" class="table">
+          <thead>
+            <tr>
+              <th v-for="header in tableHeaders" :key="header">
+                {{ header }}
+              </th>
+            </tr>
+          </thead>
+          <tbody v-if="filteredTableData.length">
+            <tr v-for="item in filteredTableData" :key="item.id">
+            <td v-for="(value, key) in item" :key="key">{{ value }}</td>
           </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+        <p v-else class="no-results">No results found.</p>
+      </div>
     </div>
-  </div>
-</template>
+  </template>
   
   <script>
-  import axios from 'axios';
-  
   export default {
     data() {
       return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
+        tableHeaders: ['Column 1', 'Column 2', 'Column 3', 'Column 4'],
+        tableData: [
+        { column1: 'Anna', column2: '86', column3: 'Row', column4: '32424' },
+      { column1: 'Roan', column2: '65', column3: 'Free', column4: '42343' },
+      { column1: 'John', column2: '67', column3: 'Romaan', column4: '32444' },
+    ],
+        searchQuery: '', // Added searchQuery
       };
     },
     computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+        // Exclude headers from the search
+        const valuesToSearch = Object.values(item); 
+        return valuesToSearch.some(val => 
+          String(val).toLowerCase().includes(query)
+        );
+      });
     },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
+  },
+  methods: {
+    performSearch() {
+      // (No changes needed here)
+      console.log("Searching for:", this.searchQuery);
+      // You can add additional search logic or UI updates here if needed
     }
-  };
+  }
+};
   </script>
   
   <style scoped>
-  .view-client {
+  .view-town {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -312,24 +290,6 @@
 .table th, .table td {
   border: 1px solid #ddd;
   padding: 8px;
-}
-.profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
-}
-
-.profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
-}
-.profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
 }
 
   </style>

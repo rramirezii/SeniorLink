@@ -1,14 +1,15 @@
 <template>
-  <div class="update-transact">
-    <header class="header">
-      <div class="brand">
-        <h1>SeniorLink</h1>
-      </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div> -->
-      <div class="profile-container" @click="toggleProfileDropdown"> 
+    <div class="view-select-product">
+      <header class="header">
+        <div class="brand">
+          <h1>SeniorLink</h1>
+        </div>
+        <div class="profile-and-search">
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." v-model="searchQuery" />
+          <button @click="performSearch">Search</button>
+        </div>
+        <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -18,108 +19,115 @@
           </li>
         </ul> -->
       </div>
+        </div> 
     </header>
-    <h2>Update Transaction</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-container">
-        <div class="form-group">
-        <label for="name">Product Name:</label>
-        <input type="text" id="name" v-model="name" required>
-      </div>
-      <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
-      </div>
-      <div class="form-group">
-        <label for="name">Attendant:</label>
-        <input type="text" id="name" v-model="name" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Enter Password:</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
+    <div>
+    <h2>Barangays List</h2>
+  </div>
+  <div class="table-container">
+      <p v-if="loading" class="loading-message">Loading...</p>
+      <table v-else class="table">
+        <thead>
+          <tr>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
+            <th>Actions</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="filteredTableData.length === 0">
+            <td :colspan="tableHeaders.length + 1" class="no-results">No results found.</td> 
+          </tr>
+          <tr v-for="item in filteredTableData" :key="item.id"> 
+            <td v-for="header in tableHeaders" :key="header">
+              {{ item[header] }}
+            </td>
+            <td>
+              <router-link :to="{ name: 'View', params: { id: item.id }}">
+                <button class="view-button">View</button>
+              </router-link>
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-      <div class="form-actions">
-        <button type="submit">Update Information</button>
-      </div>
-    </form>
-  
   </div>
 </template>
-
-<script>
-export default {
+  
+  <script>
+  import axios from 'axios';
+  
+  export default {
   data() {
     return {
-      name: '',
-      quantity: '',
-      price: '',
-      attendant: '',
+      tableHeaders: ['Name', 'Product ID', 'Transaction ID', 'Quantity', 'Price'],
+      tableData: [],
+      currentTransactionId: null, // Store the ID of the transaction being displayed
+      searchQuery: '',
+      loading: true,
     };
   },
+  computed: {
+    filteredTableData() {
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+        return item.TransactionID === this.currentTransactionId &&  // Filter by transaction ID
+               this.tableHeaders.some(header => {
+                 if (!['id', 'Quantity', 'Price'].includes(header.toLowerCase())) { 
+                   return String(item[header]).toLowerCase().includes(query);
+                 } else {
+                   return false; 
+                 }
+               });
+      });
+    },
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('/producttransact.json'); 
+      this.tableData = response.data;
+
+      // Set the initial transaction ID (you might want a more sophisticated way to choose this)
+      this.currentTransactionId = this.tableData.length > 0 ? this.tableData[0].TransactionID : null;
+
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.loading = false;
+    }
+  },
+  methods: {
+      performSearch() {
+        console.log("Searching for:", this.searchQuery);
+      }
+    },
+    navigateToTown(id) {
+      console.log("Navigating to town with ID:", id);
+      this.$router.push({ name: 'ViewTown', params: { id: id } });
+    },
+    async deleteItem(itemId) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        try {
+          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
+          // Handle successful deletion (e.g., remove from tableData)
+          console.log("Item deleted:", response.data);
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          // Handle errors (e.g., show error message)
+        }
+      }
+    }
 };
-</script>
+  </script>
 
 <style scoped>
-.update-transact {
+.view-select-product {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-}
-
-label {
-  display: block;
-  margin: 1rem;
-  font-weight: bold;
-  text-align: left;
-  width: 150px;
-}
-
-form input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0.5rem;
-  flex: 1;            /* Allow input to take up remaining space */
-}
-label, input {
-  float: left;
-}
-button {
-  padding: 1em;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-
-.form-group {
-  display: flex; 
-  align-items: center;  /* Vertically center label and input */
-  width: 600px; 
-}
-
-.form-group label {
-  width: 150px;      /* Set a fixed width for the labels */
-  text-align: right; /* Align the label text to the right */
-  margin-right: 1rem; /* Add some space between label and input */
-}
-
-/* Center the form elements within the form-container */
-.form-container {
-  display: flex;          
-  flex-direction: column; 
-  align-items: center;
-  padding-right: 25%;
 }
 
 .header {
@@ -133,6 +141,12 @@ button {
   background-color: #fff; /* Optional background color for the header */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
   z-index: 10; /* Ensure the header stays on top of other elements */
+}
+
+.profile-and-search {
+display: flex; /* Makes this a flex container */
+align-items: center; /* Vertically aligns items within this container */
+gap: 1rem; /* Add some space between the search and profile elements */
 }
 
 .brand{
@@ -245,6 +259,7 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
+  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -253,6 +268,7 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
+  height: fit-content;
 }
 
 
@@ -285,6 +301,54 @@ a:hover {
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
+.profile-button {
+  display: inline-flex;   /* Use inline-flex to align icon and text */
+  align-items: center;
+  padding: 0.5rem 1rem; 
+  margin-right: 1rem;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none; /* Remove default underline from link */
+}
+
+.profile-button:hover {
+  background-color: #ccc;
+  transition: background-color 0.25s;
+  color: rgb(75, 69, 69);
+}
+
+.profile-button i {
+  margin-right: 0.5rem; /* Add some space between the icon and text */
+}
+
+.table-container {
+margin-top: 60px; /* Adjust as needed */
+width: 80%; /* Or set a specific width */
+margin: 0 auto;  /* Center the table horizontally */
+}
+
+.table {
+width: 100%;
+border-collapse: collapse;
+}
+
+.table th, .table td {
+border: 1px solid #ddd;
+padding: 8px;
+}
+
+.view-button{
+  padding: 0.5rem 1rem;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+}
 .profile-placeholder {
   width: 55px;         
   height: 55px;
@@ -303,7 +367,16 @@ a:hover {
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
 </style>
 
   <style>

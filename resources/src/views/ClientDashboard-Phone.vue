@@ -1,107 +1,62 @@
 <template>
-    <div class="view-client">
+    <div class="client-start">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
         </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
-      </div>
-        </div> 
     </header>
-    <div>
-    <h2>Seniors List</h2>
-    </div>
-    <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="start-frame">
+      <div class="profile-container">
+        <div class="profile-placeholder"></div>
+      </div>
+      <div class="welcome-message">Welcome, <span id="name-placeholder">{{ name }}</span></div>
+      <nav>
+        <ul class="nav-buttons vertical">
+          <li @click="navigateTo('/profile')">View Profile</li>
+          <li @click="navigateTo('/qr')">View QR</li>
+          <li @click="navigateTo('/transactions')">View Transactions</li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      name: "", // Placeholder for the name
+    };
+  },
+
+  async mounted() {
+    try {
+      const response = await axios.get('/api/user'); // Replace with your API endpoint
+      this.name = response.data.name; // Assuming the API response has a "name" property
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // Handle error, e.g., set a default name or display an error message
     }
-  };
-  </script>
+  },
+
+  methods: {
+    navigateTo(route) {
+      this.$router.push(route); // Navigate to the specified route
+    }
+  }
+};
+</script>
   
   <style scoped>
-  .view-client {
+  .client-start {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 1rem;
+    margin-top: 5rem;   
+    gap: 1rem;           /* Add gap between greetings and start-frame */
   }
   
   .header {
@@ -124,7 +79,7 @@
 }
   
   .brand{
-    padding-left: 2%;
+    padding-left: 5%;
   }
   
   .logo {
@@ -158,7 +113,7 @@
   /* buttons */
   nav {
     width: 100%;
-    margin-top: 200px;
+    margin-top: 4rem;
   }
   
   nav ul {
@@ -298,31 +253,67 @@
     margin-right: 0.5rem; /* Add some space between the icon and text */
   }
 
-  .table-container {
-  margin-top: 60px; /* Adjust as needed */
-  width: 80%; /* Or set a specific width */
+/* Table Styles for Responsiveness */
+.table-container {
+  width: 100%;          /* Make table take up most of screen width */
+  overflow-x: auto;    /* Enable horizontal scrolling if needed */
   margin: 0 auto;  /* Center the table horizontally */
 }
 
 .table {
-  width: 100%;
+  width: 100%; 
+  table-layout: fixed; /* Distribute column width evenly */
   border-collapse: collapse;
 }
 
-.table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.table td {
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  white-space: nowrap; /* Prevent text from wrapping */
+  border: 2px solid #acacac;
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis;      /* Add ellipsis (...) if content overflows */
+  max-width: 100px;            /* Adjust max-width as needed */
+}
+.table th{
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  border: 2px solid #acacac;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: fit-content; /* Shrink to fit text */
+  /* text-overflow: ellipsis; */
+}
+
+/* Media Query for Smaller Screens (e.g., phones) */
+@media (max-width: 600px) {
+  .table td {
+    font-size: 12px; /* Make font smaller on smaller screens */
+    max-width: 100px;         /* Further reduce max-width on very small screens */
+  }
+}
+@media (max-width: 600px) {
+  .table th{
+    font-size: 15px; /* Make font smaller on smaller screens */
+    padding-top: 2%;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .profile-placeholder {
-  width: 55px;         
-  height: 55px;
+  width: 150px;         
+  height: 150px;
   background-color: #d3d3d3;  /* Placeholder background color (light gray) */
   border-radius: 10%;      /* Make it a square */
   cursor: pointer;
   transition: background-color 0.25s; /* Smooth transition */
   display: inline-flex;   /* Use inline-flex to align icon and text */
   margin-right: 2rem;
-  margin-top: 1ex;
+  margin-top: 1rem;
+  margin-left: 0;
 }
 
 .profile-placeholder:hover {
@@ -330,6 +321,67 @@
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
+  margin: 1rem 0 0 0;
+  align-self: auto; /* Align profile to the left within start-frame */
+}
+
+/* Responsive Profile Placeholder */
+@media (min-width: 768px) { /* Adjust breakpoint as needed */
+  .profile-placeholder {
+    width: 200px;      /* Increase size on larger screens */
+    height: 200px;
+    margin: 1rem; 
+  }
+}
+
+.welcome-message {
+  font-size: 1.5rem; 
+  padding-right: 30%;
+}
+
+.start-frame {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 80%;           /* Optional: control width of the content */
+}
+
+/* Media Query for responsiveness */
+@media (min-width: 768px) {
+  .start-frame {
+    flex-direction: row; /* Align profile and welcome message horizontally */
+    justify-content: space-between;
+    align-items: center;  /* Vertically center items */
+  }
+  /* Remove padding-right so that the elements stay to the left and right */
+  .welcome-message{
+    padding-right: 0;
+    margin-left: 0;
+  }
+}
+
+/* Style the name placeholder if needed */
+#name-placeholder {
+  font-weight: bold;
+}
+
+/* Center the navigation buttons */
+.nav-buttons.vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%; /* Make the button container take the full width of start-frame */
+  margin-top: 0;        /* Remove the margin-top from the buttons */
+}
+
+/* This is the key change */
+.nav-buttons.vertical li {
+  width: auto;           /* Allow buttons to shrink to fit their content */
+  min-width: 150px;      /* Set a minimum width for the buttons (adjust as needed) */
+  text-align: center;    /* Center the text within the buttons */
+  margin-top: 0%;           /* Remove any top margin on the list items */
+  margin-bottom: 0%;        /* Remove any bottom margin on the list items */
+  margin-right: 0%;
 }
 
   </style>

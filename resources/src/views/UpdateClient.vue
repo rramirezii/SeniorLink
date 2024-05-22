@@ -46,6 +46,11 @@
         <label for="contactNumber">Contact Number:</label>
         <input type="tel" id="contactNumber" v-model="contactNumber" required>
       </div>
+    
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
     </div>
       <div class="form-actions">
         <button type="submit">Update Information</button>
@@ -65,6 +70,7 @@ export default {
       address: '',
       barangay: '',
       contactNumber: '',
+      password: ''
     };
   },
 };

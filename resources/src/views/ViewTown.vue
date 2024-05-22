@@ -25,26 +25,29 @@
     <h2>Town List</h2>
     </div>
     <div class="table-container">
-        <table v-if="filteredTableData.length" class="table">
-          <thead>
-            <tr>
-              <th v-for="header in tableHeaders" :key="header">
-                {{ header }}
-              </th>
-            </tr>
-          </thead>
-          <tbody v-if="filteredTableData.length">
-            <tr v-for="item in filteredTableData" :key="item.id">
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td> 
+      <p v-if="loading" class="loading-message">Loading...</p>
+      <table v-else class="table">
+        <thead>
+          <tr>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
           </tr>
-          </tbody>
-        </table>
-        <p colspan="3" class="no-results">No results found.</p>
-      </div>
+        </thead>
+        <tbody>
+          <tr v-if="filteredTableData.length === 0">
+            <td colspan="3" class="no-results">No results found.</td>
+          </tr>
+          <tr v-for="item in filteredTableData" :key="item.id"> 
+            <td v-for="header in tableHeaders" :key="header">
+              {{ item[header] }} 
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
@@ -52,7 +55,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Zip Code', 'Password'],  // Default headers
+        tableHeaders: ['Name', 'Zip Code'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -64,7 +67,7 @@
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
+            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
             return String(item[header]).toLowerCase().includes(query);
             } else {
             return false; // Don't include "id" in the search

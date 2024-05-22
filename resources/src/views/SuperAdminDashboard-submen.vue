@@ -1,53 +1,48 @@
 <template>
-  <div class="update-transact">
+  <div class="senior-link">
     <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div> -->
-      <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
+      <div class="search-bar">
+        <!-- <input type="text" placeholder="Search..." />
+        <button>Search</button> -->
+      </div>
+      <div class="profile">
+        <router-link to="/profile" class="profile-button">
+        <i class="fas fa-user">Profile</i> 
+      </router-link>
       </div>
     </header>
-    <h2>Update Transaction</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-container">
-        <div class="form-group">
-        <label for="name">Product Name:</label>
-        <input type="text" id="name" v-model="name" required>
-      </div>
-      <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
-      </div>
-      <div class="form-group">
-        <label for="name">Attendant:</label>
-        <input type="text" id="name" v-model="name" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Enter Password:</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
-    </div>
-      <div class="form-actions">
-        <button type="submit">Update Information</button>
-      </div>
-    </form>
-  
+    <nav>
+      <ul class="nav-buttons">
+        <li 
+          v-for="menu in menus" 
+          :key="menu.name" 
+          @mouseover="openSubMenu(menu.name)" 
+          @mouseleave="closeSubMenu(menu.name)" 
+          class="dropdown"
+          :class="{ active: activeSubMenu === menu.name }"
+        >
+          {{ menu.name }}
+          <ul v-if="activeSubMenu === menu.name" class="dropdown-content">
+            <li v-for="item in menu.items" :key="item.name" class="dropdown-submenu">
+              {{ item.name }}
+              <div v-if="activeSubMenu === menu.name" class="submenu-content">
+                <router-link 
+                  v-for="subItem in item.subItems" 
+                  :key="subItem.path" 
+                  :to="subItem.path"
+                  @click.prevent="redirectTo(subItem.path)"
+                >
+                  {{ subItem.name }}
+                </router-link>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -55,71 +50,71 @@
 export default {
   data() {
     return {
-      name: '',
-      quantity: '',
-      price: '',
-      attendant: '',
+      activeSubMenu: null, // Track the currently active dropdown
+      maxWidth: 0,
+      menus: [
+        {
+          name: 'Create Account',
+          items: [
+            { name: 'Super Admin', subItems: [{ name: 'Create Super Admin', path: 'CreateSuper' }] },
+            { name: 'Town', subItems: [{ name: 'Create Town', path: 'CREATE_TOWN' }] },
+            { name: 'Establishment', subItems: [{ name: 'Create Establishment', path: 'CREATE_ESTABLISHMENT' }] }
+          ]
+        },
+        {
+          name: 'View Account',
+          items: [
+            { name: 'Towns', subItems: [{ name: 'View Towns', path: 'VIEW_TOWN' }] },
+            { name: 'Barangay', subItems: [{ name: 'View Barangay', path: 'VIEW_BARANGAY' }] },
+            { name: 'Clients', subItems: [{ name: 'View Clients', path: 'VIEW_CLIENT' }] },
+            { name: 'Super Admin', subItems: [{ name: 'View Super Admin', path: 'view-super' }] },
+            { name: 'Establishment', subItems: [{ name: 'View Establishment', path: 'view-establish' }] }
+          ]
+        },
+        {
+          name: 'Update Account Info',
+          items: [
+            { name: 'Towns', subItems: [{ name: 'Update Town', path: '/update-town' }] },
+            { name: 'Establishment', subItems: [{ name: 'Update Establishment', path: '/update-establish' }] },
+            { name: 'Super Admin', subItems: [{ name: 'Update Super Admin', path: '/update-super' }] }
+          ]
+        },
+        {
+          name: 'Delete Account',
+          items: [
+            { name: 'Towns', subItems: [{ name: 'Delete Town', path: '/delete-town' }] },
+            { name: 'Establishment', subItems: [{ name: 'Delete Establishment', path: '/delete-establish' }] },
+            { name: 'Super Admin', subItems: [{ name: 'Delete Super Admin', path: '/delete-super' }] }
+          ]
+        }
+      ]
     };
   },
+  methods: {
+    openSubMenu(menuName) {
+      this.activeSubMenu = menuName;
+    },
+    closeSubMenu() {
+  const submenu = this.$el.querySelector('.submenu-content');
+  if (submenu) {
+    submenu.classList.add('fade-out');
+    setTimeout(() => {
+      this.activeSubMenu = null;
+      submenu.classList.remove('fade-out');
+    }, 300); // Delay to match transition duration
+  }
+}
+  }
 };
 </script>
 
+
 <style scoped>
-.update-transact {
+.senior-link {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-}
-
-label {
-  display: block;
-  margin: 1rem;
-  font-weight: bold;
-  text-align: left;
-  width: 150px;
-}
-
-form input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0.5rem;
-  flex: 1;            /* Allow input to take up remaining space */
-}
-label, input {
-  float: left;
-}
-button {
-  padding: 1em;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-
-.form-group {
-  display: flex; 
-  align-items: center;  /* Vertically center label and input */
-  width: 600px; 
-}
-
-.form-group label {
-  width: 150px;      /* Set a fixed width for the labels */
-  text-align: right; /* Align the label text to the right */
-  margin-right: 1rem; /* Add some space between label and input */
-}
-
-/* Center the form elements within the form-container */
-.form-container {
-  display: flex;          
-  flex-direction: column; 
-  align-items: center;
-  padding-right: 25%;
 }
 
 .header {
@@ -245,6 +240,7 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
+  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -253,6 +249,7 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
+  height: fit-content;
 }
 
 
@@ -285,23 +282,27 @@ a:hover {
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
-.profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
+.profile-button {
   display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
+  align-items: center;
+  padding: 0.5rem 1rem; 
+  margin-right: 1rem;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none; /* Remove default underline from link */
 }
 
-.profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
+.profile-button:hover {
+  background-color: #ccc;
+  transition: background-color 0.25s;
+  color: rgb(75, 69, 69);
 }
-.profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
+
+.profile-button i {
+  margin-right: 0.5rem; /* Add some space between the icon and text */
 }
 
 </style>

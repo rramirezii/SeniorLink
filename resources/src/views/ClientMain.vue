@@ -1,14 +1,14 @@
 <template>
-    <div class="view-client">
+    <div class="client-main">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
         </div>
         <div class="profile-and-search">
-        <div class="search-bar">
+        <!-- <div class="search-bar">
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
-        </div>
+        </div> -->
         <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
@@ -21,68 +21,99 @@
       </div>
         </div> 
     </header>
-    <div>
-    <h2>Seniors List</h2>
+    <div class="total-holder">
+      <div class="currency">
+        <h1 id="totalamountweek">Php {{ totalAmountForWeek }}</h1> 
+    </div>
+      <h3>Total Discount</h3>
     </div>
     <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <template v-for="(dateGroup, date) in groupedTableData" :key="date">
+        <h3 class="date-header">{{ formatDate(date) }}</h3>
+        <div v-for="(establishmentGroup, establishment) in dateGroup" :key="establishment">
+          <h4 class="establishment-header">{{ establishment }}</h4> 
+          <table class="table">
+            <thead>
+              <tr>
+                <th v-for="header in tableHeaders" :key="header" :class="{ 'wider-column': header === 'Commodities' }">
+                  {{ header }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in establishmentGroup" :key="item.id">
+                <td v-for="header in tableHeaders" :key="header" :class="{ 'wider-column': header === 'Commodities' }">
+                  {{ item[header] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
     </div>
+    <p v-if="filteredTableData.length === 0" class="no-results">No results found.</p>
   </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      tableHeaders: ['Commodities', 'Qty.', 'Amount', 'Balance'], // Removed 'Establishment'
+      tableData: [],
+      searchQuery: '',
+      loading: true,
+      totalAmountForWeek: 0, // Initialize with a default value
+    };
+  },
+  computed: {
+    groupedTableData() {
+      const groups = {};
+      this.filteredTableData.forEach(item => {
+        const date = item.Date;
+        const establishment = item.Establishment;
+        if (!groups[date]) groups[date] = {};
+        if (!groups[date][establishment]) groups[date][establishment] = [];
+        groups[date][establishment].push(item);
+      });
+      return groups;
     },
-    computed: {
-    filteredTableData() {
+      filteredTableData() {
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
+          return Object.values(item).some(value => String(value).toLowerCase().includes(query));
         });
-        });
+      },
     },
+    totalAmountForWeek() {
+      const today = new Date();
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(today.getDate() - 7); // Calculate one week ago
+      console.log(this.tableData);
+
+      return this.filteredTableData.reduce((total, item) => {
+        const itemDate = new Date(item.Date);
+
+        if (itemDate >= oneWeekAgo && itemDate <= today) {
+            const amount = parseFloat(item.Amount.replace(/[^0-9.-]+/g, '')); 
+          // Parse and convert Amount to a number (handle potential errors)
+          if (!isNaN(amount)) {
+            return total + amount;
+          }
+        }
+        return total;
+      }, 0).toFixed(2); // Format to two decimal places
     },
     async mounted() {
       try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
+        const response = await axios.get('/transactions.json');
         this.tableData = response.data;
-       
+
         this.loading = false;
-      } catch (error) {
+        this.totalAmountForWeek = this.calculateTotalAmountForWeek(); // Update totalAmountForWeek
+    } catch (error) {
         console.error("Error fetching data:", error);
         this.loading = false;
         // Handle errors appropriately (show an error message to the user)
@@ -91,13 +122,24 @@
     methods: {
       performSearch() {
         console.log("Searching for:", this.searchQuery);
-      }
+      },
+      formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, options); 
+    },
+      updateTotalAmountDisplay() {
+    const totalAmountElement = document.getElementById("totalamountweek");
+    if (totalAmountElement) {
+      totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
+    }
+    }
     }
   };
   </script>
   
   <style scoped>
-  .view-client {
+  .client-main {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -124,7 +166,7 @@
 }
   
   .brand{
-    padding-left: 2%;
+    padding-left: 5%;
   }
   
   .logo {
@@ -298,20 +340,54 @@
     margin-right: 0.5rem; /* Add some space between the icon and text */
   }
 
-  .table-container {
-  margin-top: 60px; /* Adjust as needed */
-  width: 80%; /* Or set a specific width */
+/* Table Styles for Responsiveness */
+.table-container {
+  width: 100%;          /* Make table take up most of screen width */
+  overflow-x: auto;    /* Enable horizontal scrolling if needed */
   margin: 0 auto;  /* Center the table horizontally */
 }
 
 .table {
-  width: 100%;
+  width: 100%; 
+  table-layout: fixed; /* Distribute column width evenly */
   border-collapse: collapse;
 }
 
-.table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.table td {
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  white-space: nowrap; /* Prevent text from wrapping */
+  border: 2px solid #acacac;
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-width: 100px;            /* Adjust max-width as needed */
+}
+.table th{
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  border: 2px solid #acacac;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: fit-content; /* Shrink to fit text */
+  /* text-overflow: ellipsis; */
+}
+
+/* Media Query for Smaller Screens (e.g., phones) */
+@media (max-width: 600px) {
+  .table td {
+    font-size: 12px; /* Make font smaller on smaller screens */
+    max-width: 100px;         /* Further reduce max-width on very small screens */
+  }
+}
+@media (max-width: 600px) {
+  .table th{
+    font-size: 15px; /* Make font smaller on smaller screens */
+    padding-top: 2%;
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .profile-placeholder {
   width: 55px;         
@@ -330,6 +406,58 @@
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
+}
+
+.total-holder{
+    padding-top: 5%;
+}
+
+.date-establishment-header {
+  display: flex;
+  align-items: flex-start; /* Align to the top */
+  margin-bottom: 0.5rem;  /* Add some space below the headers */
+}
+
+.date-header {
+  font-size: 20px; /* Smaller font size for headers */
+  margin-right: 1rem;   /* Space between date and establishment */
+  text-align: left; /* Align headers to the left */
+  margin-bottom: 1%;
+  margin-top: 8%
+}
+
+.establishment-header {
+  font-size: 14.5px; /* Smaller font size for headers */
+  margin-right: 1rem;   /* Space between date and establishment */
+  text-align: left; /* Align headers to the left */
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  color: #555;
+}
+
+/* Table Column Widths */
+.wider-column {
+  width: 40%; /* Adjust as needed */
+  font-weight: bold;
+}
+
+.table td:not(.wider-column), 
+.table th:not(.wider-column) {
+  width: 15%; /* Adjust as needed */
+}
+.total-holder {
+  padding-top: 10%; /* Adjust as needed */
+}
+
+.currency h1 { /* Target the h1 specifically within .currency */
+  font-size: 3rem; /* Increase font size significantly */
+  font-weight: bold;
+  margin-bottom: 0.5rem; /* Add space below the total */
+}
+
+.total-holder h3 { /* Style the "Total Discount" header */
+  font-size: 1.2rem; 
+  color: #555; /* Slightly darker color for the discount header */
 }
 
   </style>

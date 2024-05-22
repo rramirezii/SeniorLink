@@ -1,17 +1,17 @@
 <template>
-    <div class="view-client">
+    <div class="client-profile">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
         </div>
         <div class="profile-and-search">
-        <div class="search-bar">
+        <!-- <div class="search-bar">
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
-        </div>
+        </div> -->
         <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
-          <div class="profile-placeholder"></div>
+          <div class="profile-placeholder-mini"></div>
         </router-link>
         <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
           <li class="dropdown-buttons">
@@ -21,83 +21,86 @@
       </div>
         </div> 
     </header>
-    <div>
-    <h2>Seniors List</h2>
+    <h2 class="heading">My Profile</h2>
+    <main class="main-content">
+      <div v-if="loading" class="loading-message">Loading profile...</div>
+      <div v-else-if="error" class="error-message">{{ error }}</div>
+      <div v-else class="profile-details">
+        <div class="profile-image">
+          <img v-if="profileImage" :src="profileImage" alt="Profile" />
+          <img v-else src="/image.jpg" alt="Profile placeholder" class="dp-holder" /> 
+        </div>
+        <div class="profile-details">
+          <div class="detail-row">
+            <span class="label">Name:</span>
+            <span class="value">{{ profileData['First Name'] }} {{ profileData['Middle Name'] }} {{ profileData['Last Name'] }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">OSCA ID:</span>
+            <span class="value">{{ profileData['OSCA ID'] }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Barangay:</span>
+            <span class="value">{{ profileData.Barangay }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Birthday:</span>
+            <span class="value">{{ formatDate(profileData.Birthday) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Contact Number:</span>
+            <span class="value">{{ profileData['Contact Number'] }}</span>
+          </div>
+          <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
+        </div>
+      </div>
+      <button @click="goBack" class="back-button">Back to Home</button>
+    </main>
     </div>
-    <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      profileData: null,
+      profileImage: null,
+      loading: true,
+      error: null,
+    };
+  },
+  created() {
+    this.fetchProfileData();
+  },
+  methods: {
+    async fetchProfileData() {
       try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
+        const response = await axios.get('/profile.json');
+        this.profileData = response.data;
+        this.profileImage = response.data.Image; 
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching profile data:', error);
+        this.error = 'Failed to load profile';
+      } finally {
         this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
       }
-    }
-  };
-  </script>
+    },
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, options);
+    },
+  },
+};
+</script>
   
   <style scoped>
-  .view-client {
+  .client-profile {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -124,7 +127,7 @@
 }
   
   .brand{
-    padding-left: 2%;
+    padding-left: 5%;
   }
   
   .logo {
@@ -298,22 +301,57 @@
     margin-right: 0.5rem; /* Add some space between the icon and text */
   }
 
-  .table-container {
-  margin-top: 60px; /* Adjust as needed */
-  width: 80%; /* Or set a specific width */
+/* Table Styles for Responsiveness */
+.table-container {
+  width: 100%;          /* Make table take up most of screen width */
+  overflow-x: auto;    /* Enable horizontal scrolling if needed */
   margin: 0 auto;  /* Center the table horizontally */
 }
 
 .table {
-  width: 100%;
+  width: 100%; 
+  table-layout: fixed; /* Distribute column width evenly */
   border-collapse: collapse;
 }
 
-.table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.table td {
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  white-space: nowrap; /* Prevent text from wrapping */
+  border: 2px solid #acacac;
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis;      /* Add ellipsis (...) if content overflows */
+  max-width: 100px;            /* Adjust max-width as needed */
 }
-.profile-placeholder {
+.table th{
+  /* Adjust padding as needed for smaller screens */
+  padding: 0.5rem;    
+  text-align: center; /* Center text in cells */
+  border: 2px solid #acacac;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: fit-content; /* Shrink to fit text */
+  /* text-overflow: ellipsis; */
+}
+
+/* Media Query for Smaller Screens (e.g., phones) */
+@media (max-width: 600px) {
+  .table td {
+    font-size: 12px; /* Make font smaller on smaller screens */
+    max-width: 100px;         /* Further reduce max-width on very small screens */
+  }
+}
+@media (max-width: 600px) {
+  .table th{
+    font-size: 15px; /* Make font smaller on smaller screens */
+    padding-top: 2%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.profile-placeholder-mini {
   width: 55px;         
   height: 55px;
   background-color: #d3d3d3;  /* Placeholder background color (light gray) */
@@ -331,7 +369,69 @@
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
+.profile-placeholder {
+  width: 150px;
+  height: 150px;
+  background-color: #d3d3d3;
+  border-radius: 50%;  /* Make it a circle */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px; /* Adjust for the size of the icon */
+}
 
+.profile-details {
+  margin-top: 50px;
+  text-align: left;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.heading{
+  margin-top: 4rem;
+}
+
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
+  margin-top: 7rem;
+}
+.profile-image { /* Added to center the profile image */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-image img, 
+.profile-image i {
+  width: 150px;
+  height: 150px;
+}
+
+/* Adjusted detail-row flex alignment */
+.detail-row {
+  display: flex;
+  justify-content: flex-start;  /* Align items to the left */
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
   </style>
   
     <style>

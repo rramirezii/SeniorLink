@@ -24,7 +24,7 @@
     <div>
     <h2>Barangays List</h2>
   </div>
-    <div class="table-container">
+  <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
       <table v-else class="table">
         <thead>
@@ -32,20 +32,22 @@
             <th v-for="header in tableHeaders" :key="header">
               {{ header }}
             </th>
-            <th>Actions</th>
+            <th>Actions</th> 
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in filteredTableData" :key="item.id">
-            <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
-            <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
-                <button class="view-button" @click="navigateToBarangay(item.id)">View</button>
-              </router-link>
-            </td>
-          </tr>
           <tr v-if="filteredTableData.length === 0">
             <td colspan="3" class="no-results">No results found.</td> 
+          </tr>
+          <tr v-for="item in filteredTableData" :key="item.id"> 
+            <td v-for="header in tableHeaders" :key="header">
+              {{ item[header] }}
+            </td>
+            <td>
+              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
+                <button class="view-button">View</button>
+              </router-link>
+            </td>
           </tr>
         </tbody>
       </table>
