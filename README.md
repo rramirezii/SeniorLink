@@ -7,7 +7,7 @@
 - Composer 2.7.2
 - Laravel 11.4.0
     - Lumen Framework
-- Vue
+- Vue 3.4.27
 - MySQL 
 
 ### Note
