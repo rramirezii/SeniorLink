@@ -3,7 +3,7 @@ import * as views from '@/view';
 
 const routes = [
     { path: '/view-town', component: views.ViewTown, name: 'ViewTown' },
-    { path: '/view-client-per-barangay', component: views.ViewClientPerBarangay, name: 'ViewClientPerBarangay' },
+    // { path: '/view-client-per-barangay', component: views.ViewClientPerBarangay, name: 'ViewClientPerBarangay' },
     { path: '/view-barangay-per-town', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' },
     { path: '/view-client-list', component: views.ViewClientList, name: 'ViewClientList' },
     { path: '/view-barangay', component: views.ViewBarangay, name: 'ViewBarangay' },
@@ -20,7 +20,7 @@ const routes = [
     { path: '/establishment-dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
     { path: '/town-dashboard', component: views.TownDashboard, name: 'TownDashboard' },
     { path: '/client-select-menu', component: views.ClientSelectMenu, name: 'ClientSelectMenu' },
-    { path: '/client-login', component: views.ClientLogin, name: 'ClientLogin' },
+    { path: '/', component: views.ClientLogin, name: 'ClientLogin' },
     { path: '/client-auth', component: views.ClientAuth, name: 'ClientAuth' },
     { path: '/client-qr', component: views.ClientQR, name: 'ClientQR' },
     { path: '/client-profile', component: views.ClientProfile, name: 'ClientProfile' },

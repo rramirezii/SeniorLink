@@ -1,15 +1,14 @@
 <template>
-    <div class="view-select-barangay">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
+  <div class="senior-link">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
+      </div>
+      <div class="search-bar">
+        <!-- <input type="text" placeholder="Search..." />
+        <button>Search</button> -->
+      </div>
+      <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -19,95 +18,68 @@
           </li>
         </ul> -->
       </div>
-        </div> 
     </header>
-    <div>
-    <h2>Towns List</h2>
+    <nav>
+      <ul class="nav-buttons">
+        <li><router-link to="/create">Create Account</router-link></li>
+        <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
+          View Account
+          <ul v-if="activeDropdown === 'view'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/view-barangay">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/view-clients">Clients</router-link></li>
+            </ul>
+        </li>
+        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
+          Update Account Info
+          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/update-barangay">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/update-self">This Account</router-link></li>
+            </ul>
+        </li>
+        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
+          Delete Account
+          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/delete-barangay">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/delete-self">This Account</router-link></li>
+            </ul>
+        </li>
+        </ul>
+    </nav>
   </div>
-  <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-            <th>Actions</th> 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="3" class="no-results">No results found.</td> 
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td>
-            <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
-                <button class="view-button">View</button>
-              </router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      activeDropdown: null, // Track the currently active dropdown
+      maxWidth: 0,
+    };
+  },
+  methods: {
+    toggle(dropdown) {
+      // Close other dropdowns if a different one is clicked
+      if (this.activeDropdown && this.activeDropdown !== dropdown) {
+        this.activeDropdown = null;
       } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
+
+      // Toggle the clicked dropdown
+      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+
+      // Calculate max width when dropdown is opened
+      if (this.active) {
+        this.$nextTick(() => {
+          const links = this.$el.querySelectorAll('.dropdown-content a');
+          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
+        });
       }
-    },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
     }
-  };
-  </script>
+  }
+};
+</script>
 
 <style scoped>
-.view-select-barangay {
+.senior-link {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,12 +97,6 @@
   background-color: #fff; /* Optional background color for the header */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
   z-index: 10; /* Ensure the header stays on top of other elements */
-}
-
-.profile-and-search {
-display: flex; /* Makes this a flex container */
-align-items: center; /* Vertically aligns items within this container */
-gap: 1rem; /* Add some space between the search and profile elements */
 }
 
 .brand{
@@ -243,7 +209,6 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
-  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -252,7 +217,6 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
-  height: fit-content;
 }
 
 
@@ -285,54 +249,6 @@ a:hover {
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
-.profile-button {
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  align-items: center;
-  padding: 0.5rem 1rem; 
-  margin-right: 1rem;
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none; /* Remove default underline from link */
-}
-
-.profile-button:hover {
-  background-color: #ccc;
-  transition: background-color 0.25s;
-  color: rgb(75, 69, 69);
-}
-
-.profile-button i {
-  margin-right: 0.5rem; /* Add some space between the icon and text */
-}
-
-.table-container {
-margin-top: 60px; /* Adjust as needed */
-width: 80%; /* Or set a specific width */
-margin: 0 auto;  /* Center the table horizontally */
-}
-
-.table {
-width: 100%;
-border-collapse: collapse;
-}
-
-.table th, .table td {
-border: 1px solid #ddd;
-padding: 8px;
-}
-
-.view-button{
-  padding: 0.5rem 1rem;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 0cm;
-}
 .profile-placeholder {
   width: 55px;         
   height: 55px;

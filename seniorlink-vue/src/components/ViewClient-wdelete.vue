@@ -1,15 +1,15 @@
 <template>
-    <div class="view-client">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
+  <div class="update-select-client">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
+      </div>
+      <div class="profile-and-search">
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." v-model="searchQuery" />
+        <button @click="performSearch">Search</button>
+      </div>
+      <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -19,85 +19,95 @@
           </li>
         </ul> -->
       </div>
-        </div> 
-    </header>
-    <div>
-    <h2>Seniors List</h2>
-    </div>
-    <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </div> 
+  </header>
+  <div>
+  <h2>Seniors List</h2>
+</div>
+  <div class="table-container">
+    <p v-if="loading" class="loading-message">Loading...</p>
+    <table v-else class="table">
+      <thead>
+        <tr>
+          <th v-for="header in tableHeaders" :key="header">
+            {{ header }}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in filteredTableData" :key="item.id">
+          <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
+          <td> <div class="button-container">
+              <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
+                <button class="update-button">Update</button>
+              </router-link>
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </div>
+          </td> 
+        </tr>
+        <tr v-if="filteredTableData.length === 0">
+          <td colspan="9" class="no-results">No results found.</td> 
+        </tr>
+      </tbody>
+    </table>
   </div>
+</div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number'],  // Default headers
+      tableData: [],
+      searchQuery: '',
+      loading: true,
+      excludedFields: ['id'], // Array of fields to exclude
+    };
+  },
+  computed: {
+  filteredTableData() {
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+      return this.tableHeaders.some(header => {
+          if (header.toLowerCase() !== 'id'&& header!=='Password') { // Exclude the "id" column
+          return String(item[header]).toLowerCase().includes(query);
+          } else {
+          return false; // Don't include "id" in the search
+          }
+      });
+      });
+  },
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('/senior.json');  //file should be in the `public` folder 
+      this.tableData = response.data;
+     
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.loading = false;
+      // Handle errors appropriately (show an error message to the user)
+    } 
+  },
+  methods: {
+    performSearch() {
+      console.log("Searching for:", this.searchQuery);
     }
-  };
-  </script>
+  },
+  navigateToTown(id) {
+    console.log("Navigating to client with ID:", id);
+    this.$router.push({ name: 'UpdateClient', params: { id: id } });
+  }
+};
+</script>
   
   <style scoped>
-  .view-client {
+  .update-select-client {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -313,6 +323,16 @@
   border: 1px solid #ddd;
   padding: 8px;
 }
+
+.update-button{
+  padding: 0.5rem 1rem;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+}
 .profile-placeholder {
   width: 55px;         
   height: 55px;
@@ -331,7 +351,26 @@
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
+.table td {
+  text-align: center;  /* Center the content of all table cells */
+}
 
+.button-container {
+    display: flex;
+    justify-content: center;  /* Center the buttons within the container */
+    align-items: center; /* Align buttons vertically (optional) */
+    gap: 0.5rem;        /* Add space between buttons (optional) */
+  }
   </style>
   
     <style>

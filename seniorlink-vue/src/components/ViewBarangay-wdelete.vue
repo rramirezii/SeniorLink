@@ -1,5 +1,5 @@
 <template>
-    <div class="view-select-barangay">
+    <div class="view-select-client">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Towns List</h2>
+    <h2>Barangays List</h2>
   </div>
   <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
@@ -47,13 +47,14 @@
               <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
                 <button class="view-button">View</button>
               </router-link>
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
@@ -61,7 +62,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
+        tableHeaders: ['Name', 'Town ID'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -73,7 +74,7 @@
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
+            if (header.toLowerCase() !== 'id'&& header!=='Password') { // Exclude the "id" column
             return String(item[header]).toLowerCase().includes(query);
             } else {
             return false; // Don't include "id" in the search
@@ -84,7 +85,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
+        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;
@@ -102,12 +103,24 @@
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
       this.$router.push({ name: 'ViewTown', params: { id: id } });
+    },
+    async deleteItem(itemId) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        try {
+          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
+          // Handle successful deletion (e.g., remove from tableData)
+          console.log("Item deleted:", response.data);
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          // Handle errors (e.g., show error message)
+        }
+      }
     }
-  };
+};
   </script>
 
 <style scoped>
-.view-select-barangay {
+.view-select-client {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -351,7 +364,16 @@ padding: 8px;
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
 </style>
 
   <style>

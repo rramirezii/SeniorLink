@@ -1,5 +1,5 @@
 <template>
-    <div class="view-select-barangay">
+    <div class="view-select-product">
       <header class="header">
         <div class="brand">
           <h1>SeniorLink</h1>
@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Towns List</h2>
+    <h2>Barangays List</h2>
   </div>
   <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
@@ -37,64 +37,68 @@
         </thead>
         <tbody>
           <tr v-if="filteredTableData.length === 0">
-            <td colspan="3" class="no-results">No results found.</td> 
+            <td :colspan="tableHeaders.length + 1" class="no-results">No results found.</td> 
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
             <td v-for="header in tableHeaders" :key="header">
               {{ item[header] }}
             </td>
             <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
+              <router-link :to="{ name: 'View', params: { id: item.id }}">
                 <button class="view-button">View</button>
               </router-link>
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
   
   export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
+  data() {
+    return {
+      tableHeaders: ['Name', 'Product ID', 'Transaction ID', 'Quantity', 'Price'],
+      tableData: [],
+      currentTransactionId: null, // Store the ID of the transaction being displayed
+      searchQuery: '',
+      loading: true,
+    };
+  },
+  computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+        return item.TransactionID === this.currentTransactionId &&  // Filter by transaction ID
+               this.tableHeaders.some(header => {
+                 if (!['id', 'Quantity', 'Price'].includes(header.toLowerCase())) { 
+                   return String(item[header]).toLowerCase().includes(query);
+                 } else {
+                   return false; 
+                 }
+               });
+      });
     },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('/producttransact.json'); 
+      this.tableData = response.data;
+
+      // Set the initial transaction ID (you might want a more sophisticated way to choose this)
+      this.currentTransactionId = this.tableData.length > 0 ? this.tableData[0].TransactionID : null;
+
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.loading = false;
+    }
+  },
+  methods: {
       performSearch() {
         console.log("Searching for:", this.searchQuery);
       }
@@ -102,12 +106,24 @@
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
       this.$router.push({ name: 'ViewTown', params: { id: id } });
+    },
+    async deleteItem(itemId) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        try {
+          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
+          // Handle successful deletion (e.g., remove from tableData)
+          console.log("Item deleted:", response.data);
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          // Handle errors (e.g., show error message)
+        }
+      }
     }
-  };
+};
   </script>
 
 <style scoped>
-.view-select-barangay {
+.view-select-product {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -351,7 +367,16 @@ padding: 8px;
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
 </style>
 
   <style>

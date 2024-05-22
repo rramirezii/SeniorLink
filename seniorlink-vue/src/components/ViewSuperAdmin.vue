@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Seniors List</h2>
+    <h2>Super Admin List</h2>
     </div>
     <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
@@ -55,7 +55,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
+        tableHeaders: ['Username'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -67,7 +67,7 @@
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
+            if (header.toLowerCase() !== 'id' && header !== 'Password') { // Exclude the "id" column
             return String(item[header]).toLowerCase().includes(query);
             } else {
             return false; // Don't include "id" in the search
@@ -78,7 +78,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
+        const response = await axios.get('/superadmin.json');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;

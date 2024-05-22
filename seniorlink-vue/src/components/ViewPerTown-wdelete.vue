@@ -47,6 +47,7 @@
               <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
                 <button class="view-button">View</button>
               </router-link>
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -351,7 +352,16 @@ padding: 8px;
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
 </style>
 
   <style>

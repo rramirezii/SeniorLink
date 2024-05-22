@@ -1,113 +1,111 @@
 <template>
-    <div class="view-select-barangay">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
+  <div class="view-client">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
       </div>
-        </div> 
-    </header>
-    <div>
-    <h2>Towns List</h2>
+      <div class="profile-and-search">
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." v-model="searchQuery" />
+        <button @click="performSearch">Search</button>
+      </div>
+      <div class="profile-container" @click="toggleProfileDropdown"> 
+      <router-link to="/profile">
+        <div class="profile-placeholder"></div>
+      </router-link>
+      <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
+        <li class="dropdown-buttons">
+          <a href="#" @click.prevent="signOut">Sign Out</a>
+        </li>
+      </ul> -->
+    </div>
+      </div> 
+  </header>
+  <div>
+  <h2>Establishment List</h2>
   </div>
   <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-            <th>Actions</th> 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="3" class="no-results">No results found.</td> 
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td>
-            <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
-                <button class="view-button">View</button>
+    <p v-if="loading" class="loading-message">Loading...</p>
+    <table v-else class="table">
+      <thead>
+        <tr>
+          <th v-for="header in tableHeaders" :key="header">
+            {{ header }}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="filteredTableData.length === 0">
+          <td colspan="9" class="no-results">No results found.</td>
+        </tr>
+        <tr v-for="item in filteredTableData" :key="item.id"> 
+          <td v-for="header in tableHeaders" :key="header">
+            {{ item[header] }} 
+          </td>
+          <td> <div class="button-container">
+              <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
+                <button class="update-button">Update</button>
               </router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
-    },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </div>
+          </td> 
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      tableHeaders: ['Name', 'Code', 'Address'],  // Default headers
+      tableData: [],
+      searchQuery: '',
+      loading: true,
+      excludedFields: ['id'], // Array of fields to exclude
+    };
+  },
+  computed: {
+  filteredTableData() {
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+      return this.tableHeaders.some(header => {
+          if (header.toLowerCase() !== 'id' && header !== 'Password') { // Exclude the "id" column
+          return String(item[header]).toLowerCase().includes(query);
+          } else {
+          return false; // Don't include "id" in the search
+          }
+      });
+      });
+  },
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('/establishment.json');  //file should be in the `public` folder 
+      this.tableData = response.data;
+     
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.loading = false;
+      // Handle errors appropriately (show an error message to the user)
+    } 
+  },
+  methods: {
+    performSearch() {
+      console.log("Searching for:", this.searchQuery);
     }
-  };
-  </script>
+  }
+};
+</script>
 
 <style scoped>
-.view-select-barangay {
+.view-client {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -323,35 +321,53 @@ border-collapse: collapse;
 border: 1px solid #ddd;
 padding: 8px;
 }
+.profile-placeholder {
+width: 55px;         
+height: 55px;
+background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+border-radius: 10%;      /* Make it a square */
+cursor: pointer;
+transition: background-color 0.25s; /* Smooth transition */
+display: inline-flex;   /* Use inline-flex to align icon and text */
+margin-right: 2rem;
+margin-top: 1ex;
+}
 
-.view-button{
+.profile-placeholder:hover {
+background-color: #808080; /* Slightly darker on hover */
+}
+.profile-container {
+position: relative; /* Allows absolute positioning of the dropdown */
+}
+.update-button{
+padding: 0.5rem 1rem;
+background-color: #2c3e50;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+margin-top: 0cm;
+}
+.delete-button{
   padding: 0.5rem 1rem;
-  background-color: #2c3e50;
+  background-color: #7e3e3e;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin-top: 0cm;
+  margin-left: 10px;
 }
-.profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
+.table td {
+  text-align: center;  /* Center the content of all table cells */
 }
 
-.profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
-}
-.profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
-}
-
+.button-container {
+    display: flex;
+    justify-content: center;  /* Center the buttons within the container */
+    align-items: center; /* Align buttons vertically (optional) */
+    gap: 0.5rem;        /* Add space between buttons (optional) */
+  }
 </style>
 
   <style>

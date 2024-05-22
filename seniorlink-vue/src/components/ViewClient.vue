@@ -1,15 +1,14 @@
 <template>
-    <div class="view-select-barangay">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." v-model="searchQuery" />
-          <button @click="performSearch">Search</button>
-        </div>
-        <div class="profile-container" @click="toggleProfileDropdown"> 
+  <div class="view-client">
+    <header class="header" @click.stop>
+      <div class="brand">
+        <h1>SeniorLink</h1>
+      </div>
+      <div class="search-bar">
+        <!-- <input type="text" placeholder="Search..." />
+        <button>Search</button> -->
+      </div>
+      <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
@@ -19,99 +18,93 @@
           </li>
         </ul> -->
       </div>
-        </div> 
     </header>
-    <div>
-    <h2>Towns List</h2>
-  </div>
-  <div class="table-container">
-      <p v-if="loading" class="loading-message">Loading...</p>
-      <table v-else class="table">
-        <thead>
-          <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
-            <th>Actions</th> 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="filteredTableData.length === 0">
-            <td colspan="3" class="no-results">No results found.</td> 
-          </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td>
-            <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
-                <button class="view-button">View</button>
-              </router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      </div>
+    <div class="main-content">
+      <h2>Client Details</h2>
+    <div class="client-info">
+      <label for="clientName">Client Name:</label>
+      <span id="clientName">{{ client.name }}</span>
     </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
+    <table class="center-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Commodities/Medicine</th>
+          <th>Qty.</th>
+          <th>Amount of Purchase</th>
+          <th>Balance</th>
+          <th>Establishment Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="transaction in client.transactions" :key="transaction.id">
+          <td>{{ transaction.date }}</td>
+          <td>{{ transaction.commodities }}</td>
+          <td>{{ transaction.qty }}</td>
+          <td>{{ transaction.formatCurrency(amount) }}</td>
+          <td>{{ transaction.balance }}</td>
+          <td>{{ transaction.establishmentName }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    client: Object, // Client object with details and transactions array
+  },
+  methods: {
+    formatCurrency(value) {
+      return `Php ${value.toFixed(2)}`; 
     },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
-    },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
-    }
-  };
-  </script>
+  },
+};
+</script>
 
 <style scoped>
-.view-select-barangay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
+.view-client {
+  width: 100%; /* Optional: Set a width */
+  margin: 1rem auto; /* Optional: Add some margin for spacing */
+}
+
+.client-info {
+  margin-bottom: 1rem;
+}
+
+.client-info label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+table {
+  width: 100%; /* Make the table fill the available space */
+  border-collapse: collapse; /* Remove gaps between table cells */
+}
+
+th,
+td {
+  padding: 0.5rem 1rem; /* Add padding for readability */
+  border: 1px solid #ddd; /* Add a thin border */
+  text-align: left; /* Align text to the left */
+}
+
+th {
+  background-color: #f0f0f0; /* Optional: Highlight table headers */
+  font-weight: bold; /* Make headers bold */
+}
+
+.center-table {
+  margin-left: auto;
+  margin-right: auto;
+  /*width: fit-content; /* make table only as wide as its content */
+}
+
+.main-content {
+  padding-top: 10px; /* Adjust the value to match your header height */
 }
 
 .header {
@@ -123,18 +116,9 @@
   justify-content: space-between;
   align-items: center;
   background-color: #fff; /* Optional background color for the header */
+  padding: 0rem 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
   z-index: 10; /* Ensure the header stays on top of other elements */
-}
-
-.profile-and-search {
-display: flex; /* Makes this a flex container */
-align-items: center; /* Vertically aligns items within this container */
-gap: 1rem; /* Add some space between the search and profile elements */
-}
-
-.brand{
-  padding-left: 2%;
 }
 
 .logo {
@@ -243,7 +227,6 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
-  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -252,7 +235,6 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
-  height: fit-content;
 }
 
 
@@ -285,54 +267,6 @@ a:hover {
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
-.profile-button {
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  align-items: center;
-  padding: 0.5rem 1rem; 
-  margin-right: 1rem;
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none; /* Remove default underline from link */
-}
-
-.profile-button:hover {
-  background-color: #ccc;
-  transition: background-color 0.25s;
-  color: rgb(75, 69, 69);
-}
-
-.profile-button i {
-  margin-right: 0.5rem; /* Add some space between the icon and text */
-}
-
-.table-container {
-margin-top: 60px; /* Adjust as needed */
-width: 80%; /* Or set a specific width */
-margin: 0 auto;  /* Center the table horizontally */
-}
-
-.table {
-width: 100%;
-border-collapse: collapse;
-}
-
-.table th, .table td {
-border: 1px solid #ddd;
-padding: 8px;
-}
-
-.view-button{
-  padding: 0.5rem 1rem;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 0cm;
-}
 .profile-placeholder {
   width: 55px;         
   height: 55px;

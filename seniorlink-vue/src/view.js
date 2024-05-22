@@ -1,6 +1,6 @@
-// export the views for App
+// export the views for App he
 export { default as ViewTown } from './components/ViewTown.vue';
-export { default as ViewClientPerBarangay } from './components/ViewClientPerBarangay.vue';
+// export { default as ViewClientPerBarangay } from './components/ViewClientPerBarangay.vue'; //missing
 export { default as ViewBarangayPerTown } from './components/ViewBarangayPerTown.vue';
 export { default as ViewClientList } from './components/ViewClientList.vue';
 export { default as ViewBarangay } from './components/ViewBarangay.vue';
@@ -10,7 +10,7 @@ export { default as ViewEstablishmentViewButton } from './components/ViewEstabli
 export { default as ViewBarangayWDelete } from './components/ViewBarangay-wdelete.vue';
 export { default as ViewProductsTransaction } from './components/ViewProductsTransaction.vue';
 export { default as SuperAdminDashboard } from './views/SuperAdminDashboard.vue';
-export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.vue';
+export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.vue'; // integrate soon
 export { default as ClientMain } from './views/ClientMain.vue';
 export { default as ClientDashboard } from './views/ClientDashboard.vue';
 export { default as BarangayDashboard } from './views/BarangayDashboard.vue';
