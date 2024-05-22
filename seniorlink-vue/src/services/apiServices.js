@@ -1,17 +1,29 @@
 import axios from 'axios';
 
-// Create an Axios instance
-const apiClient = axios.create({
-  baseURL: 'http://your-lumen-backend-url/api', // Replace with your Lumen backend URL
+const api = axios.create({
+  baseURL: process.env.VUE_APP_BASE_API_URL || '/api', // Default to '/api' if not in .env
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json' 
   }
 });
 
-// Define your API calls
-export default {
-  getData() {
-    return apiClient.get('/data');
+const apiServices = {
+  get: async (url) => {
+    const response = await api.get(url);
+    return response.data;
   },
-  // Add more API calls as needed
+  post: async (url, data) => {
+    const response = await api.post(url, data);
+    return response.data;
+  },
+  put: async (url, data) => {
+    const response = await api.put(url, data);
+    return response.data;
+  },
+  delete: async (url) => {
+    const response = await api.delete(url);
+    return response.data;
+  }
 };
+
+export default apiServices;

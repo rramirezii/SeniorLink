@@ -1,27 +1,31 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import About from '../views/About.vue'
+import { createRouter, createWebHistory } from 'vue-router';
 
-Vue.use(VueRouter)
+import AdminDashboard from '../components/SuperAdminDashboardComponent.vue';
+import UpdateTown from '@/components/UpdateTown.vue';
+import CreateTown from '@/components/CreateTownComponent.vue';
+
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Home', //change this later to landing page
+    component: AdminDashboard
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About
+    path: '/update-town',
+    name: 'UpdateTown',
+    component: UpdateTown
+  },
+  {
+    path: '/create-town',
+    name: 'CreateTown',
+    component: CreateTown,
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
-
-export default router
+const router = createRouter({
+    history: createWebHistory(process.env.VUE_APP_BASE_URL),
+    routes
+  });
+  
+  export default router;

@@ -1,13 +1,13 @@
 <template>
-  <div class="senior-link">
-    <header class="header" @click.stop>
+  <div class="update-town">
+    <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <div class="search-bar">
-        <!-- <input type="text" placeholder="Search..." />
-        <button>Search</button> -->
-      </div>
+      <!-- <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>Search</button>
+      </div> -->
       <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
@@ -19,85 +19,148 @@
         </ul> -->
       </div>
     </header>
-    <router-view/>
+    <h2>Update Town Account</h2>
+    <form @submit.prevent="handleSubmit">
+      <div class="form-container">
+        <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name">
+      </div>
+      <div class="form-group">
+        <label for="zipcode">Zip Code:</label>
+        <input type="number" id="zipcode" v-model="zipcode">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password">
+      </div>
+    </div>
+      <div class="form-actions">
+        <button type="submit">Update Information</button>
+      </div>
+    </form>
+  
   </div>
 </template>
 
 <script>
-import apiServices from '@/services/apiServices';
+import axios from 'axios';
+import { ref } from 'vue';
 
 export default {
-  data() {
-    return {
-      activeDropdown: null, // Track the currently active dropdown
-      maxWidth: 0,
-      showProfileDropdown: false, // New property for the profile dropdown
-    };
-  },
-  methods: {
-    toggleProfileDropdown() {
-      this.showProfileDropdown = !this.showProfileDropdown;
-    },
-    signOut() {
-      // Implement your sign-out logic here
-      // (e.g., clear tokens, redirect to login page)
-      console.log("Signing out...");
-    },
-    toggle(dropdown) {
-      // Close other dropdowns if a different one is clicked
-      if (this.activeDropdown && this.activeDropdown !== dropdown) {
-        this.activeDropdown = null;
-      } 
+  setup() {
+    // Ref for each field to store initial/current value
+    const name = ref('');
+    const zipcode = ref('');
+    const password = ref('');
 
-      // Toggle the clicked dropdown
-      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+    // Refs to store initial values separately
+    const initialName = ref('');
+    const initialZipcode = ref('');
+    const initialPassword = ref('');
 
-      // Calculate max width when dropdown is opened
-      if (this.active) {
-        this.$nextTick(() => {
-          const links = this.$el.querySelectorAll('.dropdown-content a');
-          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
-        });
+    // Fetch the initial values
+    const fetchInitialValues = async () => {
+      try {
+        const response = await axios.get('/api/town');
+        initialName.value = response.data.name; // Assuming your API response has these properties
+        initialZipcode.value = response.data.zipcode;
+        initialPassword.value = response.data.password;
+
+        // Set the initial values to the form fields
+        name.value = initialName.value;
+        zipcode.value = initialZipcode.value;
+        password.value = initialPassword.value;
+      } catch (error) {
+        // Handle error fetching initial values (e.g., show an error message)
+        console.error("Error fetching initial values:", error);
       }
-    },
-    async redirectTo(routeName, payload = null) {
-  console.log("Redirecting to:", routeName);
+    };
 
-  try {
-    const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
-    const componentName = routeName;
+    // Call the function to fetch initial values when the component is created
+    fetchInitialValues();
 
-    console.log("Redirect URL:", redirectUrl);
-    console.log("Component Name:", componentName);
+    const handleSubmit = async () => {
+      // Only send updated fields in the payload
+      const updatedData = {};
+      if (name.value !== initialName.value) updatedData.name = name.value;
+      if (zipcode.value !== initialZipcode.value) updatedData.zipcode = zipcode.value;
+      if (password.value !== initialPassword.value) updatedData.password = password.value;
 
-    if (payload) {
-      console.log("Payload:", payload);
-      // Make the API call with payload if provided
-      const response = await apiServices.post(redirectUrl, payload);
-      // Handle the API response here (e.g., save to JSON, update state, etc.)
-      console.log("API Response:", response);
-      this.saveToJson(response.data);
-    }
-    console.log(this.$router.getRoutes());
-    // Redirect to the corresponding Vue file
-    this.$router.push({ name: componentName });
-    console.log("Navigation successful.");
-  } catch (error) {
-    console.error('Error redirecting:', error);
-    // Handle the error appropriately
-  }
-}
+      // Send the updatedData to your backend API for processing
+      try {
+        await axios.put('/api/town', updatedData);
+        // Optionally, update the initial values after successful update
+        // initialName.value = name.value;
+        // initialZipcode.value = zipcode.value;
+        // initialPassword.value = password.value;
+        // Show success message to the user
+      } catch (error) {
+        // Handle error and show error message to the user
+      }
+    };
 
-  }
+    return { name, zipcode, password, handleSubmit };
+  },
 };
 </script>
 
 <style scoped>
-.senior-link {
+.update-town {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
+}
+
+label {
+  display: block;
+  margin: 1rem;
+  font-weight: bold;
+  text-align: left;
+  width: 150px;
+}
+
+form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0.5rem;
+  flex: 1;            /* Allow input to take up remaining space */
+}
+label, input {
+  float: left;
+}
+button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+
+.form-group {
+  display: flex; 
+  align-items: center;  /* Vertically center label and input */
+  width: 600px; 
+}
+
+.form-group label {
+  width: 150px;      /* Set a fixed width for the labels */
+  text-align: right; /* Align the label text to the right */
+  margin-right: 1rem; /* Add some space between label and input */
+}
+
+/* Center the form elements within the form-container */
+.form-container {
+  display: flex;          
+  flex-direction: column; 
+  align-items: center;
+  padding-right: 25%;
 }
 
 .header {
@@ -223,7 +286,6 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
-  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -232,7 +294,6 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
-  height: fit-content;
 }
 
 
@@ -284,35 +345,6 @@ a:hover {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
 
-/* Profile Dropdown */
-.dropdown-profile {
-  position: absolute;
-  top: 100%;         /* Position below the profile placeholder */
-  right: 0;          /* Align to the right edge of the placeholder */
-  width: 50px;      /* Adjust the width as needed */
-  /* Prevent Overflow */
-  transform: translateX(calc(-50% + 30px)); /* Adjust as needed */ 
-  border: #000 1px solid;
-  text-align: center; /* Center text within the dropdown */
-}
-.dropdown-profile ul {
-  padding: 0;
-  margin: 0;
-  display: inline;
-}
-
-.dropdown-profile-item {  
-  list-style: none;
-  padding: 0.5rem;      
-  width: 100%;       
-  text-align: center; 
-}
-.dropdown-profile-item a{
-  text-align: center;
-  text-decoration: none;
-  color: #2c3e50;
-  text-align: center; /* Center text within the dropdown */
-}
 </style>
 
   <style>

@@ -1,26 +1,42 @@
 <template>
-  <div class="senior-link">
-    <header class="header" @click.stop>
-      <div class="brand">
-        <h1>SeniorLink</h1>
-      </div>
-      <div class="search-bar">
-        <!-- <input type="text" placeholder="Search..." />
-        <button>Search</button> -->
-      </div>
-      <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
-      </div>
-    </header>
-    <router-view/>
-  </div>
+    <nav>
+      <ul class="nav-buttons">
+        <li @click="toggle('create')" class="dropdown" :class="{ active: activeDropdown === 'create' }">
+          Create Account
+          <ul v-if="activeDropdown === 'create'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="#" @click.prevent="redirectTo('CREATE_TOWN')">Town</router-link></li>
+            <li class="dropdown-buttons"><router-link to="#" @click.prevent="redirectTo('CREATE_ESTABLISHMENT')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to="#" @click.prevent="redirectTo('CREATE_SUPER')">Super Admin</router-link></li>
+            </ul>
+        </li>
+        <!-- <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
+          View Account
+          <ul v-if="activeDropdown === 'view'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_TOWN')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_BARANGAY')">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_CLIENT')">Clients</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-super')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-establish')">Establishment</router-link></li>
+            </ul>
+        </li>
+        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
+          Update Account Info
+          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/update-town">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/update-establish">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/update-super">Super Admin</router-link></li>
+            </ul>
+        </li>
+        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
+          Delete Account
+          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
+            <li class="dropdown-buttons"><router-link to="/delete-town">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/delete-establish">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to="/delete-super">Super Admin</router-link></li>
+            </ul>
+        </li> -->
+        </ul>
+    </nav>
 </template>
 
 <script>
@@ -93,58 +109,6 @@ export default {
 </script>
 
 <style scoped>
-.senior-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-}
-
-.header {
-  position: fixed; /* Stick to the top */
-  top: 0; /* Position at the top */
-  left: 0; /* Align to the left */
-  width: 100%; /* Full width */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #fff; /* Optional background color for the header */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
-  z-index: 10; /* Ensure the header stays on top of other elements */
-}
-
-.brand{
-  padding-left: 2%;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* search bar */
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-bar input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 1rem;
-}
-
-.search-bar button {
-  padding: 0.5rem 1rem;
-  background-color: #2c3e50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 0cm;
-}
-
 /* buttons */
 nav {
   width: 100%;
@@ -195,20 +159,6 @@ a {
 
 a:hover {
   color: #2c3e50;
-}
-
-/* profile logo */
-.profile-link {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  margin-right: 1rem;
-  border-radius: 4px;
-  color: #000; /* Color of the icon and text */
-}
-
-.profile-link:hover {
-  background-color: #eee; /* Optional hover background color */
 }
 
 .dropdown-content {
@@ -263,55 +213,6 @@ a:hover {
 .dropdown-buttons a {
   display: block;     /* Make sure links fill the width */
   white-space: nowrap; /* Prevent text from wrapping */
-}
-
-.profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
-  display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
-}
-
-.profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
-}
-.profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
-}
-
-/* Profile Dropdown */
-.dropdown-profile {
-  position: absolute;
-  top: 100%;         /* Position below the profile placeholder */
-  right: 0;          /* Align to the right edge of the placeholder */
-  width: 50px;      /* Adjust the width as needed */
-  /* Prevent Overflow */
-  transform: translateX(calc(-50% + 30px)); /* Adjust as needed */ 
-  border: #000 1px solid;
-  text-align: center; /* Center text within the dropdown */
-}
-.dropdown-profile ul {
-  padding: 0;
-  margin: 0;
-  display: inline;
-}
-
-.dropdown-profile-item {  
-  list-style: none;
-  padding: 0.5rem;      
-  width: 100%;       
-  text-align: center; 
-}
-.dropdown-profile-item a{
-  text-align: center;
-  text-decoration: none;
-  color: #2c3e50;
-  text-align: center; /* Center text within the dropdown */
 }
 </style>
 
