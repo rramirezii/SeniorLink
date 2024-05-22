@@ -24,35 +24,35 @@
         <li @click="toggle('create')" class="dropdown" :class="{ active: activeDropdown === 'create' }">
           Create Account
           <ul v-if="activeDropdown === 'create'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_TOWN', { /* your payload here */ })">Town</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CREATE_ESTABLISHMENT', { /* your payload here */ })">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateTown', { /* your payload here */ })">Town</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateEstablishment', { /* your payload here */ })">Establishment</router-link></li>
             <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateSuper')">Super Admin</router-link></li>
             </ul>
         </li>
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
           View Account
           <ul v-if="activeDropdown === 'view'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_TOWN')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_BARANGAY')">Barangay</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('VIEW_CLIENT')">Clients</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-super')">Super Admin</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('view-establish')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewEstablishment')">Establishment</router-link></li>
             </ul>
         </li>
         <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
           Update Account Info
           <ul v-if="activeDropdown === 'update'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to="/update-town">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link to="/update-establish">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link to="/update-super">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateSuperAdmin')">Super Admin</router-link></li>
             </ul>
         </li>
         <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
           Delete Account
           <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to="/delete-town">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link to="/delete-establish">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link to="/delete-super">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteSuperAdmin')">Super Admin</router-link></li>
             </ul>
         </li>
         </ul>

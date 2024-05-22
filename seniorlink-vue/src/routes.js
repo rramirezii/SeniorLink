@@ -35,7 +35,10 @@ const routes = [
     { path: '/update-client', component: views.UpdateClient, name: 'UpdateClient' },
     // { path: '/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
     // { path: '/update-product-transaction', component: views.UpdateProductTransaction, name: 'UpdateProductTransaction' },
-    { path: '/create-town', component: views.CreateTown, name: 'CreateTown' }
+    { path: '/create-town', component: views.CreateTown, name: 'CreateTown' },
+    { path: '/create-establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
+    { path: '/create-barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
+    { path: '/create-client', component: views.CreateClient, name: 'CreateClient' }
   ];
   
   export default routes;
