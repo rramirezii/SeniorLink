@@ -1,0 +1,83 @@
+[
+    {
+      "id": 1,
+      "username": "store123",
+      "Name": "Tech Store",
+      "Code": "TS123",
+      "Address": "123 Tech Avenue, Silicon Valley, CA",
+      "Password": "techstorepass"
+    },
+    {
+      "id": 2,
+      "username": "store456",
+      "Name": "Grocery Mart",
+      "Code": "GM456",
+      "Address": "456 Market Street, Springfield, IL",
+      "Password": "grocerymartpass"
+    },
+    {
+      "id": 3,
+      "username": "store789",
+      "Name": "Electronics Hub",
+      "Code": "EH789",
+      "Address": "789 Gadget Lane, New York, NY",
+      "Password": "electronicshubpass"
+    },
+    {
+      "id": 4,
+      "username": "store101",
+      "Name": "Bookstore",
+      "Code": "BS101",
+      "Address": "101 Book Blvd, Boston, MA",
+      "Password": "bookstorepass"
+    },
+    {
+      "id": 5,
+      "username": "store102",
+      "Name": "Fashion Outlet",
+      "Code": "FO102",
+      "Address": "102 Fashion Ave, Los Angeles, CA",
+      "Password": "fashionoutletpass"
+    },
+    {
+      "id": 6,
+      "username": "store103",
+      "Name": "Tech Store",
+      "Code": "TS103",
+      "Address": "103 Tech Avenue, Silicon Valley, CA",
+      "Password": "techstorepass2"
+    },
+    {
+      "id": 7,
+      "username": "store104",
+      "Name": "Grocery Mart",
+      "Code": "GM104",
+      "Address": "104 Market Street, Springfield, IL",
+      "Password": "grocerymartpass2"
+    },
+    {
+      "id": 8,
+      "username": "store105",
+      "Name": "Electronics Hub",
+      "Code": "EH105",
+      "Address": "105 Gadget Lane, New York, NY",
+      "Password": "electronicshubpass2"
+    },
+    {
+      "id": 9,
+      "username": "store106",
+      "Name": "Bookstore",
+      "Code": "BS106",
+      "Address": "106 Book Blvd, Boston, MA",
+      "Password": "bookstorepass2"
+    },
+    {
+      "id": 10,
+      "username": "store107",
+      "Name": "Fashion Outlet",
+      "Code": "FO107",
+      "Address": "107 Fashion Ave, Los Angeles, CA",
+      "Password": "fashionoutletpass2"
+    }
+  ]
+  

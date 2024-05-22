@@ -28,115 +28,145 @@
       <h3>Total Discount</h3>
     </div>
     <div class="table-container">
-      <template v-for="(dateGroup, date) in groupedTableData" :key="date">
-        <h3 class="date-header">{{ formatDate(date) }}</h3>
-        <div v-for="(establishmentGroup, establishment) in dateGroup" :key="establishment">
-          <h4 class="establishment-header">{{ establishment }}</h4> 
-          <table class="table">
-            <thead>
-              <tr>
-                <th v-for="header in tableHeaders" :key="header" :class="{ 'wider-column': header === 'Commodities' }">
-                  {{ header }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in establishmentGroup" :key="item.id">
-                <td v-for="header in tableHeaders" :key="header" :class="{ 'wider-column': header === 'Commodities' }">
-                  {{ item[header] }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <template v-for="(transaction, index) in filteredTransactions" :key="index">
+        <h3 class="date-header">{{ formatDate(transaction.Date) }}</h3>
+        <h4 class="establishment-header">
+          {{ getEstablishmentName(transaction.Establishment) }} 
+        </h4>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="wider-column">Products</th>  
+              <th>Qty.</th>
+              <th>Amount</th>
+              <th>Balance</th> 
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(product, idx) in transaction.Products" :key="idx">
+              <td class="wider-column">{{ product.name }}</td>
+              <td>{{ product.Qty }}</td>
+              <td>{{ product.amount }}</td>
+              <td></td> 
+            </tr>
+          </tbody>
+        </table>
       </template>
     </div>
-    <p v-if="filteredTableData.length === 0" class="no-results">No results found.</p>
+    <p v-if="filteredTransactions.length === 0" class="no-results">No available data.</p>
   </div>
 </template>
 
+JavaScript
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      tableHeaders: ['Commodities', 'Qty.', 'Amount', 'Balance'], // Removed 'Establishment'
-      tableData: [],
+      tableHeaders: ['Products', 'Qty.', 'Amount', 'Balance'],
+      transactions: [],  
       searchQuery: '',
       loading: true,
-      totalAmountForWeek: 0, // Initialize with a default value
+      establishmentData: {}, 
     };
   },
   computed: {
-    groupedTableData() {
-      const groups = {};
-      this.filteredTableData.forEach(item => {
-        const date = item.Date;
-        const establishment = item.Establishment;
-        if (!groups[date]) groups[date] = {};
-        if (!groups[date][establishment]) groups[date][establishment] = [];
-        groups[date][establishment].push(item);
-      });
-      return groups;
-    },
-      filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-          return Object.values(item).some(value => String(value).toLowerCase().includes(query));
+    filteredTransactions() {
+      const query = this.searchQuery.toLowerCase();
+      return this.transactions.filter(transaction => {
+        return Object.values(transaction).some(value => {
+          if (Array.isArray(value)) {
+            return value.some(item => 
+              Object.values(item).some(val => String(val).toLowerCase().includes(query))
+            );
+          }
+          return String(value).toLowerCase().includes(query);
         });
-      },
+      });
     },
+    sortedTransactions() {
+      return [...this.filteredTransactions].sort((a, b) => {
+        // Parse dates in YYYY-MM-DD format
+        const dateA = new Date(a.Date);
+        const dateB = new Date(b.Date);
+
+        // Compare years first
+        if (dateB.getFullYear() !== dateA.getFullYear()) {
+          return dateB.getFullYear() - dateA.getFullYear();
+        }
+
+        // If years are the same, compare months
+        if (dateB.getMonth() !== dateA.getMonth()) {
+          return dateB.getMonth() - dateA.getMonth();
+        }
+
+        // If years and months are the same, compare days
+        return dateB.getDate() - dateA.getDate();
+      });
+    },
+
     totalAmountForWeek() {
       const today = new Date();
       const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(today.getDate() - 7); // Calculate one week ago
-      console.log(this.tableData);
+      oneWeekAgo.setDate(today.getDate() - 7);
 
-      return this.filteredTableData.reduce((total, item) => {
+      return this.filteredTransactions.reduce((total, item) => {
         const itemDate = new Date(item.Date);
 
         if (itemDate >= oneWeekAgo && itemDate <= today) {
-            const amount = parseFloat(item.Amount.replace(/[^0-9.-]+/g, '')); 
-          // Parse and convert Amount to a number (handle potential errors)
+          const amount = parseFloat(item.Products.reduce((productTotal, product) => productTotal + parseFloat(product.amount), 0).toFixed(2)); // Correct calculation
+
           if (!isNaN(amount)) {
             return total + amount;
           }
         }
         return total;
-      }, 0).toFixed(2); // Format to two decimal places
+      }, 0).toFixed(2);
     },
-    async mounted() {
-      try {
-        const response = await axios.get('/transactions.json');
-        this.tableData = response.data;
+  },
+  async mounted() { 
+    try {
+      const response = await axios.get('/transactions.json');
 
-        this.loading = false;
-        this.totalAmountForWeek = this.calculateTotalAmountForWeek(); // Update totalAmountForWeek
+      const establishmentResponse = await axios.get('/establishment.json');
+      this.establishmentData = establishmentResponse.data;
+
+      this.transactions = response.data; 
+      this.loading = false;
+      this.updateTotalAmountDisplay(); 
     } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
+      console.error("Error fetching data:", error);
+      this.loading = false;
+
+        // Specific error handling based on error types
+      if (error.response) {
+        console.error("Server Error:", error.response.status, error.response.data);
+      } else if (error.request) {
+        console.error("Network Error:", error.request);
+      } else {
+        console.error('Error:', error.message);
+      }
+    }
+  },
+  methods: {
+    getEstablishmentName(establishment) {
+      return this.establishmentData[establishment[0]]?.name || establishment[0];
     },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      },
-      formatDate(dateString) {
+    formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       const date = new Date(dateString);
       return date.toLocaleDateString(undefined, options); 
     },
-      updateTotalAmountDisplay() {
-    const totalAmountElement = document.getElementById("totalamountweek");
-    if (totalAmountElement) {
-      totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
+    updateTotalAmountDisplay() {
+      const totalAmountElement = document.getElementById("totalamountweek");
+      if (totalAmountElement) {
+        totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
+      }
     }
-    }
-    }
-  };
-  </script>
+  }
+};
+</script>
   
   <style scoped>
   .client-main {

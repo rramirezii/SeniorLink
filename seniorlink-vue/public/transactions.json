@@ -1,0 +1,172 @@
+[
+  {
+    "Senior": ["john_doe_senior", "John Doe"],
+    "Date": "2024-05-21",
+    "Products": [
+      {
+        "name": "Product1",
+        "Qty": 3,
+        "amount": 29.99
+      },
+      {
+        "name": "Product2",
+        "Qty": 1,
+        "amount": 15.50
+      },
+      {
+        "name": "Product3",
+        "Qty": 2,
+        "amount": 45.00
+      }
+    ],
+    "Establishment": ["store123", "Tech Store"]
+  },
+  {
+    "Senior": ["jane_smith_senior", "Jane Smith"],
+    "Date": "2024-05-14",
+    "Products": [
+      {
+        "name": "Product4",
+        "Qty": 5,
+        "amount": 10.99
+      },
+      {
+        "name": "Product5",
+        "Qty": 2,
+        "amount": 20.00
+      }
+    ],
+    "Establishment": ["store456", "Grocery Mart"]
+  },
+  {
+    "Senior": ["michael_jordan_senior", "Michael Jordan"],
+    "Date": "2024-05-20",
+    "Products": [
+      {
+        "name": "Product6",
+        "Qty": 1,
+        "amount": 150.00
+      }
+    ],
+    "Establishment": ["store789", "Electronics Hub"]
+  },
+  {
+    "Senior": ["emily_clark_senior", "Emily Clark"],
+    "Date": "2024-04-25",
+    "Products": [
+      {
+        "name": "Product7",
+        "Qty": 3,
+        "amount": 8.99
+      },
+      {
+        "name": "Product8",
+        "Qty": 4,
+        "amount": 7.50
+      }
+    ],
+    "Establishment": ["store101", "Bookstore"]
+  },
+  {
+    "Senior": ["william_jones_senior", "William Jones"],
+    "Date": "2024-05-17",
+    "Products": [
+      {
+        "name": "Product9",
+        "Qty": 2,
+        "amount": 50.00
+      },
+      {
+        "name": "Product10",
+        "Qty": 1,
+        "amount": 100.00
+      }
+    ],
+    "Establishment": ["store102", "Fashion Outlet"]
+  },
+  {
+    "Senior": ["susan_brown_senior", "Susan Brown"],
+    "Date": "2024-04-30",
+    "Products": [
+      {
+        "name": "Product11",
+        "Qty": 3,
+        "amount": 29.99
+      },
+      {
+        "name": "Product12",
+        "Qty": 1,
+        "amount": 15.50
+      },
+      {
+        "name": "Product13",
+        "Qty": 2,
+        "amount": 45.00
+      }
+    ],
+    "Establishment": ["store103", "Tech Store"]
+  },
+  {
+    "Senior": ["robert_davis_senior", "Robert Davis"],
+    "Date": "2024-05-22",
+    "Products": [
+      {
+        "name": "Product14",
+        "Qty": 5,
+        "amount": 10.99
+      },
+      {
+        "name": "Product15",
+        "Qty": 2,
+        "amount": 20.00
+      }
+    ],
+    "Establishment": ["store104", "Grocery Mart"]
+  },
+  {
+    "Senior": ["linda_martin_senior", "Linda Martin"],
+    "Date": "2024-05-19",
+    "Products": [
+      {
+        "name": "Product16",
+        "Qty": 1,
+        "amount": 150.00
+      }
+    ],
+    "Establishment": ["store105", "Electronics Hub"]
+  },
+  {
+    "Senior": ["charles_wilson_senior", "Charles Wilson"],
+    "Date": "2024-05-07",
+    "Products": [
+      {
+        "name": "Product17",
+        "Qty": 3,
+        "amount": 8.99
+      },
+      {
+        "name": "Product18",
+        "Qty": 4,
+        "amount": 7.50
+      }
+    ],
+    "Establishment": ["store106", "Bookstore"]
+  },
+  {
+    "Senior": ["patricia_white_senior", "Patricia White"],
+    "Date": "2024-05-01",
+    "Products": [
+      {
+        "name": "Product19",
+        "Qty": 2,
+        "amount": 50.00
+      },
+      {
+        "name": "Product20",
+        "Qty": 1,
+        "amount": 100.00
+      }
+    ],
+    "Establishment": ["store107", "Fashion Outlet"]
+  }
+]

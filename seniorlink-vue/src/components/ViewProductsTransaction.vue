@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Barangays List</h2>
+    <h2>Products List</h2>
   </div>
   <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
