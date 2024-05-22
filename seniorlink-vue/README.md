@@ -1,4 +1,4 @@
-# seniorlink-vue
+# seniorlink
 
 ## Project setup
 ```
