@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 //views
 // import App from './components/ViewTown.vue';
-// import App from './components/ViewClientPerBarangay.vue';
+// import App from './components/ViewPerBarangay.vue';
 // import App from './components/ViewBarangayPerTown.vue';
 // import App from './components/ViewClientList';
 // import App from './components/ViewBarangay.vue';
@@ -10,11 +10,14 @@ import { createApp } from 'vue';
 // import App from './components/ViewEstablishment-viewbutton.vue';
 // import App from './components/ViewBarangay-wdelete.vue';
 // import App from './components/ViewProductsTransaction.vue';
+// import App from './components/ViewBarangayPerTown-wdelete.vue';
+// import App from './components/ViewClient-wdelete.vue';
+import App from './components/ViewEstablishment-wdelete.vue';
 
 //dashboards
 // import App from './views/SuperAdminDashboard.vue';
 // import App from './views/ClientDashboard-Phone.vue';
-import App from './views/ClientMain.vue';
+// import App from './views/ClientMain.vue';
 // import App from './views/ClientDashboard.vue';
 // import App from './views/BarangayDashboard.vue';
 // import App from './views/EstablishmentDashboard.vue';
@@ -40,12 +43,12 @@ import App from './views/ClientMain.vue';
 // import App from './components/UpdateBarangay.vue';
 // import App from './components/UpdateClient.vue';
 // import App from './components/UpdateProduct.vue';
-// import App from './components/UpdateProductTransaction.vue';
 
 //create
 // import App from './components/CreateTown.vue';
+// import App from './components/CreateProduct.vue';
 
-import api from './axios.config.js'; // Import your configured Axios instance
+import api from '/axios.config.js'; // Import your configured Axios instance
 
 const app = createApp(App);
 

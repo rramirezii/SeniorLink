@@ -23,7 +23,7 @@
   },
   {
     "Senior": ["jane_smith_senior", "Jane Smith"],
-    "Date": "2024-05-14",
+    "Date": "2024-05-21",
     "Products": [
       {
         "name": "Product4",
@@ -51,7 +51,7 @@
     "Establishment": ["store789", "Electronics Hub"]
   },
   {
-    "Senior": ["emily_clark_senior", "Emily Clark"],
+    "Senior": ["jane_smith_senior", "Jane Smith"],
     "Date": "2024-04-25",
     "Products": [
       {
@@ -68,7 +68,7 @@
     "Establishment": ["store101", "Bookstore"]
   },
   {
-    "Senior": ["william_jones_senior", "William Jones"],
+    "Senior": ["jane_smith_senior", "Jane Smith"],
     "Date": "2024-05-17",
     "Products": [
       {
@@ -107,7 +107,7 @@
     "Establishment": ["store103", "Tech Store"]
   },
   {
-    "Senior": ["robert_davis_senior", "Robert Davis"],
+    "Senior": ["jane_smith_senior", "Jane Smith"],
     "Date": "2024-05-22",
     "Products": [
       {
@@ -136,7 +136,7 @@
     "Establishment": ["store105", "Electronics Hub"]
   },
   {
-    "Senior": ["charles_wilson_senior", "Charles Wilson"],
+    "Senior": ["jane_smith_senior", "Jane Smith"],
     "Date": "2024-05-07",
     "Products": [
       {
@@ -153,7 +153,7 @@
     "Establishment": ["store106", "Bookstore"]
   },
   {
-    "Senior": ["patricia_white_senior", "Patricia White"],
+    "Senior": ["jane_smith_senior", "Jane Smith"],
     "Date": "2024-05-01",
     "Products": [
       {

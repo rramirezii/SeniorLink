@@ -100,8 +100,8 @@
       }
     },
     navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
+      console.log("Navigating to barangay with ID:", id);
+      this.$router.push({ name: 'ViewBarangay', params: { id: id } });
     }
 };
   </script>

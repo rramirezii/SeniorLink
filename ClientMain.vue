@@ -28,7 +28,7 @@
       <h3>Total Discount</h3>
     </div>
     <div class="table-container">
-      <template v-for="(dateGroup, date) in groupedTableData" :key="date">
+      <<template v-for="(dateGroup, date) in sortedGroupedTableData" :key="date"> 
         <h3 class="date-header">{{ formatDate(date) }}</h3>
         <div v-for="(establishmentGroup, establishment) in dateGroup" :key="establishment">
           <h4 class="establishment-header">{{ establishment }}</h4> 
@@ -86,6 +86,18 @@ export default {
           return Object.values(item).some(value => String(value).toLowerCase().includes(query));
         });
       },
+    },
+    sortedGroupedTableData() {
+      const sortedDates = Object.keys(this.groupedTableData).sort((a, b) => {
+        return new Date(b) - new Date(a); // Sort dates in descending order
+      });
+
+      const sortedGroups = {};
+      sortedDates.forEach(date => {
+        sortedGroups[date] = this.groupedTableData[date];
+      });
+
+      return sortedGroups;
     },
     totalAmountForWeek() {
       const today = new Date();
