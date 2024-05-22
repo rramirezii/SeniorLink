@@ -85,3 +85,7 @@ $router->group(['prefix' => 'senior'], function () use ($router) {
 
     $router->post('/update', 'SeniorController@update'); // update
 });
+
+$router->post('/getDetailsFromQR', 'SeniorController@getDetailFromQR');
+
+$router->get('/calculateRemainingBalance', 'SeniorController@calculateRemainingBalance');

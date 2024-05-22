@@ -78,6 +78,37 @@ class SeniorController extends BaseController
     public function getDetailFromQR(Request $request)
     {
         // process the scanned qr here and return the details
+        
+        // Validate the request to ensure a username is provided
+        $request->validate([
+            'username' => 'required|string',
+        ]);
+
+        // Retrieve the username from the request
+        $username = $request->input('username');
+
+        // Find the senior by the username
+        $senior = Senior::where('username', $username)->first();
+
+        // Check if the senior exists
+        if (!$senior) {
+            return response()->json(['error' => 'Senior not found'], 404);
+        }
+
+        // Return the senior details except for the password
+        return response()->json([
+            'id' => $senior->id,
+            'osca_id' => $senior->osca_id,
+            'fname' => $senior->fname,
+            'mname' => $senior->mname,
+            'lname' => $senior->lname,
+            'barangay_id' => $senior->barangay_id,
+            'birthdate' => $senior->birthdate,
+            'contact_number' => $senior->contact_number,
+            'username' => $senior->username,
+            'profile_image' => $senior->profile_image,
+            'qr_image' => $senior->qr_image,
+        ]);
     }
 
     // updates a the phone number and profile 
@@ -133,6 +164,26 @@ class SeniorController extends BaseController
             throw new \Exception('No record found to update or no valid changes made');
         }
     }
+
+    // Calculates the remaining balance of a senior for a week
+    private function calculateRemainingBalance($seniorId)
+    {
+        // Define the start date of the period (one week ago)
+        $oneWeekAgo = Carbon::now()->subWeek();
+
+        // Fetch the total amount spent by the senior in the past week
+        $totalSpent = ProductTransaction::join('transactions', 'product_transaction.transaction_id', '=', 'transactions.id')
+                    ->join('products', 'product_transaction.products_id', '=', 'products.id')
+                    ->where('transactions.senior_id', $seniorId)
+                    ->where('transactions.date', '>=', $oneWeekAgo)
+                    ->sum('products.price');
+
+        // Calculate the remaining balance
+        $remainingBalance = self::INITIAL_BALANCE - $totalSpent;
+
+        return $remainingBalance;
+    }
+
 
     private function getScope()
     {
