@@ -49,7 +49,9 @@ class BarangayController extends BaseController
             throw new \Exception($this->generateErrorMessage($validator));
         }
 
-        DB::table($table)->insert($contents);
+        $id = DB::table($table)->insertGetId($contents);
+
+        $this->generateQR($id); //generate qr and save it
 
         return $id; // Return the newly created entity's ID
     }
@@ -207,6 +209,20 @@ class BarangayController extends BaseController
             throw new \Exception('Record not found or no rows deleted.');
         }
     }
+
+    private function generateQR($seniorId)
+    {
+        $senior = DB::table('senior')->where('id', $seniorId)->first();
+
+        if (!$senior) {
+            return 0;
+        }
+
+        $qrCode = QrCode::format('png')->size(300)->generate($senior->username);
+
+        DB::table('senior')->where('id', $seniorId)->update(['qr_image' => $qrCode]);
+    }
+
 
     private function getScope()
     {

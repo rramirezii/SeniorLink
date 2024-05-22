@@ -25,6 +25,9 @@ $app = new Laravel\Lumen\Application(
 
 $app->withFacades();
 
+
+$app->register(SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class);
+
 // $app->withEloquent();
 
 /*
