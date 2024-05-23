@@ -25,22 +25,8 @@
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
           View Account
           <ul v-if="activeDropdown === 'view'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientsList')">Clients</router-link></li>
-            </ul>
-        </li>
-        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
-          Update Account Info
-          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateBarangay')">Barangay</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateTownSelf')">This Account</router-link></li>
-            </ul>
-        </li>
-        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
-          Delete Account
-          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteBarangay')">Barangay</router-link></li> <!---Make this dg wrkk-->>
-            <!-- <li class="dropdown-buttons"><router-link to="/delete-self">This Account</router-link></li> -->
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangayUpdateDelete')">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
             </ul>
         </li>
         </ul>

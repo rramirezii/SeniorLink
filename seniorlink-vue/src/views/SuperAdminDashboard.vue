@@ -36,23 +36,7 @@
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewSuperAdmin')">Super Admin</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewEstablishment')">Establishment</router-link></li>
-            </ul>
-        </li>
-        <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
-          Update Account Info
-          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateTown')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateEstablishment')">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateSuperAdmin')">Super Admin</router-link></li>
-            </ul>
-        </li>
-        <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
-          Delete Account
-          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteTown')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteEstablishment')">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewEstablishmentUpdateDelete')">Establishment</router-link></li>
             </ul>
         </li>
         </ul>
