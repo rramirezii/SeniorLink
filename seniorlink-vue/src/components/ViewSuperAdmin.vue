@@ -26,22 +26,21 @@
     </div>
     <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
+      <p v-if="error" class="error-message">{{ error }}</p>
       <table v-else class="table">
         <thead>
           <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
+            <th>Name</th>
+            <th>Username</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="filteredTableData.length === 0">
-            <td colspan="9" class="no-results">No results found.</td>
+            <td colspan="2" class="no-results">No results found.</td>
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.username }}</td>
           </tr>
         </tbody>
       </table>
@@ -50,35 +49,30 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import apiServices from '@/services/apiServices';
   
   export default {
     data() {
       return {
-        tableHeaders: ['Username'],  // Default headers
+        tableHeaders: ['Name', 'Username'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
         excludedFields: ['id'], // Array of fields to exclude
+        error: null
       };
     },
     computed: {
     filteredTableData() {
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
+          return item.name.toLowerCase().includes(query) || item.username.includes(query);
         });
-        });
-    },
+      },
     },
     async mounted() {
       try {
-        const response = await axios.get('/superadmin.json');  //file should be in the `public` folder 
+        const response = await apiServices.get('/admin/show/super_admin');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;

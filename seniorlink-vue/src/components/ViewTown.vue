@@ -25,9 +25,9 @@
       <table v-else class="table">
         <thead>
           <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
+            <th>Name</th>
+            <th>Zip Code</th>
+            <th>Username</th>
           </tr>
         </thead>
         <tbody>
@@ -35,9 +35,9 @@
             <td colspan="3" class="no-results">No results found.</td>
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.zip_code }}</td>
+            <td>{{ item.username }}</td>
           </tr>
         </tbody>
       </table>
@@ -51,7 +51,7 @@ import apiServices from '@/services/apiServices';
 export default {
   data() {
     return {
-      tableHeaders: ['Name', 'Zip Code'],
+      tableHeaders: ['Name', 'Zip Code', 'Username'],
       tableData: [],
       searchQuery: '',
       loading: true,
@@ -62,9 +62,7 @@ export default {
     filteredTableData() {
       const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-          return String(item[header]).toLowerCase().includes(query);
-        });
+        return item.name.toLowerCase().includes(query) || item.zip_code.includes(query) || item.username.includes(query);
       });
     }
   },
@@ -74,10 +72,10 @@ export default {
       this.tableData = response;  // Ensure response is correctly structured
       console.log(this.tableData);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      this.error = 'Error fetching data. Please try again later.';
+        console.error('Error fetching data:', error);
+        this.error = 'Error fetching data. Please try again later.';
     } finally {
-      this.loading = false;
+        this.loading = false;
     }
   },
   methods: {
