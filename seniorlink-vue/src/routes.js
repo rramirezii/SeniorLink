@@ -17,9 +17,9 @@ const routes = [
     //craete super admin
 
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
-    { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientList' },
+    { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangay, name: 'ViewBarangay' },
-    { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' },
+    { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' }, //add deelete button
     { path: '/admin/view/establishments', component: views.ViewEstablishmentUpdateDelete, name: 'ViewEstablishmentUpdateDelete' },
     
