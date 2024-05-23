@@ -22,19 +22,7 @@
     <nav>
       <ul class="nav-buttons">
         <li><router-link to='#' @click.prevent="redirectTo('CreateClient')">Create Account</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('ViewClientList')">View Client</router-link></li>
-        <!-- <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
-          Update Account Info
-          <ul v-if="activeDropdown === 'update'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateClient')">Client</router-link></li>
-            </ul>
-        </li> -->
-        <!-- <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
-          Delete Account
-          <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteClient')">Client</router-link></li>
-            </ul>
-        </li> -->
+        <li><router-link to='#' @click.prevent="redirectTo('ViewClientListUpdateDelete')">View Client</router-link></li>
         </ul>
     </nav>
   </div>
