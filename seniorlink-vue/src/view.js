@@ -36,4 +36,5 @@ export { default as CreateTown } from './components/CreateTown.vue';
 export { default as CreateEstablishment } from './components/CreateEstablishment.vue';
 export { default as CreateBarangay } from './components/CreateBarangay.vue';
 export { default as CreateClient } from './components/CreateClient.vue';
+export { default as LoginPassword } from './components/LoginPassword.vue';
 //lacking create establishment

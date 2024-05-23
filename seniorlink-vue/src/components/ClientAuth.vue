@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
@@ -61,10 +61,11 @@ export default {
       }
 
       try {
-        const response = await axios.post('/api/enter-birthday', { birthday: this.birthday });
+        const response = await apiServices.post('/api/enter-birthday', { birthday: this.birthday }); //CHANGE THIS TO API
 
         if (response.status === 200 && response.data.success) {
-          this.$router.push('/profile');
+          const username = response.data.username; // Assuming response.data.role contains the role
+          this.$router.push(`/profile/${username}`);
         } else {
           // If the backend validation fails (e.g., not a senior)
           this.error = response.data.message || "An error occurred. Please try again."; 

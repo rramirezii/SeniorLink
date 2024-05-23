@@ -6,7 +6,7 @@
         </div>
       </header>
       <h2>Log-In</h2>
-      <form @submit.prevent="handleSubmit">
+      <form @submit.prevent="enterPassword">
         <div class="form-container">
           <div class="form-group">
           <label for="pass">Password:</label>
@@ -22,12 +22,38 @@
   </template>
   
   <script>
+  import apiServices from '@/services/apiServices';
+
   export default {
     data() {
       return {
         pass: ''
       };
     },
+    methods: {
+      async enterPassword() {
+        const pass = this.pass;
+
+        // Check if the entered date is a valid date
+        if (isNaN(pass)) { 
+          this.error = "Invalid date of birth. Please enter a valid date.";
+          return;
+        }
+
+        try {
+          const response = await apiServices.post('/api/enter-password', { password: this.pass }); //CHANGE THIS TO API
+
+          if (response.status === 200 && response.data.success) {
+            const role = response.data.role; // Assuming response.data.role contains the role
+            this.$router.push(`/${role}/dashboard`);
+          } else {
+            this.error = response.data.message || "An error occurred. Please try again."; 
+          }
+        } catch (error) {
+          // hello error
+        }
+      }
+    }
   };
   </script>
   

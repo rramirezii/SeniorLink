@@ -12,13 +12,13 @@ const routes = [
     { path: '/view-establishment-view-button', component: views.ViewEstablishmentViewButton, name: 'ViewEstablishmentViewButton' },
     { path: '/view-barangay-w-delete', component: views.ViewBarangayWDelete, name: 'ViewBarangayWDelete' },
     { path: '/view-products-transaction', component: views.ViewProductsTransaction, name: 'ViewProductsTransaction' },
-    { path: '/super-admin-dashboard', component: views.SuperAdminDashboard, name: 'SuperAdminDashboard' },
+    { path: '/admin/dashboard', component: views.SuperAdminDashboard, name: 'SuperAdminDashboard' },
     { path: '/client-dashboard-phone', component: views.ClientDashboardPhone, name: 'ClientDashboardPhone' },
     { path: '/client-main', component: views.ClientMain, name: 'ClientMain' },
-    { path: '/client-dashboard', component: views.ClientDashboard, name: 'ClientDashboard' },
-    { path: '/barangay-dashboard', component: views.BarangayDashboard, name: 'BarangayDashboard' },
-    { path: '/establishment-dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
-    { path: '/town-dashboard', component: views.TownDashboard, name: 'TownDashboard' },
+    { path: '/client/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' },
+    { path: '/barangay/dashboard', component: views.BarangayDashboard, name: 'BarangayDashboard' },
+    { path: '/establishment/dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
+    { path: '/town/dashboard', component: views.TownDashboard, name: 'TownDashboard' },
     { path: '/client-select-menu', component: views.ClientSelectMenu, name: 'ClientSelectMenu' },
     { path: '/', component: views.ClientLogin, name: 'ClientLogin' },
     { path: '/client-auth', component: views.ClientAuth, name: 'ClientAuth' },
@@ -38,7 +38,8 @@ const routes = [
     { path: '/create-town', component: views.CreateTown, name: 'CreateTown' },
     { path: '/create-establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
     { path: '/create-barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
-    { path: '/create-client', component: views.CreateClient, name: 'CreateClient' }
+    { path: '/create-client', component: views.CreateClient, name: 'CreateClient' },
+    { path: '/admin-auth', component: views.LoginPassword, name: 'LoginPassword' }
   ];
   
   export default routes;

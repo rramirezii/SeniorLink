@@ -28,7 +28,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
+
+// import axios from 'axios';
 
 export default {
   data() {
@@ -46,12 +48,17 @@ export default {
       }
 
       try {
-        const response = await axios.get('/api/user', {
+        const response = await apiServices.get('/api/user', { // CHANGE THIS to API
           params: { loginID: this.loginID }
         });
 
         if (response.status === 200 && response.data.success) {
-          this.$router.push('/profile'); 
+          const role = response.data.role; // Assuming response.data.role contains the role
+          if (role === 'basic') {
+            this.$router.push('/client-auth');
+          } else{
+            this.$router.push('/admin-auth');
+          }
         } else {
           this.error = response.data.message || "Login failed";
         }
