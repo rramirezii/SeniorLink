@@ -21,9 +21,8 @@
     </header>
     <nav>
       <ul class="nav-buttons">
-        <li><router-link to="/view">View Transactions</router-link></li>
-        <li><router-link to="/update">Update Account</router-link></li>
-        <li><router-link to="/delete">Delete Account</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('UpdateClientSelf')">Update Account</router-link></li>
         </ul>
     </nav>
   </div>

@@ -48,9 +48,20 @@ export default {
       }
 
       try {
-        const response = await apiServices.get('/api/user', { // CHANGE THIS to API
-          params: { loginID: this.loginID }
-        });
+          const response = await apiServices.post('/api/enter-password', { password: this.pass }); //CHANGE THIS TO API
+
+          if (response.status === 200 && response.data.success) {
+            const role = response.data.role; // Assuming response.data.role contains the role
+            this.$router.push(`/${role}/dashboard`);
+          } else {
+            this.error = response.data.message || "An error occurred. Please try again."; 
+          }
+        } catch (error) {
+          // hello error
+        }
+
+      try {
+        const response = await apiServices.post('/api/user', {username: this.loginID}); //CHANGE API
 
         if (response.status === 200 && response.data.success) {
           const role = response.data.role; // Assuming response.data.role contains the role
