@@ -24,35 +24,35 @@
         <li @click="toggle('create')" class="dropdown" :class="{ active: activeDropdown === 'create' }">
           Create Account
           <ul v-if="activeDropdown === 'create'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateTown', { /* your payload here */ })">Town</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateEstablishment', { /* your payload here */ })">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('CreateSuper')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateTown')">Town</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateSuper')">Super Admin</router-link></li>
             </ul>
         </li>
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
           View Account
           <ul v-if="activeDropdown === 'view'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewTown')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewSuperAdmin')">Super Admin</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('ViewEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewEstablishment')">Establishment</router-link></li>
             </ul>
         </li>
         <li @click="toggle('update')" class="dropdown" :class="{ active: activeDropdown === 'update' }">
           Update Account Info
           <ul v-if="activeDropdown === 'update'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateTown')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateEstablishment')">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('UpdateSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('UpdateSuperAdmin')">Super Admin</router-link></li>
             </ul>
         </li>
         <li @click="toggle('delete')" class="dropdown" :class="{ active: activeDropdown === 'delete' }">
           Delete Account
           <ul v-if="activeDropdown === 'delete'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteTown')">Towns</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteEstablishment')">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link @click.prevent="redirectTo('DeleteSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteTown')">Towns</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteEstablishment')">Establishment</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('DeleteSuperAdmin')">Super Admin</router-link></li>
             </ul>
         </li>
         </ul>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import apiServices from '@/services/apiServices';
+// import apiServices from '@/services/apiServices';  
 
 export default {
   data() {
@@ -98,25 +98,25 @@ export default {
       }
     }
   }, 
-  async redirectTo(routeName, payload = null) { // Add payload parameter
-      try {
-        const redirectUrl = process.env[`VUE_APP_${routeName.toUpperCase()}_URL`];
-        const componentName = routeName;
+  // async redirectTo(routeName, payload = null) { // Add payload parameter
+  //     try {
+  //       const redirectUrl = process.env[`API_${routeName.toUpperCase()}_URL`];
+  //       const componentName = routeName;
 
-        if (payload) {
-          // Make the API call with payload if provided
-          const response = await apiServices.post(redirectUrl, payload); 
-          // Handle the API response here (e.g., save to JSON, update state, etc.)
-          this.saveToJson(response.data);
-        }
+  //       if (payload) {
+  //         // Make the API call with payload if provided
+  //         const response = await apiServices.post(redirectUrl, payload); 
+  //         // Handle the API response here (e.g., save to JSON, update state, etc.)
+  //         this.saveToJson(response.data);
+  //       }
 
-        // Redirect to the corresponding Vue file
-        this.$router.push({ name: componentName });
-      } catch (error) {
-        console.error('Error redirecting:', error);
-        // Handle the error appropriately
-      }
-  }
+  //       // Redirect to the corresponding Vue file
+  //       this.$router.push({ name: componentName });
+  //     } catch (error) {
+  //       console.error('Error redirecting:', error);
+  //       // Handle the error appropriately
+  //     }
+  // }
 };
 </script>
 
