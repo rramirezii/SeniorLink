@@ -52,7 +52,11 @@ export default {
 
           if (response.status === 200 && response.data.success) {
             const role = response.data.role; // Assuming response.data.role contains the role
-            this.$router.push(`/${role}/dashboard`);
+            if (role === 'basic') {
+              this.$router.push('/authentication/senior');
+            } else {
+              this.$router.push('/authentication/admin');
+            }
           } else {
             this.error = response.data.message || "An error occurred. Please try again."; 
           }
