@@ -61,7 +61,6 @@
 </template>
 
 <script>
-// import apiServices from '@/services/apiServices';  
 
 export default {
   data() {
@@ -72,14 +71,6 @@ export default {
     };
   },
   methods: {
-    toggleProfileDropdown() {
-      this.showProfileDropdown = !this.showProfileDropdown;
-    },
-    signOut() {
-      // Implement your sign-out logic here
-      // (e.g., clear tokens, redirect to login page)
-      console.log("Signing out...");
-    },
     toggle(dropdown) {
       // Close other dropdowns if a different one is clicked
       if (this.activeDropdown && this.activeDropdown !== dropdown) {
@@ -97,26 +88,7 @@ export default {
         });
       }
     }
-  }, 
-  // async redirectTo(routeName, payload = null) { // Add payload parameter
-  //     try {
-  //       const redirectUrl = process.env[`API_${routeName.toUpperCase()}_URL`];
-  //       const componentName = routeName;
-
-  //       if (payload) {
-  //         // Make the API call with payload if provided
-  //         const response = await apiServices.post(redirectUrl, payload); 
-  //         // Handle the API response here (e.g., save to JSON, update state, etc.)
-  //         this.saveToJson(response.data);
-  //       }
-
-  //       // Redirect to the corresponding Vue file
-  //       this.$router.push({ name: componentName });
-  //     } catch (error) {
-  //       console.error('Error redirecting:', error);
-  //       // Handle the error appropriately
-  //     }
-  // }
+  }
 };
 </script>
 

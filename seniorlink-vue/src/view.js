@@ -7,7 +7,7 @@ export { default as ViewBarangay } from './components/ViewBarangay.vue';
 export { default as ViewSuperAdmin } from './components/ViewSuperAdmin.vue';
 export { default as ViewEstablishment } from './components/ViewEstablishment.vue';
 export { default as ViewEstablishmentViewButton } from './components/ViewEstablishment-viewbutton.vue';
-export { default as ViewBarangayWDelete } from './components/ViewBarangay-wdelete.vue';
+export { default as ViewBarangayUpdateDelete } from './components/ViewBarangay-wdelete.vue';
 export { default as ViewProductsTransaction } from './components/ViewProductsTransaction.vue';
 export { default as SuperAdminDashboard } from './views/SuperAdminDashboard.vue';
 export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.vue'; // integrate soon
@@ -36,4 +36,9 @@ export { default as CreateTown } from './components/CreateTown.vue';
 export { default as CreateEstablishment } from './components/CreateEstablishment.vue';
 export { default as CreateBarangay } from './components/CreateBarangay.vue';
 export { default as CreateClient } from './components/CreateClient.vue';
+export { default as LoginPassword } from './components/LoginPassword.vue';
+
+export { default as ViewClientListUpdateDelete } from './components/ViewClientListUpdateDelete.vue';
+export { default as ViewEstablishmentUpdateDelete } from './components/ViewEstablishmentUpdateDelete.vue';
+
 //lacking create establishment

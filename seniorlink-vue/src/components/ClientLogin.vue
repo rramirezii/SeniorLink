@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="client-auth">
     <header class="header">
       <div class="brand">
@@ -28,7 +28,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
+
+// import axios from 'axios';
 
 export default {
   data() {
@@ -46,12 +48,28 @@ export default {
       }
 
       try {
-        const response = await axios.get('/api/user', {
-          params: { loginID: this.loginID }
-        });
+          const response = await apiServices.post('/api/enter-password', { password: this.pass }); //CHANGE THIS TO API
+
+          if (response.status === 200 && response.data.success) {
+            const role = response.data.role; // Assuming response.data.role contains the role
+            this.$router.push(`/${role}/dashboard`);
+          } else {
+            this.error = response.data.message || "An error occurred. Please try again."; 
+          }
+        } catch (error) {
+          // hello error
+        }
+
+      try {
+        const response = await apiServices.post('/api/user', {username: this.loginID}); //CHANGE API
 
         if (response.status === 200 && response.data.success) {
-          this.$router.push('/profile'); 
+          const role = response.data.role; // Assuming response.data.role contains the role
+          if (role === 'basic') {
+            this.$router.push('/client-auth');
+          } else{
+            this.$router.push('/admin-auth');
+          }
         } else {
           this.error = response.data.message || "Login failed";
         }

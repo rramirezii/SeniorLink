@@ -21,10 +21,10 @@
     </header>
     <nav>
       <ul class="nav-buttons">
-        <li><router-link @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
-        <li><router-link @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
-        <li><router-link @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
-        <li><router-link @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
         </ul>
     </nav>
   </div>
@@ -55,10 +55,6 @@ export default {
           this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
         });
       }
-    },
-    async redirectTo(routeName, payload = null) {
-      // POPULATE THIS
-      return payload;
     }
   }
 };
