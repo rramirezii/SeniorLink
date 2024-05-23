@@ -11,6 +11,7 @@ const routes = [
 
     // super admin
     { path: '/admin/dashboard', component: views.SuperAdminDashboard, name: 'SuperAdminDashboard' },
+    { path: '/admin/', redirect: '/admin/dashboard'},
     
     { path: '/admin/create/town', component: views.CreateTown, name: 'CreateTown' },
     { path: '/admin/create/establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
@@ -30,6 +31,7 @@ const routes = [
     // deletes are enforcedd in view
     // TOWN
     { path: '/town/dashboard', component: views.TownDashboard, name: 'TownDashboard' },
+    { path: '/town/', redirect: '/town/dashboard'},
     
     { path: '/town/create/barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
     
@@ -43,7 +45,8 @@ const routes = [
 
     // BARANGAY
     { path: '/barangay/dashboard', component: views.BarangayDashboard, name: 'BarangayDashboard' },
-    
+    { path: '/barangay/', redirect: '/barangay/dashboard'},
+
     { path: '/barangay/create/senior', component: views.CreateClient, name: 'CreateClient' },
     
     { path: '/barangay/view/seniors', component: views.ViewClientListUpdateDelete, name: 'ViewClientListUpdateDelete' },
@@ -54,6 +57,7 @@ const routes = [
     
     // Establishment
     { path: '/establishment/dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
+    { path: '/establishment/', redirect: '/establishment/dashboard'},
     
     // Read senior
     // read senior transation
@@ -63,6 +67,8 @@ const routes = [
 
     // Senior
     { path: '/senior/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' }, // WHICH IS THE DASHBOARD
+    { path: '/senior/', redirect: '/senior/dashboard'},
+
     { path: '/senior/dashboard/phone', component: views.ClientDashboardPhone, name: 'ClientDashboardPhone' },
     { path: '/senior/dashboard/menu', component: views.ClientSelectMenu, name: 'ClientSelectMenu' }, //WHICH IS THE DASHBOARD
     { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
