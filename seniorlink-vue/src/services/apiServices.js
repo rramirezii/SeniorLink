@@ -1,11 +1,17 @@
 import axios from 'axios';
 
+// Log the environment variable to ensure it's loaded correctly
+console.log('VUE_APP_API_BASE_URL:', process.env.VUE_APP_API_BASE_URL);
+
 const api = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API_URL || '/api', // Default to '/api' if not in .env
+  baseURL: process.env.VUE_APP_API_BASE_URL || '/api', // Default to '/api' if not defined
   headers: {
-    'Content-Type': 'application/json' 
+    'Content-Type': 'application/json'
   }
 });
+
+// Log the Axios base URL to ensure it's correctly set
+console.log('Axios Base URL:', api.defaults.baseURL);
 
 const apiServices = {
   get: async (url) => {

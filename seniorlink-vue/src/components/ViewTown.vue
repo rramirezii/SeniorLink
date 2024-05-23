@@ -1,37 +1,33 @@
 <template>
-    <div class="view-town">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-        <div class="profile-and-search">
+  <div class="view-town">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
+      </div>
+      <div class="profile-and-search">
         <div class="search-bar">
           <input type="text" placeholder="Search..." v-model="searchQuery" />
           <button @click="performSearch">Search</button>
         </div>
         <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
-          <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
-      </div>
-        </div> 
+          <router-link to="/profile">
+            <div class="profile-placeholder"></div>
+          </router-link>
+        </div>
+      </div> 
     </header>
     <div>
-    <h2>Town List</h2>
+      <h2>Town List</h2>
     </div>
     <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
+      <p v-if="error" class="error-message">{{ error }}</p>
       <table v-else class="table">
         <thead>
           <tr>
-            <th v-for="header in tableHeaders" :key="header">
-              {{ header }}
-            </th>
+            <th>Name</th>
+            <th>Zip Code</th>
+            <th>Username</th>
           </tr>
         </thead>
         <tbody>
@@ -39,62 +35,59 @@
             <td colspan="3" class="no-results">No results found.</td>
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.zip_code }}</td>
+            <td>{{ item.username }}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
+
+<script>
+import apiServices from '@/services/apiServices';
+
+export default {
+  data() {
+    return {
+      tableHeaders: ['Name', 'Zip Code', 'Username'],
+      tableData: [],
+      searchQuery: '',
+      loading: true,
+      error: null
+    };
+  },
+  computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
-    },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
+        return item.name.toLowerCase().includes(query) || item.zip_code.includes(query) || item.username.includes(query);
+      });
     }
-  };
-  </script>
+  },
+  async mounted() {
+    try {
+      const response = await apiServices.get('/admin/show/town');
+      this.tableData = response;  // Ensure response is correctly structured
+      console.log(this.tableData);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        this.error = 'Error fetching data. Please try again later.';
+    } finally {
+        this.loading = false;
+    }
+  },
+  methods: {
+    performSearch() {
+      console.log('Searching for:', this.searchQuery);
+    },
+    toggleProfileDropdown() {
+      // Toggle profile dropdown logic
+    }
+  }
+};
+</script>
   
   <style scoped>
   .view-town {
