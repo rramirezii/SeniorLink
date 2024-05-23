@@ -29,24 +29,28 @@
     <table v-else class="table">
       <thead>
         <tr>
-          <th v-for="header in tableHeaders" :key="header">
-            {{ header }}
-          </th>
+          <th>Name</th>
+          <th>Code</th>
+          <th>Address</th>
+          <th>Username</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr v-if="filteredTableData.length === 0">
-          <td colspan="9" class="no-results">No results found.</td>
+          <td colspan="5" class="no-results">No results found.</td>
         </tr>
         <tr v-for="item in filteredTableData" :key="item.id"> 
-          <td v-for="header in tableHeaders" :key="header">
-            {{ item[header] }} 
-          </td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.code }}</td>
+          <td>{{ item.address }}</td>
+          <td>{{ item.username }}</td>
           <td> <div class="button-container">
-              <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
+              <!-- send the whole item -->
+              <router-link :to="{ name: 'UpdateEstablishment', params: { item }}"> 
                 <button class="update-button">Update</button>
               </router-link>
+              <!-- to see if function -->
               <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
             </div>
           </td> 
@@ -58,43 +62,38 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
     return {
-      tableHeaders: ['Name', 'Code', 'Address'],  // Default headers
+      tableHeaders: ['Name', 'Code', 'Address', 'Username'],  // Default headers
       tableData: [],
       searchQuery: '',
       loading: true,
-      excludedFields: ['id'], // Array of fields to exclude
+      error: null
     };
   },
   computed: {
-  filteredTableData() {
+    filteredTableData() {
       const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-      return this.tableHeaders.some(header => {
-          if (header.toLowerCase() !== 'id' && header !== 'Password') { // Exclude the "id" column
-          return String(item[header]).toLowerCase().includes(query);
-          } else {
-          return false; // Don't include "id" in the search
-          }
+        return item.name.toLowerCase().includes(query) || item.code.includes(query) || item.address.includes(query) || item.username.includes(query);
       });
-      });
-  },
+    }
   },
   async mounted() {
     try {
-      const response = await axios.get('/establishment.json');  //file should be in the `public` folder 
-      this.tableData = response.data;
-     
+      const response = await apiServices.get('/admin/show/establishment');  //file should be in the `public` folder 
+      this.tableData = response || [];
       this.loading = false;
     } catch (error) {
-      console.error("Error fetching data:", error);
-      this.loading = false;
-      // Handle errors appropriately (show an error message to the user)
-    } 
+        console.error("Error fetching data:", error);
+        this.loading = false;
+        // Handle errors appropriately (show an error message to the user)
+    } finally {
+        this.loading = false;
+    }
   },
   methods: {
     performSearch() {
