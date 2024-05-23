@@ -1,13 +1,13 @@
 <template>
-  <div class="senior-link">
+  <div class="update-client">
     <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <div class="search-bar">
-        <!-- <input type="text" placeholder="Search..." />
-        <button>Search</button> -->
-      </div>
+      <!-- <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>Search</button>
+      </div> -->
       <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
@@ -19,57 +19,141 @@
         </ul> -->
       </div>
     </header>
-    <nav>
-      <ul class="nav-buttons">
-            <li><router-link to='#' @click.prevent="redirectTo('CreateBarangay')">Create Account</router-link></li>
-        <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
-          View Account
-          <ul v-show="activeDropdown === 'view'" class="dropdown-content">
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangayUpdateDelete')">Barangay</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
-          </ul>
-        </li>
-        </ul>
-    </nav>
+    <h2>Update Client Account</h2>
+    <form @submit.prevent="handleSubmit">
+      <div class="form-container">
+        <div class="form-group">
+          <label for="contactNumber">Contact Number:</label>
+          <input type="tel" id="contactNumber" v-model="contactNumber">
+        </div>
+
+        <div class="form-group">
+          <label for="profilePic">Profile Picture:</label>
+          <input type="file" id="profilePic" accept="image/*" @change="handleFileChange">
+        </div>
+
+        <div v-if="profileImagePreview" class="image-preview">
+          <img :src="profileImagePreview" alt="Profile Preview" />
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit">Update Information</button>
+      </div>
+    </form>
+  
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+  props: {
+    clientId: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
-      activeDropdown: null, // Track the currently active dropdown
-      maxWidth: 0,
+      contactNumber: '',
+      profileImage: null, // File object for the uploaded image
+      profileImagePreview: null, // Data URL for previewing the image
     };
   },
   methods: {
-    toggle(dropdown) {
-      // Close other dropdowns if a different one is clicked
-      if (this.activeDropdown && this.activeDropdown !== dropdown) {
-        this.activeDropdown = null;
-      } 
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      this.profileImage = file;
 
-      // Toggle the clicked dropdown
-      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
-
-      // Calculate max width when dropdown is opened
-      if (this.active) {
-        this.$nextTick(() => {
-          const links = this.$el.querySelectorAll('.dropdown-content a');
-          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
-        });
+      // Create a preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profileImagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    async handleSubmit() {
+      const formData = new FormData(); // Use FormData to send file data
+      formData.append('contactNumber', this.contactNumber);
+      if (this.profileImage) {
+        formData.append('profilePic', this.profileImage);
       }
-    }
-  }
+
+      try {
+        const response = await axios.post(`/api/clients/${this.clientId}/update`, formData); // Send client ID in the URL
+
+        if (response.status === 200) {
+          console.log('Client updated successfully:', response.data);
+          // Optionally, navigate or display a success message
+        } else {
+          console.error('Error updating client:', response.data);
+          // Handle errors gracefully (e.g., show error messages)
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.senior-link {
+.update-client {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
+}
+
+label {
+  display: block;
+  margin: 1rem;
+  font-weight: bold;
+  text-align: left;
+  width: 150px;
+}
+
+form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0.5rem;
+  flex: 1;            /* Allow input to take up remaining space */
+}
+label, input {
+  float: left;
+}
+button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+
+.form-group {
+  display: flex; 
+  align-items: center;  /* Vertically center label and input */
+  width: 600px; 
+}
+
+.form-group label {
+  width: 150px;      /* Set a fixed width for the labels */
+  text-align: right; /* Align the label text to the right */
+  margin-right: 1rem; /* Add some space between label and input */
+}
+
+/* Center the form elements within the form-container */
+.form-container {
+  display: flex;          
+  flex-direction: column; 
+  align-items: center;
+  padding-right: 25%;
 }
 
 .header {
@@ -153,7 +237,6 @@ nav li:hover{
   list-style: none;
   padding: 0;
   margin: 0;
-  text-decoration: none; /* Remove underline */
 }
 
 .nav-buttons li {
@@ -161,14 +244,15 @@ nav li:hover{
   position: relative; /* Crucial for containing the dropdown */
 }
 
-.nav-buttons li a { /* Style for links within nav-buttons */
-  color: #ffffff; /* Default white color for other links */
+a {
+  text-decoration: none;
+  color: #000;
 }
 
-.nav-buttons a {
-    color: #ffffff;
-    text-decoration: none; /* Remove underline for all buttons */
+a:hover {
+  color: #2c3e50;
 }
+
 /* profile logo */
 .profile-link {
   display: flex;
@@ -228,15 +312,12 @@ nav li:hover{
   display: flex;            /* Enable flexbox for centering */
   justify-content: center; /* Center the text horizontally */
   align-items: center;    /* Center the text vertically */
-  padding-top: 2%;
-  padding-bottom: 1%;
 }
 
 .dropdown-buttons a {
   display: block;     /* Make sure links fill the width */
   white-space: nowrap; /* Prevent text from wrapping */
 }
-
 
 .profile-placeholder {
   width: 55px;         

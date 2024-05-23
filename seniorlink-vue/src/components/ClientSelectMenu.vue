@@ -15,8 +15,9 @@
     <nav>
       <ul class="nav-buttons vertical">
         <li @click="navigateTo('/profile')">View Profile</li>
-        <li @click="navigateTo('/qr')">View QR</li>
-        <li @click="navigateTo('/transactions')">View Transactions</li>
+        <li @click="navigateTo('./update/self')">Update Profile</li>
+        <li @click="navigateTo('./qr')">View QR</li>
+        <li @click="navigateTo('./transactions')">View Transactions</li>
         <li @click="navigateTo('/ptransactions')">Print Transactions</li>
       </ul>
     </nav>

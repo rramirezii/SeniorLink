@@ -27,13 +27,25 @@
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
-      </div>
+          <label for="quantity">Quantity:</label>
+          <input 
+            type="number" 
+            id="quantity" 
+            v-model="quantity" 
+            min="0"                
+            @input="handleNumberInput('quantity')"
+          >
+        </div>
+        <div class="form-group">
+          <label for="price">Price:</label>
+          <input 
+            type="number" 
+            id="price" 
+            v-model="price" 
+            min="0"                
+            @input="handleNumberInput('price')"
+          >
+        </div>
       <div class="form-group">
         <label for="name">Attendant:</label>
         <input type="text" id="name" v-model="name" required>
@@ -44,7 +56,7 @@
       </div>
     </div>
       <div class="form-actions">
-        <button type="submit">Update Information</button>
+        <button type="submit">Update Transaction</button>
       </div>
     </form>
   
@@ -61,6 +73,17 @@ export default {
       attendant: '',
     };
   },
+  methods: {
+    handleNumberInput(field) {
+      if (this[field] < 0) {
+        this[field] = 0;
+      }
+    },
+    handleSubmit() {
+      // Your transaction submission logic here
+      console.log('Transaction:', this.name, this.quantity, this.price, this.attendant);
+    }
+  }
 };
 </script>
 

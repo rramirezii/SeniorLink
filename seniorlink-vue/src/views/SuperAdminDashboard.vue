@@ -26,7 +26,7 @@
           <ul v-if="activeDropdown === 'create'" class="dropdown-content">
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateTown')">Town</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateEstablishment')">Establishment</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateSuper')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('CreateSuperAdmin')">Super Admin</router-link></li>
             </ul>
         </li>
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">

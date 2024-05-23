@@ -23,16 +23,32 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
       <div class="form-group">
-        <label for="name">Name:</label>
+        <label for="name">Product Name:</label>
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
+          <label for="quantity">Quantity:</label>
+          <input 
+            type="number" 
+            id="quantity" 
+            v-model="quantity" 
+            min="0"                
+            @input="handleNumberInput('quantity')"
+          >
+        </div>
+        <div class="form-group">
+          <label for="price">Price:</label>
+          <input 
+            type="number" 
+            id="price" 
+            v-model="price" 
+            min="0"                
+            @input="handleNumberInput('price')"
+          >
+        </div>
       <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
+        <label for="name">Attendant:</label>
+        <input type="text" id="name" v-model="name" required>
       </div>
     </div>
       <div class="form-actions">
@@ -48,10 +64,22 @@ export default {
   data() {
     return {
       name: '',
-      quantity: '',
-      price: '',
+      quantity: '',               // Initialize to 0
+      price: '',                  // Initialize to 0
+      attendant: '',
     };
   },
+  methods: {
+    handleNumberInput(field) {
+      if (this[field] < 0) {
+        this[field] = 0;
+      }
+    },
+    handleSubmit() {
+      // Your transaction submission logic here
+      console.log('Transaction:', this.name, this.quantity, this.price, this.attendant);
+    }
+  }
 };
 </script>
 

@@ -15,7 +15,7 @@ const routes = [
     
     { path: '/admin/create/town', component: views.CreateTown, name: 'CreateTown' },
     { path: '/admin/create/establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
-    //craete super admin
+    { path: '/admin/create/superadmin', component: views.CreateSuperAdmin, name: 'CreateSuperAdmin' },
 
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
@@ -34,7 +34,7 @@ const routes = [
     { path: '/town/', redirect: '/town/dashboard'},
     
     { path: '/town/create/barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
-    
+
     { path: '/town/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
     // { path: '/view-client-per-barangay', component: views.ViewClientPerBarangay, name: 'ViewClientPerBarangay' },
     { path: '/town/view/seniors', component: views.ViewClientList, name: 'ViewClientList' },
@@ -51,14 +51,13 @@ const routes = [
     
     { path: '/barangay/view/seniors', component: views.ViewClientListUpdateDelete, name: 'ViewClientListUpdateDelete' },
     // read senior transaction
-
     { path: '/barangay/update/senior', component: views.UpdateClient, name: 'UpdateClient' },
-    { path: '/barangay/update/self', component: views.UpdateBarangaySelect, name: 'UpdateBarangaySelect' },
+    { path: '/barangay/update/self', component: views.UpdateBarangaySelf, name: 'UpdateBarangaySelf' },
     
     // Establishment
     { path: '/establishment/dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
     { path: '/establishment/', redirect: '/establishment/dashboard'},
-    
+    { path: '/establishment/create/transaction', component: views.CreateTransaction, name: 'CreateTransaction' },
     // Read senior
     // read senior transation
 
@@ -66,15 +65,11 @@ const routes = [
     // update establishment password
 
     // Senior
-    { path: '/senior/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' }, // WHICH IS THE DASHBOARD
     { path: '/senior/', redirect: '/senior/dashboard'},
-
-    { path: '/senior/dashboard/phone', component: views.ClientDashboardPhone, name: 'ClientDashboardPhone' },
-    { path: '/senior/dashboard/menu', component: views.ClientSelectMenu, name: 'ClientSelectMenu' }, //WHICH IS THE DASHBOARD
+    { path: '/senior/dashboard', component: views.ClientSelectMenu, name: 'ClientSelectMenu' }, //THIS IS THE SENIOR DASHBOARD
     { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
-
-    { path: '/senior/update/self', component: views.UpdateClientSelect, name: 'UpdateClientSelect' },
-    { path: '/senior/transactions', component: views.ClientMain, name: 'ClientMain' },
+    { path: '/senior/update/self', component: views.UpdateClientSelf, name: 'UpdateClientSelf' },
+    { path: '/senior/transactions', component: views.ClientTransactions, name: 'ClientTransactions' },
     
 
     // { path: '/view-products-transaction', component: views.ViewProductsTransaction, name: 'ViewProductsTransaction' },
