@@ -20,12 +20,28 @@
       </div>
     </header>
     <nav>
-      <ul class="nav-buttons">
-        <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
+      <form @submit.prevent="handleSubmit">
+        <div class="form-container">
+          <div class="form-group">
+            <label for="seniorUsername">Senior Username:</label>
+            <input type="text" id="seniorUsername" v-model="seniorUsername">
+          </div>
+        </div>
+        <ul class="nav-buttons">
+          <li>
+            <router-link to="#" :disabled="!seniorUsername" @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link>
+          </li>
+          <li>
+            <router-link to="#" :disabled="!seniorUsername" @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link>
+          </li>
+          <li>
+            <router-link to="#" :disabled="!seniorUsername" @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link>
+          </li>
+          <li>
+            <router-link to="#" :disabled="!seniorUsername" @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link>
+          </li>
         </ul>
+      </form>
     </nav>
   </div>
 </template>
@@ -36,24 +52,17 @@ export default {
     return {
       activeDropdown: null, // Track the currently active dropdown
       maxWidth: 0,
+      seniorUsername: '',
     };
   },
   methods: {
-    toggle(dropdown) {
-      // Close other dropdowns if a different one is clicked
-      if (this.activeDropdown && this.activeDropdown !== dropdown) {
-        this.activeDropdown = null;
-      } 
-
-      // Toggle the clicked dropdown
-      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
-
-      // Calculate max width when dropdown is opened
-      if (this.active) {
-        this.$nextTick(() => {
-          const links = this.$el.querySelectorAll('.dropdown-content a');
-          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
-        });
+    redirectTo(routeName) {
+      if (this.seniorUsername) { // Check if seniorUsername is not empty
+        // ... (your existing redirection logic)
+        this.$router.push({ name: routeName }); 
+      } else {
+        // Optionally, show an error message to the user
+        alert('Please enter a senior username.');
       }
     }
   }
@@ -248,6 +257,57 @@ nav li:hover{
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
+}
+label {
+  display: block;
+  margin: 1rem;
+  font-weight: bold;
+  text-align: left;
+  width: 150px;
+}
+
+form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0.5rem;
+  flex: 1;            /* Allow input to take up remaining space */
+}
+label, input {
+  float: left;
+}
+button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+
+.form-group {
+  display: flex; 
+  align-items: center;  /* Vertically center label and input */
+  width: 600px; 
+}
+
+.form-group label {
+  width: 150px;      /* Set a fixed width for the labels */
+  text-align: right; /* Align the label text to the right */
+  margin-right: 1rem; /* Add some space between label and input */
+}
+
+/* Center the form elements within the form-container */
+.form-container {
+  display: flex;          
+  flex-direction: column; 
+  align-items: center;
+  padding-right: 25%;
+  margin-bottom: 2rem;
+  margin-left: 19rem;
 }
 
 </style>
