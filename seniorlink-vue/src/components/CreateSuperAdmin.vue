@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -67,6 +69,40 @@ export default {
       bir: '',
     };
   },
+  methods: {
+    async handleSubmit() {
+      try {
+        const response = await axios.post('/api/admin', { // Make sure this route matches your backend
+          name: this.name,
+          address: this.address,
+          password: this.password,
+          owner: this.owner,
+          contact_number: this.contactNumber,
+          bir: this.bir,
+        });
+    
+        if (response.status === 200) {
+          console.log('Admin created successfully:', response.data);
+
+          // Reset form fields
+          this.name = '';
+          this.address = '';
+          this.password = '';
+          this.owner = '';
+          this.contactNumber = '';
+          this.bir = '';
+
+          this.$router.push({ name: 'SuperAdminDashboard' }); // Redirect to admin dashboard or another page
+        } else {
+          console.error('Error creating admin:', response.data);
+          // Handle errors gracefully (show error messages to the user)
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle network errors or other exceptions
+      }
+    }
+  }
 };
 </script>
 

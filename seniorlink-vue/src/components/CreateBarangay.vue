@@ -43,56 +43,51 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   props: {
     zipcode: {
       type: String,
-      default: '', // Provide a default value if the prop isn't passed immediately
-    }
+      default: "",
+    },
   },
   data() {
     return {
-      name: '',
-      password: '',
+      name: "",
+      password: "",
     };
   },
   computed: {
     generateUsername() {
-      if (!this.zipcode || !this.name) return ''; // Handle empty values
-      const lowercaseName = this.name.toLowerCase().replace(/\s+/g, '');
+      if (!this.zipcode || !this.name) return ''; 
       const formattedZipcode = this.zipcode.toString().padStart(4, '0');
-      return `b${formattedZipcode}${lowercaseName}`;
-    }
+      return `b${formattedZipcode}${this.name.toLowerCase().replace(/\s+/g, '')}`;
+    },
   },
   methods: {
     async handleSubmit() {
-      const newBarangay = {
-        name: this.name,
-        username: this.generateUsername,
-        password: this.password,
-      };
-
       try {
-        const response = await axios.post('/api/barangays', newBarangay);
+        const response = await axios.post("/api/barangays", {
+          name: this.name,
+          username: this.generateUsername,
+          password: this.password,
+          town_id: this.town_id, // Assuming you're getting this from somewhere
+        });
 
         if (response.status === 200) {
-          console.log('Barangay created successfully:', response.data);
-          // Reset the form
-          this.name = '';
-          this.password = '';
-          // Consider adding navigation or a success message here
+          console.log("Barangay created successfully:", response.data);
+          this.name = "";
+          this.password = "";
+          this.$router.push({ name: "BarangayDashboard" }); // Redirect to home (assuming you have a named route 'home')
         } else {
-          console.error('Error creating barangay:', response.data);
-          // Handle errors gracefully (e.g., show error messages to the user)
+          console.error("Error creating barangay:", response.data);
         }
       } catch (error) {
-        console.error('Error:', error);
-        // Handle potential network or other errors
+        console.error("Error:", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

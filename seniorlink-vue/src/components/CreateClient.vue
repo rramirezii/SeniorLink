@@ -50,6 +50,10 @@
         <label for="contactNumber">Contact Number:</label>
         <input type="tel" id="contactNumber" v-model="contactNumber" required>
       </div>
+      <div class="form-group">
+        <label for="oscaId">OSCA ID:</label>
+        <input type="number" id="oscaId" v-model="oscaId" required>
+      </div>
     </div>
       <div class="form-actions">
         <button type="submit">Create Account</button>
@@ -60,18 +64,121 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
     return {
-      firstName: '',
-      middleName: '',
-      lastName: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
       birthday: '',
       address: '',
       barangay: '',
       contactNumber: '',
+      oscaId: '',
+      barangayOptions: [],
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
+  mounted() {
+    axios.get('/api/barangays')
+      .then(response => {
+        this.barangayOptions = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching barangays:', error);
+        // Handle the error (e.g., show a user-friendly message)
+      });
+  },
+  computed: {
+    generateUsername() {
+      if (!this.barangay || !this.oscaId) return ''; 
+      const formattedZipcode = this.barangay.town.zip_code.toString().padStart(4, '0'); // Access zipcode from barangay data
+      return `s${formattedZipcode}${this.oscaId}`;
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        // Input validation (More robust validation is recommended)
+        if (
+          !this.firstname ||
+          !this.middlename ||
+          !this.lastname ||
+          !this.birthday ||
+          !this.address ||
+          !this.barangay ||
+          !this.contactNumber ||
+          !this.oscaId
+        ) {
+          this.errorMessage = "Please fill in all fields.";
+          return;
+        }
+
+        // Age validation
+        const birthDate = new Date(this.birthday);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        if (age < 60) {
+          this.errorMessage = "Senior must be 60 years old or above.";
+          return;
+        }
+
+        // Find the selected barangay's ID
+        const selectedBarangay = this.barangayOptions.find(b => b.name === this.barangay);
+        if (!selectedBarangay) {
+          this.errorMessage = "Invalid barangay selection.";
+          return;
+        }
+
+        const response = await axios.post('/api/seniors', {
+          osca_id: this.oscaId,
+          fname: this.firstname,
+          mname: this.middlename,
+          lname: this.lastname,
+          birthdate: this.birthday,
+          address: this.address,
+          barangay_id: selectedBarangay.id, // Use the selected barangay's ID
+          contact_number: this.contactNumber,
+          username: this.generateUsername, // Use the generated username
+          password: this.password,         // You'll likely want to hash this on the backend
+          // Add other necessary fields (profile_image, qr_code, etc.)
+        });
+
+        if (response.status === 201) {
+          console.log('Senior created successfully:', response.data);
+          this.showSuccessMessage = true;
+
+          // Reset form fields
+          this.firstname = '';
+          this.middlename = '';
+          // ... rest of the fields
+
+          setTimeout(() => {
+            this.router.push({ name: 'senior-dashboard' }); 
+          }, 1500);
+        } else {
+          this.errorMessage = "Error creating senior: " + response.data.message; // Show server error message
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error('Error:', error);
+      }
+    }
+  }
 };
 </script>
 

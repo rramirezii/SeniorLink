@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -52,6 +54,39 @@ export default {
       password: '',
     };
   },
+  methods: {
+    async handleSubmit() {
+      try {
+        // Basic input validation
+        if (!this.name || !this.address || !this.password) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        const response = await axios.post('/api/establishments', { // Use the correct route
+          name: this.name,
+          address: this.address,
+          password: this.password
+        });
+
+        if (response.status === 201) { // 201 Created is a common success status for resource creation
+          console.log('Establishment created successfully:', response.data);
+          // Reset the form
+          this.name = '';
+          this.address = '';
+          this.password = '';
+          // Optionally redirect to a success page or display a success message
+          this.$router.push({ name: 'EstablishmentDashboard' }); 
+        } else {
+          console.error('Error creating establishment:', response.data);
+          // Handle errors gracefully (display error messages to the user)
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle network errors or other exceptions
+      }
+    }
+  }
 };
 </script>
 
