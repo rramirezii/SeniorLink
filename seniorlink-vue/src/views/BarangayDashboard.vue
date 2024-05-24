@@ -23,6 +23,7 @@
       <ul class="nav-buttons">
         <li><router-link to='#' @click.prevent="redirectTo('CreateClient')">Create Account</router-link></li>
         <li><router-link to='#' @click.prevent="redirectTo('ViewClientListUpdateDelete')">View Client</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('UpdateBarangaySelf')">Update Account</router-link></li>
         </ul>
     </nav>
   </div>

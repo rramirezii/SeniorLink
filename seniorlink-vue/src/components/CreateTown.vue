@@ -44,14 +44,76 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+
   data() {
     return {
       name: '',
-      zipCode: '',
+      zipcode: '', 
       password: '',
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
+
+  computed: {
+    generateUsername() {
+      const formattedZipcode = this.zipcode.toString().padStart(4, '0');
+      return `t${formattedZipcode}`;
+    }
+  },
+
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        // Input validation (You'll likely want more robust validation)
+        if (!this.name || !this.zipcode || !this.password) {
+          this.errorMessage = "Please fill in all fields.";
+          return;
+        }
+
+        const response = await axios.post('/api/towns', {
+          name: this.name,
+          username: this.generateUsername, 
+          zip_code: this.zipcode, // Add zip_code to the request data
+          password: this.password,
+        });
+
+        if (response.status === 201) {
+          console.log('Town created successfully:', response.data);
+          this.showSuccessMessage = true;
+
+          // Reset form fields
+          this.name = '';
+          this.zipcode = '';
+          this.password = '';
+
+          // Redirect after a short delay
+          setTimeout(() => {
+            this.router.push({ name: 'TownDashboard' }); 
+          }, 1500);
+        } else {
+          this.errorMessage = "Error creating town: " + response.data.message; 
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error('Error:', error);
+      }
+    }
+  }
 };
 </script>
 

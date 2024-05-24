@@ -52,52 +52,60 @@
     </div>
   </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Town ID', 'Password'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
+<script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+
+  data() {
+    return {
+      tableHeaders: ['Name', 'Town ID', 'Password'],
+      tableData: [],
+      searchQuery: '',
+      loading: true,
+    };
+  },
+
+  computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter(item => {
         return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header.toLowerCase() !== 'password') { 
+          if (header.toLowerCase() !== 'id' && header.toLowerCase() !== 'password') { 
             return String(item[header]).toLowerCase().includes(query);
-            } else {
+          } else {
             return false; // Don't include "id" or "Password" in the search
-            }
+          }
         });
-        });
+      });
     },
+  },
+  async mounted() {
+    try {
+      const response = await axios.get('/brgy.json'); 
+      this.tableData = response.data;
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.loading = false;
+      // Handle errors appropriately (show an error message to the user)
+    } 
+  },
+
+  methods: {
+    performSearch() {
+      console.log("Searching for:", this.searchQuery);
     },
-    async mounted() {
-      try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
-    }
-  };
-  </script>
+  }
+};
+</script>
+
+
   
   <style scoped>
   .select-barangay {

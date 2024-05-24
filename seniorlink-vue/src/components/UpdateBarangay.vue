@@ -40,15 +40,70 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  props: {
+    barangayId: { // Add a prop to receive the barangay ID
+      type: [String, Number],
+      required: true
+    }
+  },
   data() {
     return {
       name: '',
       password: '',
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
+  mounted() {
+    // Fetch existing barangay data by ID (replace with your actual API endpoint)
+    axios.get(`/api/barangays/${this.barangayId}`)
+      .then(response => {
+        this.name = response.data.name; // Fill in the form with existing data
+        // this.password = response.data.password; // Don't show the existing password
+      })
+      .catch(error => {
+        console.error('Error fetching barangay details:', error);
+        this.errorMessage = "Error loading barangay information.";
+        this.showErrorMessage = true;
+      });
+  },
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        const response = await axios.put(`/api/barangays/${this.barangayId}`, {
+          name: this.name,
+          password: this.password,
+        });
+
+        if (response.status === 200) { // Successful update
+          console.log('Barangay updated successfully:', response.data);
+          this.showSuccessMessage = true;
+
+          setTimeout(() => {
+            this.$router.push({ name: 'BarangayDashboard' }); // Redirect after update (assuming you have this route)
+          }, 1500);
+        } else {
+          this.errorMessage = "Error updating barangay: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error('Error:', error);
+      }
+    }
+  }
 };
 </script>
+
 
 <style scoped>
 .update-barangay {

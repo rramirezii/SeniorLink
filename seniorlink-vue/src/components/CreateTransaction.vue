@@ -60,25 +60,81 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
     return {
       name: '',
-      quantity: '',               // Initialize to 0
-      price: '',                  // Initialize to 0
+      quantity: 0,
+      price: 0,
       attendant: '',
+      seniorId: null, // Assuming you have the senior ID available somewhere
+      establishmentId: null, // Assuming you have the establishment ID
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
   methods: {
     handleNumberInput(field) {
-      if (this[field] < 0) {
-        this[field] = 0;
+      // Ensure quantity and price are non-negative
+      this[field] = Math.max(0, this[field]); 
+    },
+
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        // Input validation (You'll likely want more robust validation)
+        if (!this.name || !this.quantity || !this.price || !this.attendant) {
+          this.errorMessage = "Please fill in all fields.";
+          return;
+        }
+
+        const response = await axios.post('/api/transactions', {
+          senior_id: this.seniorId,
+          establishment_id: this.establishmentId,
+          date: new Date().toISOString().slice(0, 10), // Current date
+          products: [
+            {
+              name: this.name,
+              quantity: this.quantity,
+              price: this.price,
+            }
+          ],
+          attendant: this.attendant, // Not sure if this needs to be stored in a separate table
+        });
+
+        if (response.status === 201) {
+          console.log('Transaction created successfully:', response.data);
+          this.showSuccessMessage = true;
+
+          // Clear the form
+          this.name = '';
+          this.quantity = 0;
+          this.price = 0;
+          this.attendant = '';
+
+          setTimeout(() => {
+            this.router.push({ name: 'EstablishmentDashboard' }); // Redirect to transaction history or home page
+          }, 1500);
+        } else {
+          this.errorMessage = "Error creating transaction: " + response.data.message;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error('Error:', error);
       }
     },
-    handleSubmit() {
-      // Your transaction submission logic here
-      console.log('Transaction:', this.name, this.quantity, this.price, this.attendant);
-    }
   }
 };
 </script>
