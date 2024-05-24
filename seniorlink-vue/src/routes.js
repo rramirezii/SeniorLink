@@ -1,4 +1,3 @@
-
 import * as views from '@/view';
 
 const routes = [
@@ -57,7 +56,11 @@ const routes = [
     // Establishment
     { path: '/establishment/dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
     { path: '/establishment/', redirect: '/establishment/dashboard'},
+    { path: '/establishment/transaction', component: views.EstablishmentTransaction, name: 'EstablishmentTransaction' },
     { path: '/establishment/create/transaction', component: views.CreateTransaction, name: 'CreateTransaction' },
+    { path: '/view/transaction', component: views.ViewTransaction, name: 'ViewTransaction' },
+    { path: 'establishment/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
+    { path: 'establishment/create-product', component: views.CreateProduct, name: 'CreateProduct' },
     // Read senior
     // read senior transation
 
@@ -66,16 +69,15 @@ const routes = [
 
     // Senior
     { path: '/senior/', redirect: '/senior/dashboard'},
-    { path: '/senior/dashboard', component: views.ClientSelectMenu, name: 'ClientSelectMenu' }, //THIS IS THE SENIOR DASHBOARD
+    { path: '/senior/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' }, //THIS IS THE SENIOR DASHBOARD
     { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
     { path: '/senior/update/self', component: views.UpdateClientSelf, name: 'UpdateClientSelf' },
     { path: '/senior/transactions', component: views.ClientTransactions, name: 'ClientTransactions' },
     
 
-    // { path: '/view-products-transaction', component: views.ViewProductsTransaction, name: 'ViewProductsTransaction' },
+    
   //  { path: '/update-town-self', component: views.UpdateTownSelf, name: 'UpdateTownSelf' },
-   // { path: '/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
-    // { path: '/update-product-transaction', component: views.UpdateProductTransaction, name: 'UpdateProductTransaction' },
+  
   ];
   
   export default routes;

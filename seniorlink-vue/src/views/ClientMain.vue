@@ -2,7 +2,7 @@
   <div class="client-main">
     <header class="header">
       <div class="brand">
-        <h1>SeniorLink</h1>
+        <h1 @click="redirectToHome">SeniorLink</h1>
       </div>
       <div class="profile-and-search">
       <!-- <div class="search-bar">
@@ -28,6 +28,9 @@
     <h3>Total Discount</h3>
   </div>
   <div class="table-container">
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
       <template v-for="(transaction, index) in sortedTransactions" :key="index">
         <h3 v-if="index === 0 || transaction.Date !== sortedTransactions[index - 1].Date" 
             class="date-header">
@@ -175,7 +178,13 @@ methods: {
     if (totalAmountElement) {
       totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
     }
-  }
+  },
+  redirectToHome() {
+    this.$router.push('/senior/dashboard'); // Use the path directly
+  },
+  goBack() {
+      this.$router.push('/senior/dashboard'); // Use the path directly
+    }
 }
 };
 </script>
@@ -501,7 +510,17 @@ margin-bottom: 0.5rem; /* Add space below the total */
 font-size: 1.2rem; 
 color: #555; /* Slightly darker color for the discount header */
 }
-
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
+}
 </style>
 
   <style>

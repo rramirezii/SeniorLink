@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "Name": "John Doe",
+        "Code": "JD123",
+        "Address": "123 Elm Street, Springfield",
+        "Password": "password123"
+    },
+    {
+        "id": 2,
+        "Name": "Jane Doe",
+        "Code": "JD456",
+        "Address": "456 Oak Avenue, Springfield",
+        "Password": "securepassword"
+    },
+    {
+        "id": 3,
+        "Name": "Sam Smith",
+        "Code": "SS789",
+        "Address": "789 Pine Road, Springfield",
+        "Password": "mypassword"
+    },
+    {
+        "id": 4,
+        "Name": "Emily Jones",
+        "Code": "EJ101",
+        "Address": "101 Maple Street, Springfield",
+        "Password": "emilysecure"
+    },
+    {
+        "id": 5,
+        "Name": "Mike Brown",
+        "Code": "MB202",
+        "Address": "202 Birch Lane, Springfield",
+        "Password": "brownmike123"
+    }
+]
