@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -89,7 +89,7 @@ export default {
     };
   },
   mounted() {
-    axios.get('/api/barangays')
+    apiServices.get('/admin/show/town/barangay')
       .then(response => {
         this.barangayOptions = response.data;
       })
@@ -143,7 +143,7 @@ export default {
           return;
         }
 
-        const response = await axios.post('/api/seniors', {
+        const response = await apiServices.post('/admin/create', {
           osca_id: this.oscaId,
           fname: this.firstname,
           mname: this.middlename,
@@ -167,7 +167,7 @@ export default {
           // ... rest of the fields
 
           setTimeout(() => {
-            this.router.push({ name: 'senior-dashboard' }); 
+            this.router.push({ name: 'ClientDashboard' }); 
           }, 1500);
         } else {
           this.errorMessage = "Error creating senior: " + response.data.message; // Show server error message

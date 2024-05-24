@@ -53,7 +53,7 @@
   </template>
   
 <script>
-import axios from 'axios';
+import apiServices from 'apiServices';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -87,7 +87,7 @@ export default {
   },
   async mounted() {
     try {
-      const response = await axios.get('/brgy.json'); 
+      const response = await apiServices.get('/town/update/barangay'); 
       this.tableData = response.data;
       this.loading = false;
     } catch (error) {

@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 import { useRouter } from 'vue-router';
 
 export default {
@@ -93,13 +93,13 @@ export default {
       this.errorMessage = "";
 
       try {
-        // Input validation (You'll likely want more robust validation)
+        // Input validation
         if (!this.name || !this.quantity || !this.price || !this.attendant) {
           this.errorMessage = "Please fill in all fields.";
           return;
         }
 
-        const response = await axios.post('/api/transactions', {
+        const response = await apiServices.post('/establishment/create/transaction', {
           senior_id: this.seniorId,
           establishment_id: this.establishmentId,
           date: new Date().toISOString().slice(0, 10), // Current date
@@ -110,7 +110,7 @@ export default {
               price: this.price,
             }
           ],
-          attendant: this.attendant, // Not sure if this needs to be stored in a separate table
+          attendant: this.attendant,
         });
 
         if (response.status === 201) {

@@ -81,9 +81,6 @@ export default {
   methods: {
     performSearch() {
       console.log('Searching for:', this.searchQuery);
-    },
-    toggleProfileDropdown() {
-      // Toggle profile dropdown logic
     }
   }
 };

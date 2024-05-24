@@ -61,7 +61,7 @@ export default {
       }
 
       try {
-        const response = await apiServices.post('/api/enter-birthday', { birthday: this.birthday }); //CHANGE THIS TO API
+        const response = await apiServices.post('/validate', { birthday: this.birthday }); //CHANGE THIS TO API
 
         if (response.status === 200 && response.data.success) {
           const username = response.data.username; // Assuming response.data.role contains the role
@@ -71,7 +71,34 @@ export default {
           this.error = response.data.message || "An error occurred. Please try again."; 
         }
       } catch (error) {
-        // ... (your error handling for server errors and network issues stays the same)
+        // Specific error handling
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          if (error.response.status === 404) {
+            // Not Found (senior not found)
+            this.error = "Birthday not found.";
+          } else if (error.response.status === 422) {
+            // Unprocessable Entity (validation error)
+            this.error =
+              "Invalid input. Please check your birthday.";
+          } else {
+            // Other server errors (500, etc.)
+            this.error =
+              "Server error. Please try again later.";
+          }
+          console.error("Server Error:", error.response.status, error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          this.error = "Network error. Please check your connection.";
+          console.error("Network Error:", error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          this.error = "An error occurred. Please try again.";
+          console.error("Error:", error.message);
+        }
       }
     }
   }

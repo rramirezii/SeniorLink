@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
@@ -31,7 +31,7 @@ export default {
     async fetchQRCode() {
       try {
         // Fetch the QR code URL from your API
-        const response = await axios.get('/api/qr-code'); // Replace with your endpoint
+        const response = await apiServices.get('senior/show/qr'); // Replace with your endpoint
         this.qrCodeUrl = response.data.qrCodeUrl;
       } catch (error) {
         console.error("Error fetching QR code:", error);

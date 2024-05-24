@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 import { useRouter } from 'vue-router';
 
 export default {
@@ -84,7 +84,7 @@ export default {
           return;
         }
 
-        const response = await axios.post('/api/towns', {
+        const response = await apiServices.post('/admin/create/town', {
           name: this.name,
           username: this.generateUsername, 
           zip_code: this.zipcode, // Add zip_code to the request data

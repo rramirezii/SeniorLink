@@ -27,24 +27,8 @@
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="address">Address:</label>
-        <input type="text" id="address" v-model="address" required>
-      </div>
-      <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required>
-      </div>
-      <div class="form-group">
-        <label for="owner">Owner:</label>
-        <input type="text" id="owner" v-model="owner">
-      </div>
-      <div class="form-group">
-        <label for="contactNumber">Contact Number:</label>
-        <input type="tel" id="contactNumber" v-model="contactNumber" required>
-      </div>
-      <div class="form-group">
-        <label for="bir">BIR ID:</label>
-        <input type="text" id="bir" v-model="bir">
       </div>
     </div>
       <div class="form-actions">
@@ -56,29 +40,21 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 
 export default {
   data() {
     return {
       name: '',
-      address: '',
       password: '',
-      owner: '',
-      contactNumber: '',
-      bir: '',
     };
   },
   methods: {
     async handleSubmit() {
       try {
-        const response = await axios.post('/api/admin', { // Make sure this route matches your backend
+        const response = await apiServices.post('/admin/create/admin', { // Make sure this route matches your backend
           name: this.name,
-          address: this.address,
           password: this.password,
-          owner: this.owner,
-          contact_number: this.contactNumber,
-          bir: this.bir,
         });
     
         if (response.status === 200) {
@@ -86,11 +62,7 @@ export default {
 
           // Reset form fields
           this.name = '';
-          this.address = '';
           this.password = '';
-          this.owner = '';
-          this.contactNumber = '';
-          this.bir = '';
 
           this.$router.push({ name: 'SuperAdminDashboard' }); // Redirect to admin dashboard or another page
         } else {

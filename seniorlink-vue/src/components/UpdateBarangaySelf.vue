@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiServices from "@/services/apiServices";
 import { useRouter } from "vue-router";
  
 export default {
@@ -65,8 +65,8 @@ export default {
   },
   mounted() {
     // Fetch existing barangay data by ID
-    axios
-      .get(`/api/barangays/${this.barangayId}`)
+    apiServices
+      .get(`/barangay/update/${this.barangayId}`)
       .then((response) => {
         this.name = response.data.name;
         // Don't fetch the password, as it's stored as a hash
@@ -84,8 +84,8 @@ export default {
       this.errorMessage = "";
 
       try {
-        const response = await axios.put(
-          `/api/barangays/${this.barangayId}`,
+        const response = await apiServices.put(
+          `/barangay/update/${this.barangayId}`,
           {
             name: this.name,
             password: this.password,

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
@@ -80,7 +80,7 @@ export default {
   methods: {
     async fetchProfileData() {
       try {
-        const response = await axios.get('/profile.json');
+        const response = await apiServices.get('/senior');
         this.profileData = response.data;
         this.profileImage = response.data.Image; 
         this.navigateTo('/dashboard'); // Move navigation here

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiServices from '@/services/apiServices';
 
 export default {
   props: {
@@ -68,7 +68,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
-        const response = await axios.post("/api/barangays", {
+        const response = await apiServices.post("/admin/create/barangay", {
           name: this.name,
           username: this.generateUsername,
           password: this.password,

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
@@ -63,7 +63,7 @@ export default {
           return;
         }
 
-        const response = await axios.post('/api/establishments', { // Use the correct route
+        const response = await apiServices.post('/admin/create/establishment', { // Use the correct route
           name: this.name,
           address: this.address,
           password: this.password

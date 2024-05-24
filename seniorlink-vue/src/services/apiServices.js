@@ -4,9 +4,9 @@ import axios from 'axios';
 console.log('VUE_APP_API_BASE_URL:', process.env.VUE_APP_API_BASE_URL);
 
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || '/api', // Default to '/api' if not defined
+  baseURL: process.env.VUE_APP_BASE_API_URL || '/api', // Default to '/api' if not in .env
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json' 
   }
 });
 
@@ -31,5 +31,4 @@ const apiServices = {
     return response.data;
   }
 };
-
 export default apiServices;

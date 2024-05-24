@@ -43,57 +43,85 @@
 </template>
 
 <script>
-import axios from 'axios'; // Import Axios library
-
+import apiServices from "@/services/apiServices";
+import { useRouter } from "vue-router";
+ 
 export default {
+  setup() {
+    const router = useRouter();
+
+    return { router };
+  },
   data() {
     return {
-      name: '',
-      quantity: '',
-      price: '',
-      products: [], // Array to store the product data
-      baseUrl: '/your-api-endpoint' // API endpoint to manage product data
+      name: "",
+      quantity: 0, // Initialize as a number
+      price: 0,   // Initialize as a number
+      products: [],
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
   mounted() {
     this.fetchProducts();
   },
   methods: {
-    handleSubmit() {
-      const productData = {
-        name: this.name,
-        quantity: parseInt(this.quantity), // Convert quantity to number
-        price: parseFloat(this.price) // Convert price to number
-      };
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = ""; // Clear the error message
 
-      axios.post(this.baseUrl, productData) 
-        .then(response => {
-          // Product successfully created, update the products array
-          this.products.push(response.data);
-          this.clearForm(); 
-          alert('Product created successfully!');
-        })
-        .catch(error => {
-          console.error('Error creating product:', error);
-          alert('An error occurred while creating the product. Please try again.');
-        });
+      try {
+        const response = await apiServices.post(
+          "/establishment/create/product", // Update API route if needed
+          {
+            name: this.name,
+            quantity: this.quantity, // Already a number
+            price: this.price,       // Already a number
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("Product created successfully:", response.data);
+          this.products.push(response.data.product); // Assuming the backend returns the new product
+          this.clearForm();
+          this.showSuccessMessage = true;
+
+          // Redirect to the product list after a short delay
+          setTimeout(() => {
+            this.router.push({ name: 'EstablishmentDashboard' }); // Replace 'product-list' with the actual name of your route
+          }, 1500);
+        } else {
+          this.showErrorMessage = true;
+          this.errorMessage = "Error creating product: " + response.data.message; 
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage =
+          "An error occurred while creating the product. Please try again.";
+        console.error("Error:", error);
+      }
     },
+
     clearForm() {
-      this.name = '';
-      this.quantity = '';
-      this.price = '';
-    },
-    fetchProducts() {
-      axios.get(this.baseUrl)
-        .then(response => {
-          this.products = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching products:', error);
-        });
+      this.name = "";
+      this.quantity = 0;
+      this.price = 0;
     },
 
-  }
+    fetchProducts() {
+      apiServices
+        .get("/establishment/show/product") 
+        .then((response) => {
+          this.products = response.data.products; // Accessing the products array from the response
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+          // Handle errors (e.g., show error message)
+        });
+    },
+  },
 };
 </script>
 
