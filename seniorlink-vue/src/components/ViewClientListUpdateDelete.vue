@@ -39,7 +39,6 @@
         <tr v-for="item in filteredTableData" :key="item.id">
           <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
           <td> <div class="button-container">
-              <router-link to='#' @click.prevent="redirectTo('PrintTransactions')"><button class="view-button">View Transactions</button></router-link>
               <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
                 <button class="update-button">Update</button>
               </router-link>
@@ -333,7 +332,6 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   margin-top: 0cm;
-  margin-left: 10px;
 }
 .profile-placeholder {
   width: 55px;         
@@ -373,15 +371,6 @@ export default {
     align-items: center; /* Align buttons vertically (optional) */
     gap: 0.5rem;        /* Add space between buttons (optional) */
   }
-.view-button{
-padding: 0.5rem 1rem;
-background-color: #2c3e50;
-color: #fff;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-margin-top: 0cm;
-}
   </style>
   
     <style>

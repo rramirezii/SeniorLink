@@ -22,77 +22,36 @@
     <h2>Create Barangay Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" v-model="name" required>
-        </div>
-        <div class="form-group">
-          <label for="username">Username:</label>
-          <input type="text" id="username" :value="generateUsername" disabled>
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" required>
-        </div>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name" required>
       </div>
+      <div class="form-group">
+        <label for="town_id">Town ID:</label>
+        <input type="number" id="town_id" v-model="town_id" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
+    </div>
       <div class="form-actions">
         <button type="submit">Create Account</button>
       </div>
     </form>
+  
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-  props: {
-    zipcode: {
-      type: String,
-      default: '', // Provide a default value if the prop isn't passed immediately
-    }
-  },
   data() {
     return {
       name: '',
+      townID: '',
       password: '',
     };
   },
-  computed: {
-    generateUsername() {
-      if (!this.zipcode || !this.name) return ''; // Handle empty values
-      const lowercaseName = this.name.toLowerCase().replace(/\s+/g, '');
-      const formattedZipcode = this.zipcode.toString().padStart(4, '0');
-      return `b${formattedZipcode}${lowercaseName}`;
-    }
-  },
-  methods: {
-    async handleSubmit() {
-      const newBarangay = {
-        name: this.name,
-        username: this.generateUsername,
-        password: this.password,
-      };
-
-      try {
-        const response = await axios.post('/api/barangays', newBarangay);
-
-        if (response.status === 200) {
-          console.log('Barangay created successfully:', response.data);
-          // Reset the form
-          this.name = '';
-          this.password = '';
-          // Consider adding navigation or a success message here
-        } else {
-          console.error('Error creating barangay:', response.data);
-          // Handle errors gracefully (e.g., show error messages to the user)
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        // Handle potential network or other errors
-      }
-    }
-  }
 };
 </script>
 
