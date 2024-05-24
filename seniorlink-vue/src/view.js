@@ -50,7 +50,7 @@ export { default as ClientLogin } from './components/ClientLogin.vue';
 export { default as ClientAuth } from './components/ClientAuth.vue';
 export { default as ClientQR } from './components/ClientQR.vue';
 export { default as ClientProfile } from './components/ClientProfile.vue';
-
+export { default as PrintTransactions } from './components/PrintTransactions.vue';
 
 export { default as LoginPassword } from './components/LoginPassword.vue';
 

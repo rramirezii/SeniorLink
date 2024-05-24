@@ -18,7 +18,7 @@
         <li @click="navigateTo('./update/self')">Update Profile</li>
         <li @click="navigateTo('./qr')">View QR</li>
         <li @click="navigateTo('./transactions')">View Transactions</li>
-        <li @click="navigateTo('/ptransactions')">Print Transactions</li>
+        <li @click="navigateTo('./transactions-print')">Print Transactions</li>
       </ul>
     </nav>
     </main>

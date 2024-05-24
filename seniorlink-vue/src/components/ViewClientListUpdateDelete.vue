@@ -39,7 +39,7 @@
         <tr v-for="item in filteredTableData" :key="item.id">
           <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
           <td> <div class="button-container">
-              <router-link to='#' @click.prevent="redirectTo('PrintTransactions')"><button class="view-button">View</button></router-link>
+              <router-link to='#' @click.prevent="redirectTo('PrintTransactions')"><button class="view-button">View Transactions</button></router-link>
               <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
                 <button class="update-button">Update</button>
               </router-link>

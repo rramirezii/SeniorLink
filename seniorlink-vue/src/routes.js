@@ -73,7 +73,7 @@ const routes = [
     { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
     { path: '/senior/update/self', component: views.UpdateClientSelf, name: 'UpdateClientSelf' },
     { path: '/senior/transactions', component: views.ClientTransactions, name: 'ClientTransactions' },
-    //printtransactions
+    { path: '/senior/transactions-print', component: views.PrintTransactions, name: 'PrintTransactions' },
     
 
   
