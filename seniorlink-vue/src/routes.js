@@ -16,10 +16,10 @@ const routes = [
     { path: '/admin/create/establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
     { path: '/admin/create/superadmin', component: views.CreateSuperAdmin, name: 'CreateSuperAdmin' },
 
-    { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
+    { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' },
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangay' },
-    { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' }, //not working
+    { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' },
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' },
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
     
@@ -27,7 +27,7 @@ const routes = [
     { path: '/admin/update/super-admin', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
     { path: '/admin/update/establishment', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
     
-    // deletes are enforcedd in view
+ 
     // TOWN
     { path: '/town/dashboard', component: views.TownDashboard, name: 'TownDashboard' },
     { path: '/town/', redirect: '/town/dashboard'},
@@ -35,13 +35,13 @@ const routes = [
     { path: '/town/create/barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
 
     { path: '/town/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
-    { path: '/view-client-per-barangay', component: views.ViewPerBarangay, name: 'ViewPerBarangay' },
+     
+    { path: '/view-client-per-barangay', component: views.ViewPerBarangay, name: 'ViewPerBarangay' }, // view transactions of senior per barngay
     { path: '/town/view/seniors', component: views.ViewClientList, name: 'ViewClientList' },
-    { path: '/update-town-self', component: views.UpdateTownSelf, name: 'UpdateTownSelf' },
-    // view transactions of senior per barngay
 
     { path: '/town/update/barangay', component: views.UpdateBarangay, name: 'UpdateBarangay' },
-    // update town self
+    { path: '/update-town-self', component: views.UpdateTownSelf, name: 'UpdateTownSelf' },  // update town self
+    
 
     // BARANGAY
     { path: '/barangay/dashboard', component: views.BarangayDashboard, name: 'BarangayDashboard' },
@@ -58,16 +58,14 @@ const routes = [
     { path: '/establishment/dashboard', component: views.EstablishmentDashboard, name: 'EstablishmentDashboard' },
     { path: '/establishment/', redirect: '/establishment/dashboard'},
     { path: '/establishment/transaction', component: views.EstablishmentTransaction, name: 'EstablishmentTransaction' },
-    { path: '/establishment/create/transaction', component: views.CreateTransaction, name: 'CreateTransaction' },
+    
     { path: '/view/transaction', component: views.ViewTransaction, name: 'ViewTransaction' },
-    { path: '/establishment/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
-    { path: '/establishment/create-product', component: views.CreateProduct, name: 'CreateProduct' },
-    { path: '/establishment/update-account', component: views.UpdateEstablishmentSelf, name: 'UpdateEstablishmentSelf' },
-    // Read senior
-    // read senior transation
-
+    { path: '/establishment/create/transaction', component: views.CreateTransaction, name: 'CreateTransaction' },
     { path: '/establishment/update/transaction', component: views.UpdateTransaction, name: 'UpdateTransaction' },
-    // update establishment password
+    { path: '/establishment/update-account', component: views.UpdateEstablishmentSelf, name: 'UpdateEstablishmentSelf' }, // update establishment password
+    { path: '/establishment/create-product', component: views.CreateProduct, name: 'CreateProduct' },
+    { path: '/establishment/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
+    
 
     // Senior
     { path: '/senior/', redirect: '/senior/dashboard'},
@@ -75,8 +73,7 @@ const routes = [
     { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
     { path: '/senior/update/self', component: views.UpdateClientSelf, name: 'UpdateClientSelf' },
     { path: '/senior/transactions', component: views.ClientTransactions, name: 'ClientTransactions' },
-    
-
+    //printtransactions
     
 
   
