@@ -61,7 +61,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
+        tableHeaders: ['Name', 'Town Name'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,

@@ -1,13 +1,13 @@
 <template>
-  <div class="senior-link">
+  <div class="update-barangay-self">
     <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <div class="search-bar">
-        <!-- <input type="text" placeholder="Search..." />
-        <button>Search</button> -->
-      </div>
+      <!-- <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>Search</button>
+      </div> -->
       <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
@@ -19,15 +19,23 @@
         </ul> -->
       </div>
     </header>
-    <nav>
-      <ul class="nav-buttons">
-        <li><router-link to="./transaction">Create Transaction</router-link></li>
-        <li><router-link to="./create-product">Add Product</router-link></li>
-        <li><router-link to="./update-product">Update Product</router-link></li>
-        <li><router-link to="./delete-product">Delete Product</router-link></li>
-        <li><router-link to="./update-account">Update Account</router-link></li>
-      </ul>
-    </nav>
+    <h2>Update Barangay Account</h2>
+    <form @submit.prevent="handleSubmit">
+      <div class="form-container">
+        <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
+    </div>
+      <div class="form-actions">
+        <button type="submit">Update Information</button>
+      </div>
+    </form>
+  
   </div>
 </template>
 
@@ -35,18 +43,69 @@
 export default {
   data() {
     return {
-      maxWidth: 0,
+      name: '',
+      password: '',
     };
   },
 };
 </script>
 
 <style scoped>
-.senior-link {
+.update-barangay-self {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
+}
+
+label {
+  display: block;
+  margin: 1rem;
+  font-weight: bold;
+  text-align: left;
+  width: 150px;
+}
+
+form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0.5rem;
+  flex: 1;            /* Allow input to take up remaining space */
+}
+label, input {
+  float: left;
+}
+button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+
+.form-group {
+  display: flex; 
+  align-items: center;  /* Vertically center label and input */
+  width: 600px; 
+}
+
+.form-group label {
+  width: 150px;      /* Set a fixed width for the labels */
+  text-align: right; /* Align the label text to the right */
+  margin-right: 1rem; /* Add some space between label and input */
+}
+
+/* Center the form elements within the form-container */
+.form-container {
+  display: flex;          
+  flex-direction: column; 
+  align-items: center;
+  padding-right: 25%;
 }
 
 .header {
@@ -130,7 +189,6 @@ nav li:hover{
   list-style: none;
   padding: 0;
   margin: 0;
-  text-decoration: none; /* Remove underline */
 }
 
 .nav-buttons li {
@@ -138,14 +196,15 @@ nav li:hover{
   position: relative; /* Crucial for containing the dropdown */
 }
 
-.nav-buttons li a { /* Style for links within nav-buttons */
-  color: #ffffff; /* Default white color for other links */
+a {
+  text-decoration: none;
+  color: #000;
 }
 
-.nav-buttons a {
-    color: #ffffff;
-    text-decoration: none; /* Remove underline for all buttons */
+a:hover {
+  color: #2c3e50;
 }
+
 /* profile logo */
 .profile-link {
   display: flex;
@@ -205,15 +264,12 @@ nav li:hover{
   display: flex;            /* Enable flexbox for centering */
   justify-content: center; /* Center the text horizontally */
   align-items: center;    /* Center the text vertically */
-  padding-top: 2%;
-  padding-bottom: 1%;
 }
 
 .dropdown-buttons a {
   display: block;     /* Make sure links fill the width */
   white-space: nowrap; /* Prevent text from wrapping */
 }
-
 
 .profile-placeholder {
   width: 55px;         

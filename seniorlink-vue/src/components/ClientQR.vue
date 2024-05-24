@@ -2,13 +2,13 @@
   <div class="client-start">
     <header class="header">
       <div class="brand">
-        <h1>SeniorLink</h1>
+        <h1 @click="redirectToHome">SeniorLink</h1>
       </div>
   </header>
   <main class="main-content">
     <div class="qr-code-container">
       <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code" class="qr-code" />
-      <img v-else src="/sample_qr.png" alt="QR code placeholder" class="qr-code" /> 
+      <img v-else src="/sample_qr.png" alt="Cannot load QR." class="qr-code" /> 
     </div>
     <button @click="goBack" class="back-button">Back to Home</button>
   </main>
@@ -38,10 +38,13 @@ export default {
         // Handle the error, e.g., show an error message to the user
       }
     },
-    goBack() {
-      this.$router.push('/'); 
-    },
-  }
+  redirectToHome() {
+    this.$router.push('/senior/dashboard'); // Use the path directly
+  },
+  goBack() {
+      this.$router.push('/senior/dashboard'); // Use the path directly
+    }
+}
 };
 </script>
 

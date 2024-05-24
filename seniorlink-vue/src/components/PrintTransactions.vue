@@ -1,5 +1,5 @@
 <template>
-  <div class="client-main">
+  <div class="print-transactions">
     <header class="header">
       <div class="brand">
         <h1 @click="redirectToHome">SeniorLink</h1>
@@ -21,175 +21,185 @@
     </div>
       </div> 
   </header>
-  <div class="total-holder">
-    <div class="currency">
-      <h1 id="totalamountweek">Php {{ totalAmountForWeek }}</h1> 
+  <div class="date-range-filter">
+        <label for="startDate" class="start-date-label">Start Date:</label>
+        <input type="date" id="startDate" v-model="startDate" class="date-input">
+        <label for="endDate" class="end-date-label">End Date:</label>
+        <input type="date" id="endDate" v-model="endDate" class="date-input">
+      </div>
+    <button @click="generatePDF" class="print-button">Print Transactions</button>
+
+    <div class="total-holder">
+    </div>
+    
+    <div class="table-container">
+      <template v-for="(transaction, index) in filteredTransactionsByDate" :key="index">
+        <div class="date-establishment-header">
+          <h3 v-if="index === 0 || transaction.Date !== filteredTransactionsByDate[index - 1].Date" class="date-header">
+            {{ formatDate(transaction.Date) }}
+          </h3>
+          <h4 class="establishment-header">
+            {{ getEstablishmentName(transaction.Establishment) }}
+          </h4>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="wider-column">Products</th>
+              <th>Qty.</th>
+              <th>Amount</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(product, idx) in transaction.Products" :key="idx">
+              <td class="wider-column">{{ product.name }}</td>
+              <td>{{ product.Qty }}</td>
+              <td>{{ product.amount }}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </div>
+
+    <p v-if="filteredTransactionsByDate.length === 0" class="no-results">No available data.</p>
   </div>
-    <h3>Total Discount</h3>
-  </div>
-  <div class="table-container">
-    <button @click="goBack" class="back-button">
-      <i class="fas fa-arrow-left"></i> Back to Home
-    </button>
-      <template v-for="(transaction, index) in sortedTransactions" :key="index">
-        <h3 v-if="index === 0 || transaction.Date !== sortedTransactions[index - 1].Date" 
-            class="date-header">
-          {{ formatDate(transaction.Date) }}
-        </h3> 
-        <h4 class="establishment-header">
-          {{ getEstablishmentName(transaction.Establishment) }} 
-        </h4>
-      <table class="table">
-        <thead>
-          <tr>
-            <th class="wider-column">Products</th>  
-            <th>Qty.</th>
-            <th>Amount</th>
-            <th>Balance</th> 
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(product, idx) in transaction.Products" :key="idx">
-            <td class="wider-column">{{ product.name }}</td>
-            <td>{{ product.Qty }}</td>
-            <td>{{ product.amount }}</td>
-            <td></td> 
-          </tr>
-        </tbody>
-      </table>
-    </template>
-  </div>
-  <p v-if="filteredTransactions.length === 0" class="no-results">No available data.</p>
-</div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import { jsPDF } from "jspdf";
 
 export default {
-data() {
-  return {
-    tableHeaders: ['Products', 'Qty.', 'Amount', 'Balance'],
-    transactions: [],  
-    searchQuery: '',
-    loading: true,
-    establishmentData: {}, 
-  };
-},
-props: {
-    seniorId: { // Add a prop to receive the senior's ID
-      type: [String, Number], 
-      required: true
-    }
+  data() {
+    return {
+      tableHeaders: ["Products", "Qty.", "Amount", "Balance"],
+      transactions: [],
+      searchQuery: "",
+      loading: true,
+      establishmentData: {},
+      startDate: "",
+      endDate: "",
+    };
   },
-computed: {
-  filteredTransactionsBySenior() {
-      return this.sortedTransactions.filter(transaction => transaction.seniorId === this.seniorId); // Filter by seniorId
+
+  props: {
+    seniorId: {
+      type: [String, Number],
+      required: true,
     },
-  filteredTransactions() {
-    const query = this.searchQuery.toLowerCase();
-    return this.transactions.filter(transaction => {
-      return Object.values(transaction).some(value => {
-        if (Array.isArray(value)) {
-          return value.some(item => 
-            Object.values(item).some(val => String(val).toLowerCase().includes(query))
-          );
-        }
-        return String(value).toLowerCase().includes(query);
+  },
+
+  computed: {
+    filteredTransactionsBySenior() {
+      return this.sortedTransactions.filter(
+        (transaction) => transaction.seniorId === this.seniorId
+      );
+    },
+
+    filteredTransactions() {
+      const query = this.searchQuery.toLowerCase();
+      return this.transactions.filter((transaction) => {
+        return Object.values(transaction).some((value) => {
+          if (Array.isArray(value)) {
+            return value.some((item) =>
+              Object.values(item).some((val) =>
+                String(val).toLowerCase().includes(query)
+              )
+            );
+          }
+          return String(value).toLowerCase().includes(query);
+        });
       });
-    });
+    },
+
+    sortedTransactions() {
+      return [...this.filteredTransactions].sort((a, b) => {
+        const dateA = new Date(a.Date);
+        const dateB = new Date(b.Date);
+        return dateB - dateA; // Sort descending by date
+      });
+    },
+
+    filteredTransactionsByDate() {
+      const start = new Date(this.startDate);
+      const end = new Date(this.endDate);
+      end.setDate(end.getDate() + 1); // Include the end date
+
+      return this.sortedTransactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.Date);
+        return transactionDate >= start && transactionDate < end;
+      });
+    },
+
+    totalAmountForWeek() {
+      const totalAmount = this.filteredTransactionsByDate.reduce((total, item) => {
+        const amount = item.Products.reduce(
+          (productTotal, product) => productTotal + parseFloat(product.amount),
+          0
+        );
+        return total + amount;
+      }, 0);
+      return totalAmount.toFixed(2);
+    },
   },
-  sortedTransactions() {
-    return [...this.filteredTransactions].sort((a, b) => {
-      // Parse dates in YYYY-MM-DD format
-      const dateA = new Date(a.Date);
-      const dateB = new Date(b.Date);
 
-      // Compare years first
-      if (dateB.getFullYear() !== dateA.getFullYear()) {
-        return dateB.getFullYear() - dateA.getFullYear();
-      }
-
-      // If years are the same, compare months
-      if (dateB.getMonth() !== dateA.getMonth()) {
-        return dateB.getMonth() - dateA.getMonth();
-      }
-
-      // If years and months are the same, compare days
-      return dateB.getDate() - dateA.getDate();
-    });
-  },
-
-  totalAmountForWeek() {
+  mounted() {
     const today = new Date();
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(today.getDate() - 7);
 
-    return this.filteredTransactions.reduce((total, item) => {
-      const itemDate = new Date(item.Date);
+    this.startDate = oneWeekAgo.toISOString().slice(0, 10);
+    this.endDate = today.toISOString().slice(0, 10);
 
-      if (itemDate >= oneWeekAgo && itemDate <= today) {
-        const amount = parseFloat(item.Products.reduce((productTotal, product) => productTotal + parseFloat(product.amount), 0).toFixed(2)); // Correct calculation
+    axios
+      .get("/transactions.json") // Assuming transactions data is in a JSON file
+      .then((response) => {
+        this.transactions = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching transactions:", error);
+      });
 
-        if (!isNaN(amount)) {
-          return total + amount;
-        }
-      }
-      return total;
-    }, 0).toFixed(2);
+    axios
+      .get("/establishment.json") // Assuming establishment data is in a JSON file
+      .then((response) => {
+        this.establishmentData = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching establishment data:", error);
+      });
   },
-},
-async mounted() { 
-  try {
-    const response = await axios.get('/transactions.json');
 
-    const establishmentResponse = await axios.get('/establishment.json');
-    this.establishmentData = establishmentResponse.data;
+  methods: {
+    getEstablishmentName(establishment) {
+      return this.establishmentData[establishment[0]]?.name || establishment[0];
+    },
 
-    this.transactions = response.data; 
-    this.loading = false;
-    this.updateTotalAmountDisplay(); 
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    this.loading = false;
+    formatDate(dateString) {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, options);
+    },
 
-      // Specific error handling based on error types
-    if (error.response) {
-      console.error("Server Error:", error.response.status, error.response.data);
-    } else if (error.request) {
-      console.error("Network Error:", error.request);
-    } else {
-      console.error('Error:', error.message);
-    }
-  }
-},
-methods: {
-  getEstablishmentName(establishment) {
-    return this.establishmentData[establishment[0]]?.name || establishment[0];
+    generatePDF() {
+      const doc = new jsPDF();
+      // ... Add title, table headers, and table data
+      doc.save("transaction_report.pdf");
+    },
+    redirectToHome() {
+      this.$router.push("/senior/dashboard");
+    },
+    goBack() {
+      this.$router.push("/senior/dashboard");
+    },
   },
-  formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, options); 
-  },
-  updateTotalAmountDisplay() {
-    const totalAmountElement = document.getElementById("totalamountweek");
-    if (totalAmountElement) {
-      totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
-    }
-  },
-  redirectToHome() {
-    this.$router.push('/senior/dashboard'); // Use the path directly
-  },
-  goBack() {
-      this.$router.push('/senior/dashboard'); // Use the path directly
-    }
-}
 };
 </script>
 
 <style scoped>
-.client-main {
+.print-transactions {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -509,17 +519,64 @@ margin-bottom: 0.5rem; /* Add space below the total */
 font-size: 1.2rem; 
 color: #555; /* Slightly darker color for the discount header */
 }
-.back-button {
+form input {
+  padding: 1rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem 0;
+  flex: 1;            /* Allow input to take up remaining space */
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex; 
+  align-items: center;  /* Vertically center label and input */
+  width: 400px; 
+}
+
+.form-group label {
+  width: 100px;      /* Set a fixed width for the labels */
+  text-align: right; /* Align the label text to the right */
+  margin-right: 1rem; /* Add some space between label and input */
+}
+
+/* Adjusted Styles for date input and label */
+.date-input {
+  padding: 1rem;
+  padding-left: 1em;
+  padding-right: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 0.5rem 0;
+  flex: 1; /* Allow input to take up remaining space */
+  box-sizing: border-box;
+}
+
+
+.date-range-filter {
+  margin-top: 2rem;
+}
+
+label{
+  margin-left: 2rem;
+  margin-right: 1rem;
+}
+
+button {
   background-color: #2c3e50;
   color: white;
-  padding: 15px 50px;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   width: auto;
   font-weight: bold;
+  margin-top: 2rem;
 }
+
 </style>
 
   <style>

@@ -32,6 +32,7 @@
             <th v-for="header in tableHeaders" :key="header">
               {{ header }}
             </th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -42,6 +43,10 @@
             <td v-for="header in tableHeaders" :key="header">
               {{ item[header] }} 
             </td>
+            <td> <div class="button-container">
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </div>
+          </td> 
           </tr>
         </tbody>
       </table>
@@ -331,7 +336,16 @@
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
+}
   </style>
   
     <style>
