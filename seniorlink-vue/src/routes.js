@@ -19,7 +19,7 @@ const routes = [
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangay, name: 'ViewBarangay' },
-    { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
+    { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' }, //not working
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' }, //add deelete button
     { path: '/admin/view/establishments', component: views.ViewEstablishmentUpdateDelete, name: 'ViewEstablishmentUpdateDelete' },
     
@@ -35,7 +35,7 @@ const routes = [
     { path: '/town/create/barangay', component: views.CreateBarangay, name: 'CreateBarangay' },
 
     { path: '/town/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
-    // { path: '/view-client-per-barangay', component: views.ViewClientPerBarangay, name: 'ViewClientPerBarangay' },
+    { path: '/view-client-per-barangay', component: views.ViewPerBarangay, name: 'ViewPerBarangay' },
     { path: '/town/view/seniors', component: views.ViewClientList, name: 'ViewClientList' },
     // view transactions of senior per barngay
 

@@ -19,7 +19,7 @@ export { default as CreateProduct }  from './components/CreateProduct.vue'
 //view
 export { default as ViewTown } from './components/ViewPerTown-wdelete.vue';
 export { default as ViewPerBarangay } from './components/ViewPerBarangay.vue'; //changed name
-export { default as ViewBarangayPerTown } from './components/ViewBarangayPerTown.vue';
+export { default as ViewPerTown } from './components/ViewPerTown.vue';
 export { default as ViewClientList } from './components/ViewClientList.vue';
 export { default as ViewBarangay } from './components/ViewBarangay.vue';
 export { default as ViewSuperAdmin } from './components/ViewSuperAdmin-wdelete.vue';
