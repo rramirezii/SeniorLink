@@ -6,12 +6,21 @@
       </div>
   </header>
   <main class="main-content">
-    <div class="qr-code-container">
-      <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code" class="qr-code" />
-      <img v-else src="/sample_qr.png" alt="QR code placeholder" class="qr-code" /> 
-    </div>
-    <button @click="goBack" class="back-button">Back to Home</button>
-  </main>
+      <div class="profile-section">
+        <div class="profile-container"> 
+          <div class="profile-placeholder"></div>
+        </div>
+        <h2 class="welcome-message">Welcome, {{ name }}!</h2>
+      </div>
+    <nav>
+      <ul class="nav-buttons vertical">
+        <li @click="navigateTo('/profile')">View Profile</li>
+        <li @click="navigateTo('/qr')">View QR</li>
+        <li @click="navigateTo('/transactions')">View Transactions</li>
+        <li @click="navigateTo('/ptransactions')">Print Transactions</li>
+      </ul>
+    </nav>
+    </main>
 </div>
 </template>
 
@@ -19,29 +28,27 @@
 import axios from 'axios';
 
 export default {
-  data() {
-    return {
-      qrCodeUrl: null,
-    };
-  },
-  created() { // Lifecycle hook to fetch the QR code URL
-    this.fetchQRCode();
-  },
-  methods: {
-    async fetchQRCode() {
-      try {
-        // Fetch the QR code URL from your API
-        const response = await axios.get('/api/qr-code'); // Replace with your endpoint
-        this.qrCodeUrl = response.data.qrCodeUrl;
-      } catch (error) {
-        console.error("Error fetching QR code:", error);
-        // Handle the error, e.g., show an error message to the user
-      }
-    },
-    goBack() {
-      this.$router.push('/'); 
-    },
+data() {
+  return {
+    name: "", // Placeholder for the name
+  };
+},
+
+async mounted() {
+  try {
+    const response = await axios.get('/api/user'); // Replace with your API endpoint
+    this.name = response.data.name; // Assuming the API response has a "name" property
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    // Handle error, e.g., set a default name or display an error message
   }
+},
+
+methods: {
+  navigateTo(route) {
+    this.$router.push(route); // Navigate to the specified route
+  }
+}
 };
 </script>
 
@@ -333,43 +340,32 @@ align-self: auto; /* Align profile to the left within start-frame */
   align-items: center;
   padding: 2rem; /* Adjust padding as needed */
   width: 80%;
-  justify-content: center;
-  height: 100%;
-  overflow: hidden;
-  max-width: 100%; /* This sets a maximum width to prevent the content from getting too wide on large screens */
+  max-width: 600px; /* This sets a maximum width to prevent the content from getting too wide on large screens */
 }
 
-button {
-  background-color: #2c3e50;
-  color: white;
-  padding: 15px 50px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  width: auto;
-  font-weight: bold;
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center; /* Align image and welcome text vertically */
+  gap: 1rem; 
 }
 
-.qr-code-container { /* Container for QR code or placeholder */
-  width: 380px; 
-  height: 380px; 
-  margin-bottom: 4rem;
-  margin-top: 3rem;
-  position: relative;
-  overflow: hidden; /* Key: Hide any overflow from the image */
-  background-color: #ffffff; /* Optional background for placeholder */
+/* Vertical Navigation Button Styles */
+.nav-buttons.vertical {
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: stretch;    /* Make buttons fill container width */
+  gap: 1rem;              /* Add spacing between buttons */
+  width: 90%;
 }
 
-.qr-code {
-  position: absolute; /* Position inside the container */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.nav-buttons.vertical li {
+  width: 100%;             /* Ensure each button takes full width */
+  text-align: center;      /* Center the button text */
+  margin-top: 5%;
 }
-
+.welcome-message {
+  font-size: 1.2rem;
+}
 </style>
 
   <style>

@@ -57,7 +57,7 @@
       </div>
         </div>
       </div>
-      <button @click="navigateTo('senior/dashboard')" class="back-button">Back to Home</button>
+      <button @click="goBack" class="back-button">Back to Home</button>
     </main>
     </div>
 </template>
@@ -74,7 +74,7 @@ export default {
       error: null,
     };
   },
-  mounted() { 
+  created() {
     this.fetchProfileData();
   },
   methods: {
@@ -83,7 +83,6 @@ export default {
         const response = await axios.get('/profile.json');
         this.profileData = response.data;
         this.profileImage = response.data.Image; 
-        this.navigateTo('/dashboard'); // Move navigation here
       } catch (error) {
         console.error('Error fetching profile data:', error);
         this.error = 'Failed to load profile';
@@ -96,10 +95,7 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleDateString(undefined, options);
     },
-    navigateTo(route) {
-      this.$router.push(route); // Navigate to the specified route
-    }
-  }
+  },
 };
 </script>
   

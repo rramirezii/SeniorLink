@@ -21,12 +21,11 @@
     </header>
     <nav>
       <ul class="nav-buttons">
-        <li><router-link to="./transaction">Create Transaction</router-link></li>
-        <li><router-link to="./create-product">Add Product</router-link></li>
-        <li><router-link to="./update-product">Update Product</router-link></li>
-        <li><router-link to="./delete-product">Delete Product</router-link></li>
-        <li><router-link to="./update-account">Update Account</router-link></li>
-      </ul>
+        <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
+        </ul>
     </nav>
   </div>
 </template>
@@ -35,9 +34,29 @@
 export default {
   data() {
     return {
+      activeDropdown: null, // Track the currently active dropdown
       maxWidth: 0,
     };
   },
+  methods: {
+    toggle(dropdown) {
+      // Close other dropdowns if a different one is clicked
+      if (this.activeDropdown && this.activeDropdown !== dropdown) {
+        this.activeDropdown = null;
+      } 
+
+      // Toggle the clicked dropdown
+      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+
+      // Calculate max width when dropdown is opened
+      if (this.active) {
+        this.$nextTick(() => {
+          const links = this.$el.querySelectorAll('.dropdown-content a');
+          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
+        });
+      }
+    }
+  }
 };
 </script>
 
@@ -130,7 +149,6 @@ nav li:hover{
   list-style: none;
   padding: 0;
   margin: 0;
-  text-decoration: none; /* Remove underline */
 }
 
 .nav-buttons li {
@@ -138,14 +156,15 @@ nav li:hover{
   position: relative; /* Crucial for containing the dropdown */
 }
 
-.nav-buttons li a { /* Style for links within nav-buttons */
-  color: #ffffff; /* Default white color for other links */
+a {
+  text-decoration: none;
+  color: #000;
 }
 
-.nav-buttons a {
-    color: #ffffff;
-    text-decoration: none; /* Remove underline for all buttons */
+a:hover {
+  color: #2c3e50;
 }
+
 /* profile logo */
 .profile-link {
   display: flex;
@@ -205,15 +224,12 @@ nav li:hover{
   display: flex;            /* Enable flexbox for centering */
   justify-content: center; /* Center the text horizontally */
   align-items: center;    /* Center the text vertically */
-  padding-top: 2%;
-  padding-bottom: 1%;
 }
 
 .dropdown-buttons a {
   display: block;     /* Make sure links fill the width */
   white-space: nowrap; /* Prevent text from wrapping */
 }
-
 
 .profile-placeholder {
   width: 55px;         

@@ -50,12 +50,12 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import apiServices from '@/services/apiServices';
   
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town Name'],  // Default headers
+        tableHeaders: ['Name', 'Town ID'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -78,7 +78,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
+        const response = await apiServices.get('/brgy.json');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;

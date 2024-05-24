@@ -21,15 +21,14 @@
     </header>
     <nav>
       <ul class="nav-buttons">
-            <li><router-link to='#' @click.prevent="redirectTo('CreateBarangay')">Create Account</router-link></li>
+        <li><router-link to='#' @click.prevent="redirectTo('CreateBarangay')">Create Account</router-link></li>
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
           View Account
-          <ul v-show="activeDropdown === 'view'" class="dropdown-content">
+          <ul v-if="activeDropdown === 'view'" class="dropdown-content">
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangayUpdateDelete')">Barangay</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
-          </ul>
+            </ul>
         </li>
-        <li><router-link to='#' @click.prevent="redirectTo('UpdateTownSelf')">Updadte Account</router-link></li>
         </ul>
     </nav>
   </div>
@@ -154,7 +153,6 @@ nav li:hover{
   list-style: none;
   padding: 0;
   margin: 0;
-  text-decoration: none; /* Remove underline */
 }
 
 .nav-buttons li {
@@ -162,14 +160,15 @@ nav li:hover{
   position: relative; /* Crucial for containing the dropdown */
 }
 
-.nav-buttons li a { /* Style for links within nav-buttons */
-  color: #ffffff; /* Default white color for other links */
+a {
+  text-decoration: none;
+  color: #000;
 }
 
-.nav-buttons a {
-    color: #ffffff;
-    text-decoration: none; /* Remove underline for all buttons */
+a:hover {
+  color: #2c3e50;
 }
+
 /* profile logo */
 .profile-link {
   display: flex;
@@ -229,15 +228,12 @@ nav li:hover{
   display: flex;            /* Enable flexbox for centering */
   justify-content: center; /* Center the text horizontally */
   align-items: center;    /* Center the text vertically */
-  padding-top: 2%;
-  padding-bottom: 1%;
 }
 
 .dropdown-buttons a {
   display: block;     /* Make sure links fill the width */
   white-space: nowrap; /* Prevent text from wrapping */
 }
-
 
 .profile-placeholder {
   width: 55px;         
