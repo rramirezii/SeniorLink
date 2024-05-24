@@ -17,7 +17,7 @@ export { default as CreateTransaction } from './components/CreateTransaction.vue
 export { default as CreateProduct }  from './components/CreateProduct.vue'
 
 //view
-export { default as ViewTown } from './components/ViewPerTown-wdelete.vue';
+export { default as ViewTown } from './components/ViewPerTown.vue';
 export { default as ViewPerBarangay } from './components/ViewPerBarangay.vue'; //changed name
 export { default as ViewPerTown } from './components/ViewPerTown.vue';
 export { default as ViewClientList } from './components/ViewClientList.vue';
@@ -28,7 +28,6 @@ export { default as ViewEstablishmentViewButton } from './components/ViewEstabli
 export { default as ViewBarangayUpdateDelete } from './components/ViewBarangay-wdelete.vue';
 export { default as ViewTransaction } from './components/ViewProductsTransaction.vue';
 export { default as ViewClientListUpdateDelete } from './components/ViewClientListUpdateDelete.vue';
-export { default as ViewEstablishmentUpdateDelete } from './components/ViewEstablishmentUpdateDelete.vue';
 
 //update
 export { default as UpdateClientSelect } from './components/UpdateClientSelect.vue';
@@ -42,6 +41,7 @@ export { default as UpdateBarangaySelf } from './components/UpdateBarangaySelf.v
 export { default as UpdateClient } from './components/UpdateClient.vue';
 export { default as UpdateClientSelf } from './components/UpdateClientSelf.vue';
 export { default as UpdateProduct } from './components/UpdateProduct.vue';
+export { default as UpdateEstablishmentSelf } from './components/UpdateEstablishmentSelf.vue';
 
 //client
 export { default as ClientTransactions } from './views/ClientMain.vue';

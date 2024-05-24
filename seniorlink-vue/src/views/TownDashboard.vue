@@ -29,6 +29,7 @@
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
           </ul>
         </li>
+        <li><router-link to='#' @click.prevent="redirectTo('UpdateTownSelf')">Updadte Account</router-link></li>
         </ul>
     </nav>
   </div>
