@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   props: {
@@ -63,41 +63,47 @@ export default {
     };
   },
   methods: {
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      this.profileImage = file;
-
-      // Create a preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.profileImagePreview = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    },
     async handleSubmit() {
-      const formData = new FormData(); // Use FormData to send file data
-      formData.append('contactNumber', this.contactNumber);
-      if (this.profileImage) {
-        formData.append('profilePic', this.profileImage);
-      }
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
 
       try {
-        const response = await axios.post(`/api/clients/${this.clientId}/update`, formData); // Send client ID in the URL
+        const formData = new FormData();
+        formData.append("contactNumber", this.contactNumber);
+        if (this.profileImage) {
+          formData.append("profilePic", this.profileImage);
+        }
+
+        const response = await apiServices.post(
+          `/senior/update/${this.clientId}`,
+          formData
+        );
 
         if (response.status === 200) {
-          console.log('Client updated successfully:', response.data);
-          // Optionally, navigate or display a success message
+          console.log("Update request sent successfully:", response.data);
+          this.showSuccessMessage = true;
+
+          // Reset form (optional)
+          // this.contactNumber = '';
+          // this.profileImage = null;
+          // this.profileImagePreview = null;
+
+          // No immediate redirection, wait for barangay approval
         } else {
-          console.error('Error updating client:', response.data);
-          // Handle errors gracefully (e.g., show error messages)
+          this.errorMessage =
+            "Error submitting update request: " + response.data.message;
+          this.showErrorMessage = true;
         }
       } catch (error) {
-        console.error('Error:', error);
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error("Error:", error);
       }
     },
     redirectToHome() {
-    this.$router.push('/senior/dashboard'); // Use the path directly
-  },
+      this.$router.push("/senior/dashboard");
+    },
   },
 };
 </script>

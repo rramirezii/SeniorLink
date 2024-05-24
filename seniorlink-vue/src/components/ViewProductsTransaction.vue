@@ -49,59 +49,89 @@
 </div>
 </template>
 
+<template>
+  <div class="view-select-client">
+    <header class="header">
+      </header>
+    
+    <div>
+      <h2>Transactions List</h2>
+      <div class="search-bar">
+        <input type="text" placeholder="Search..." v-model="searchQuery" />
+        <button @click="performSearch">Search</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <p v-if="loading" class="loading-message">Loading...</p>
+      <p v-else-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+      <table v-else-if="filteredTableData.length > 0" class="table">
+        <thead>
+          <tr>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="transaction in filteredTableData" :key="transaction.id">
+            <td>{{ transaction.product.name }}</td>
+            <td>{{ transaction.product_id }}</td>
+            <td>{{ transaction.id }}</td>
+            <td>{{ transaction.quantity }}</td>
+            <td>{{ transaction.product.price }}</td> 
+          </tr>
+        </tbody>
+      </table>
+      <p v-else class="no-results">No results found.</p>
+    </div>
+  </div>
+</template>
+
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 
 export default {
   data() {
     return {
-      tableHeaders: ['Name', 'Product ID', 'Transaction ID', 'Quantity', 'Price'],
+      tableHeaders: ["Name", "Product ID", "Transaction ID", "Quantity", "Price"],
       tableData: [],
-      searchQuery: '',
+      searchQuery: "",
       loading: true,
+      errorMessage: "",
     };
   },
   computed: {
     filteredTableData() {
       const query = this.searchQuery.toLowerCase();
-      return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => 
-          String(item[header]).toLowerCase().includes(query)
-        );
-      });
+      return this.tableData.filter((item) =>
+        Object.values(item).some((value) => {
+          if (typeof value === "string") {
+            return value.toLowerCase().includes(query);
+          } else if (typeof value === "number") {
+            return value.toString().includes(query);
+          }
+          return false;
+        })
+      );
     },
   },
   async mounted() {
     try {
-      const response = await axios.get('/producttransact.json');
-      this.tableData = response.data;
-      this.loading = false;
+      const response = await apiServices.get("/establishment/show/transaction");
+      this.tableData = response.data.product_transactions; // Update with the correct key 
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching transactions:", error);
+      this.errorMessage = "Failed to fetch transactions. Please try again later.";
+    } finally {
       this.loading = false;
     }
   },
   methods: {
     performSearch() {
       console.log("Searching for:", this.searchQuery);
-    },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id } }); // No need for id: id
-    },
-    async deleteItem(itemId) {
-      if (confirm("Are you sure you want to delete this item?")) {
-        try {
-          const response = await axios.delete(`/your-api-endpoint/${itemId}`); // Make sure this is your real API endpoint
-          // Update tableData to reflect the deleted item
-          this.tableData = this.tableData.filter(item => item.id !== itemId);
-          console.log("Item deleted:", response.data);
-        } catch (error) {
-          console.error("Error deleting item:", error);
-        }
-      }
     }
-  }
+  },
 };
 </script>
 

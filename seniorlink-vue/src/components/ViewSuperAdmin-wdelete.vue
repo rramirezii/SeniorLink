@@ -56,53 +56,59 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 
 export default {
   data() {
     return {
-      tableHeaders: ['Username'],  // Default headers
+      tableHeaders: ["Name", "Username"], 
       tableData: [],
-      searchQuery: '',
+      searchQuery: "",
       loading: true,
-      excludedFields: ['id'], // Array of fields to exclude
+      errorMessage: "",
     };
   },
   computed: {
-  filteredTableData() {
+    filteredTableData() {
       const query = this.searchQuery.toLowerCase();
-      return this.tableData.filter(item => {
-      return this.tableHeaders.some(header => {
-          if (header.toLowerCase() !== 'id'&& header!=='Password') { // Exclude the "id" column
-          return String(item[header]).toLowerCase().includes(query);
-          } else {
-          return false; // Don't include "id" in the search
-          }
+      return this.tableData.filter((item) => {
+        return this.tableHeaders.some((header) => 
+          String(item[header]).toLowerCase().includes(query)
+        );
       });
-      });
-  },
+    },
   },
   async mounted() {
     try {
-      const response = await axios.get('/superadmin.json');  //file should be in the `public` folder 
-      this.tableData = response.data;
-     
-      this.loading = false;
+      const response = await apiServices.get("/admin/show/all"); 
+      this.tableData = response.data.super_admins;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching super admins:", error);
+      this.errorMessage = "Failed to fetch super admins. Please try again later.";
+    } finally {
       this.loading = false;
-      // Handle errors appropriately (show an error message to the user)
-    } 
-  },
-  methods: {
-    performSearch() {
-      console.log("Searching for:", this.searchQuery);
     }
   },
-  navigateToTown(id) {
-    console.log("Navigating to admin with ID:", id);
-    this.$router.push({ name: 'UpdateClient', params: { id: id } });
-  }
+  methods: {
+    async deleteSuperAdmin(adminId) {
+      if (confirm("Are you sure you want to delete this super admin?")) {
+        try {
+          const response = await apiServices.post(`/admin/${adminId}/delete`); 
+          if (response.status === 200) {
+            this.tableData = this.tableData.filter(item => item.id !== adminId);
+          } else {
+            this.errorMessage = "Error deleting super admin: " + response.data.message;
+          }
+        } catch (error) {
+          console.error("Error deleting super admin:", error);
+          this.errorMessage = "An error occurred while deleting the super admin.";
+        }
+      }
+    },
+    performSearch() {
+      // Filtering is handled in the computed property `filteredTableData`
+    },
+  },
 };
 </script>
   

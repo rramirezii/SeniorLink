@@ -44,13 +44,81 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+
 export default {
+  props: {
+    establishId: { //pass the establishment ID
+      type: [String, Number],
+      required: true,
+    },
+  },
   data() {
     return {
-      name: '',
-      address: '',
-      password: '',
+      name: "",
+      address: "",
+      password: "",
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
+  },
+
+  mounted() {
+    // Fetch existing establishment data
+    apiServices
+      .get(`/establishment/${this.establishId}/show/establishment`) // Make sure your api route matches this
+      .then((response) => {
+        if (response.status === 200) {
+          this.name = response.data.establishment.name;
+          this.address = response.data.establishment.address;
+          // Don't fetch the password, as it's stored as a hash
+        } else {
+          this.errorMessage = "Error loading establishment information.";
+          this.showErrorMessage = true;
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching establishment details:", error);
+        this.errorMessage = "Error loading establishment information.";
+        this.showErrorMessage = true;
+      });
+  },
+
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        const response = await apiServices.post(
+          `/admin/update/establishment`, // Update API route as needed
+          {
+            id: this.establishId, // Send the establishment id
+            name: this.name,
+            address: this.address,
+            password: this.password,
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("Establishment updated successfully:", response.data);
+          this.showSuccessMessage = true;
+
+          // Optional: Reset form or redirect
+          // this.$router.push({ name: 'establishment-dashboard' });
+        } else {
+          this.errorMessage =
+            "Error updating establishment: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error("Error:", error);
+      }
+    },
   },
 };
 </script>

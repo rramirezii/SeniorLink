@@ -57,54 +57,59 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 
 export default {
   data() {
     return {
-      tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number'],  // Default headers
+      tableHeaders: ["First Name", "Middle Name", "Last Name", "OSCA ID", "Barangay", "Birthday", "Contact Number"],
       tableData: [],
-      searchQuery: '',
+      searchQuery: "",
       loading: true,
-      excludedFields: ['id'], // Array of fields to exclude
+      errorMessage: "",
     };
   },
   computed: {
-  filteredTableData() {
+    filteredTableData() {
       const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-      return this.tableHeaders.some(header => {
-          if (header.toLowerCase() !== 'id'&& header!=='Password') { // Exclude the "id" column
-          return String(item[header]).toLowerCase().includes(query);
-          } else {
-          return false; // Don't include "id" in the search
-          }
+        return Object.values(item).some(value => {
+          return String(value).toLowerCase().includes(query);
+        });
       });
-      });
-  },
+    },
   },
   async mounted() {
     try {
-      const response = await axios.get('/senior.json');  //file should be in the `public` folder 
-      this.tableData = response.data;
-     
+      const response = await apiServices.get("/senior/show/all"); // Fetch all seniors
+      this.tableData = response.data.seniors; // Assuming your API returns data in this format
       this.loading = false;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching seniors:", error);
       this.loading = false;
-      // Handle errors appropriately (show an error message to the user)
-    } 
-  },
-  methods: {
-    performSearch() {
-      console.log("Searching for:", this.searchQuery);
+      this.errorMessage = "Failed to fetch seniors. Please try again later.";
     }
   },
-  navigateToTown(id) {
-    console.log("Navigating to client with ID:", id);
-    this.$router.push({ name: 'UpdateClient', params: { id: id } });
+  methods: {
+    async deleteSenior(seniorId) {
+      if (confirm("Are you sure you want to delete this senior?")) {
+        try {
+          const response = await apiServices.post(`/senior/${seniorId}/delete`); // Use correct delete endpoint
+          if (response.status === 200) { // Success
+            this.tableData = this.tableData.filter(item => item.id !== seniorId);
+          } else {
+            this.errorMessage = "Error deleting senior: " + response.data.message;
+            this.showErrorMessage = true;
+          }
+        } catch (error) {
+          console.error("Error deleting senior:", error);
+          this.errorMessage = "An error occurred while deleting the senior.";
+          this.showErrorMessage = true;
+        }
+      }
+    }
   }
-};
+}
 </script>
   
   <style scoped>

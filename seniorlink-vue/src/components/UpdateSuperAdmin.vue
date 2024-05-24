@@ -40,12 +40,93 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+
 export default {
   data() {
     return {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
+      newPassword: "",
+      confirmPassword: "",
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
+  },
+
+  mounted() {
+  apiServices
+    .get('/admin/show/admin') // Assuming this is your API route
+    .then((response) => {
+      if (response.status === 200 && response.data.super_admin) {
+        this.username = response.data.super_admin.username; // Pre-fill username
+        // Do not pre-fill password field for security reasons
+      } else {
+        this.errorMessage = 'Error loading admin information.';
+        this.showErrorMessage = true;
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching admin details:', error);
+      this.errorMessage = 'Error loading admin information.';
+      this.showErrorMessage = true;
+    });
+},
+
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      // Basic input validation 
+      if (!this.username || !this.password || !this.newPassword || !this.confirmPassword) {
+        this.errorMessage = "Please fill in all fields.";
+        this.showErrorMessage = true;
+        return;
+      }
+
+      if (this.newPassword !== this.confirmPassword) {
+        this.errorMessage = "Passwords do not match.";
+        this.showErrorMessage = true;
+        return;
+      }
+
+      try {
+        const response = await apiServices.post("/admin/update/admin", {
+          username: this.username,
+          password: this.password, // Current password
+          new_password: this.newPassword,
+        });
+
+        if (response.status === 200) {
+          console.log("Admin updated successfully:", response.data);
+          this.showSuccessMessage = true;
+
+          // Clear the form
+          this.password = "";
+          this.newPassword = "";
+          this.confirmPassword = "";
+
+          // Optional redirect to the admin dashboard after a delay
+          // setTimeout(() => {
+          //    this.$router.push({ name: 'admin-dashboard' });
+          // }, 1500);
+        } else {
+          this.errorMessage = "Error updating admin: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = "Incorrect current password.";
+        } else {
+          this.errorMessage = "An error occurred. Please try again later.";
+        }
+        console.error("Error:", error);
+      }
+    },
   },
 };
 </script>

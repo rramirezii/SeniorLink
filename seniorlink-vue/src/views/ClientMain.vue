@@ -64,127 +64,96 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from "@/services/apiServices";
 
 export default {
-data() {
-  return {
-    tableHeaders: ['Products', 'Qty.', 'Amount', 'Balance'],
-    transactions: [],  
-    searchQuery: '',
-    loading: true,
-    establishmentData: {}, 
-  };
-},
-props: {
-    seniorId: { // Add a prop to receive the senior's ID
-      type: [String, Number], 
-      required: true
-    }
-  },
-computed: {
-  filteredTransactionsBySenior() {
-      return this.sortedTransactions.filter(transaction => transaction.seniorId === this.seniorId); // Filter by seniorId
+  props: {
+    seniorId: {
+      type: [String, Number],
+      required: true,
     },
-  filteredTransactions() {
-    const query = this.searchQuery.toLowerCase();
-    return this.transactions.filter(transaction => {
-      return Object.values(transaction).some(value => {
-        if (Array.isArray(value)) {
-          return value.some(item => 
-            Object.values(item).some(val => String(val).toLowerCase().includes(query))
-          );
-        }
-        return String(value).toLowerCase().includes(query);
+  },
+  data() {
+    return {
+      tableHeaders: ["Products", "Qty.", "Amount"],
+      transactions: [],
+      searchQuery: "",
+      loading: true,
+      errorMessage: "",
+      totalDiscount: 0,
+      establishmentData: {}, 
+    };
+  },
+  computed: {
+    filteredTransactionsByDate() {
+      const query = this.searchQuery.toLowerCase();
+      return this.transactions.filter(transaction => {
+        return transaction.establishment.name.toLowerCase().includes(query) || this.formatDate(transaction.date).toLowerCase().includes(query);
       });
-    });
-  },
-  sortedTransactions() {
-    return [...this.filteredTransactions].sort((a, b) => {
-      // Parse dates in YYYY-MM-DD format
-      const dateA = new Date(a.Date);
-      const dateB = new Date(b.Date);
-
-      // Compare years first
-      if (dateB.getFullYear() !== dateA.getFullYear()) {
-        return dateB.getFullYear() - dateA.getFullYear();
-      }
-
-      // If years are the same, compare months
-      if (dateB.getMonth() !== dateA.getMonth()) {
-        return dateB.getMonth() - dateA.getMonth();
-      }
-
-      // If years and months are the same, compare days
-      return dateB.getDate() - dateA.getDate();
-    });
-  },
-
-  totalAmountForWeek() {
-    const today = new Date();
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(today.getDate() - 7);
-
-    return this.filteredTransactions.reduce((total, item) => {
-      const itemDate = new Date(item.Date);
-
-      if (itemDate >= oneWeekAgo && itemDate <= today) {
-        const amount = parseFloat(item.Products.reduce((productTotal, product) => productTotal + parseFloat(product.amount), 0).toFixed(2)); // Correct calculation
-
-        if (!isNaN(amount)) {
-          return total + amount;
-        }
-      }
-      return total;
-    }, 0).toFixed(2);
-  },
-},
-async mounted() { 
-  try {
-    const response = await axios.get('/transactions.json');
-
-    const establishmentResponse = await axios.get('/establishment.json');
-    this.establishmentData = establishmentResponse.data;
-
-    this.transactions = response.data; 
-    this.loading = false;
-    this.updateTotalAmountDisplay(); 
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    this.loading = false;
-
-      // Specific error handling based on error types
-    if (error.response) {
-      console.error("Server Error:", error.response.status, error.response.data);
-    } else if (error.request) {
-      console.error("Network Error:", error.request);
-    } else {
-      console.error('Error:', error.message);
-    }
-  }
-},
-methods: {
-  getEstablishmentName(establishment) {
-    return this.establishmentData[establishment[0]]?.name || establishment[0];
-  },
-  formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, options); 
-  },
-  updateTotalAmountDisplay() {
-    const totalAmountElement = document.getElementById("totalamountweek");
-    if (totalAmountElement) {
-      totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
+    },
+    totalAmount() {
+      return this.transactions.reduce((total, transaction) => total + transaction.amount, 0).toFixed(2);
     }
   },
-  redirectToHome() {
-    this.$router.push('/senior/dashboard'); // Use the path directly
-  },
-  goBack() {
-      this.$router.push('/senior/dashboard'); // Use the path directly
+  async mounted() {
+    try {
+      const [transactionsResponse, establishmentsResponse] = await Promise.all([
+        apiServices.get(`/senior/${this.seniorId}/show/barangay`),
+        apiServices.get("/establishment/show/all"), 
+      ]);
+
+      if (
+        transactionsResponse.status === 200 &&
+        establishmentsResponse.status === 200
+      ) {
+        this.transactions = transactionsResponse.data.senior.transactions;
+        this.establishmentData = establishmentsResponse.data.establishments.reduce(
+          (acc, establishment) => {
+            acc[establishment.id] = establishment.name;
+            return acc;
+          },
+          {}
+        );
+        this.totalDiscount = this.calculateTotalDiscount();
+      } else {
+        this.errorMessage = "Error loading data.";
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.errorMessage = "Failed to fetch data. Please try again later.";
+    } finally {
+      this.loading = false;
     }
-}
+  },
+  methods: {
+    calculateTotalDiscount() {
+      return this.transactions.reduce(
+        (total, transaction) => total + (transaction.discount || 0),
+        0
+      ).toFixed(2); // Use 0 if discount is null or undefined
+    },
+
+    getEstablishmentName(establishmentId) {
+      return this.establishmentData[establishmentId] || "Unknown Establishment";
+    },
+
+    formatCurrency(value) {
+      return `Php ${value.toFixed(2)}`;
+    },
+
+    formatDate(dateString) {
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+
+    redirectToHome() {
+      this.$router.push("/senior/dashboard");
+    },
+
+    goBack() {
+      this.$router.push("/senior/dashboard");
+    },
+  },
 };
 </script>
 

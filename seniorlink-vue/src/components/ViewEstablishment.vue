@@ -54,52 +54,63 @@
   </div>
 </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Code', 'Address'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
+<script>
+import apiServices from "@/services/apiServices";
+
+export default {
+  data() {
+    return {
+      tableHeaders: ["Name", "Code", "Address"],
+      tableData: [],
+      searchQuery: "",
+      loading: true,
+      errorMessage: "",
+    };
+  },
+  computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter((item) => {
+        return Object.values(item).some((value) => {
+          return String(value).toLowerCase().includes(query);
         });
-        });
+      });
     },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/establishment.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
+  },
+  async mounted() {
+    try {
+      const response = await apiServices.get("/establishment/show/all"); // Make sure this matches your backend endpoint
+      this.tableData = response.data.establishments; // Adjust as needed
+      this.loading = false;
+    } catch (error) {
+      console.error("Error fetching establishments:", error);
+      this.loading = false;
+      this.errorMessage = "Failed to fetch establishments. Please try again later.";
     }
-  };
-  </script>
+  },
+  methods: {
+    async deleteEstablishment(establishmentId) {
+      if (confirm("Are you sure you want to delete this establishment?")) {
+        try {
+          const response = await apiServices.post(`/establishment/${establishmentId}/delete`); // Use your actual delete endpoint
+          if (response.status === 200) {
+            // Remove the deleted establishment from the tableData array
+            this.tableData = this.tableData.filter(item => item.id !== establishmentId);
+          } else {
+            this.errorMessage = "Error deleting establishment: " + response.data.message;
+          }
+        } catch (error) {
+          console.error("Error deleting establishment:", error);
+          this.errorMessage = "An error occurred while deleting the establishment.";
+        }
+      }
+    },
+    performSearch() {
+      console.log("Searching for:", this.searchQuery);
+    },
+  },
+};
+</script>
   
   <style scoped>
   .view-client {

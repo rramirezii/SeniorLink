@@ -36,11 +36,68 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+
 export default {
+  props: {
+    establishId: { 
+      type: [String, Number],
+      required: true,
+    },
+  },
   data() {
     return {
-      password: '',
+      password: "",
+      newPassword: "", 
+      confirmPassword: "",
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
+  },
+
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      // Basic validation (You'll likely need more robust password validation)
+      if (this.newPassword !== this.confirmPassword) {
+        this.errorMessage = "Passwords do not match.";
+        this.showErrorMessage = true;
+        return;
+      }
+
+      try {
+        const response = await apiServices.post(
+          `/establishment/update`, // Update API route as needed
+          {
+            id: this.establishId, 
+            password: this.password,
+            new_password: this.newPassword,
+          }
+        );
+
+        if (response.status === 200) {
+          console.log("Password updated successfully:", response.data);
+          this.showSuccessMessage = true;
+          // Optional: Reset form or redirect
+          this.password = '';
+          this.newPassword = '';
+          // this.confirmPassword = '';
+
+          // this.$router.push({ name: "establishment-dashboard" }); // Redirect after update
+        } else {
+          this.errorMessage = "Error updating password: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error("Error:", error);
+      }
+    },
   },
 };
 </script>

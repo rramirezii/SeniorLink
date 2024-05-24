@@ -52,14 +52,54 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+import moment from 'moment';
+ 
+
 export default {
   props: {
-    client: Object, // Client object with details and transactions array
+    clientId: {
+      type: [String, Number],
+      required: true,
+    },
+  },
+  data() {
+    return {
+      client: null,
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
+    };
+  },
+  mounted() {
+    // Fetch client data and transactions
+    apiServices
+      .get(`/senior/${this.clientId}/show/barangay`) 
+      .then((response) => {
+        if (response.status === 200 && response.data.senior) {
+          this.client = response.data.senior;
+          this.showSuccessMessage = true; // Show success message
+          setTimeout(() => {
+            this.showSuccessMessage = false; 
+          }, 3000); // Hide after 3 seconds
+        } else {
+          this.errorMessage = "Error loading client details.";
+          this.showErrorMessage = true;
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching client details:", error);
+        this.errorMessage = "Error loading client details.";
+        this.showErrorMessage = true;
+      });
   },
   methods: {
     formatCurrency(value) {
-      return `Php ${value.toFixed(2)}`; 
+      return `Php ${value.toFixed(2)}`;
     },
+    formatDate(dateString) {
+      return moment(dateString).format('MMMM DD, YYYY'); // Assuming you are using the moment library for date formatting
+    }
   },
 };
 </script>

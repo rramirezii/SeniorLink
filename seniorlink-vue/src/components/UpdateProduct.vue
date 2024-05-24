@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   props: {
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     fetchProductDetails() {
-      axios.get(`${this.baseUrl}/${this.productId}`)
+      apiServices.get(`establishment/update/${this.productId}`)
         .then(response => {
           this.name = response.data.name;
           this.quantity = response.data.quantity;
@@ -112,7 +112,7 @@ export default {
         price: parseFloat(this.price)
       };
 
-      axios.put(`${this.baseUrl}/${this.productId}`, updatedProductData)
+      apiServices.post(`establishment/show/${this.productId}`, updatedProductData)
         .then(response => {
           // Product update successful, you might want to refresh your product list or show a success message
           console.log('Product updated:', response.data);

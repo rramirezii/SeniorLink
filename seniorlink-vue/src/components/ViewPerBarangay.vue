@@ -55,56 +55,48 @@
   </div>
 </template>
   
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Town Name'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-      };
-    },
-    computed: {
+<script>
+import apiServices from "@/services/apiServices";
+
+export default {
+  data() {
+    return {
+      tableHeaders: ["Name", "Town Name"],
+      tableData: [],
+      searchQuery: "",
+      loading: true,
+      errorMessage: "",
+    };
+  },
+  computed: {
     filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id'&& header!=='Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
-        });
+      const query = this.searchQuery.toLowerCase();
+      return this.tableData.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === "string" && value.toLowerCase().includes(query)
+        )
+      );
     },
-    },
-    async mounted() {
-      try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
-    },
-    navigateToTown(id) {
-      console.log("Navigating to barangay with ID:", id);
-      this.$router.push({ name: 'ViewBarangay', params: { id: id } });
+  },
+  async mounted() {
+    try {
+      const response = await apiServices.get("/barangay/show"); // Fetch barangay data
+      this.tableData = response.data.barangays; // Assuming your API returns data in this format
+    } catch (error) {
+      console.error("Error fetching barangays:", error);
+      this.errorMessage = "Failed to fetch barangays. Please try again later.";
+    } finally {
+      this.loading = false;
     }
+  },
+  methods: {
+    performSearch() {
+      console.log("Searching for:", this.searchQuery);
+    },
+  },
 };
-  </script>
+</script>
 
 <style scoped>
 .view-select-client {

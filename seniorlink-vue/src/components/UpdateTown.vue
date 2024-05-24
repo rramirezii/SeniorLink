@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 import { ref } from 'vue';
 
 export default {
@@ -62,7 +62,7 @@ export default {
     // Fetch the initial values
     const fetchInitialValues = async () => {
       try {
-        const response = await axios.get('/api/town');
+        const response = await axios.get('/admin/show/town');
         initialName.value = response.data.name; // Assuming your API response has these properties
         initialZipcode.value = response.data.zipcode;
         initialPassword.value = response.data.password;
@@ -89,7 +89,7 @@ export default {
 
       // Send the updatedData to your backend API for processing
       try {
-        await axios.put('/api/town', updatedData);
+        await axios.post('/admin/update/town', updatedData);
         // Optionally, update the initial values after successful update
         // initialName.value = name.value;
         // initialZipcode.value = zipcode.value;

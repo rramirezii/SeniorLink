@@ -40,12 +40,99 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+
 export default {
   data() {
     return {
-      name: '',
-      password: '',
+      name: "",
+      password: "", // Current password
+      newPassword: "",
+      confirmPassword: "",
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
+  },
+
+  mounted() {
+    // Fetch existing town data (if needed)
+    // You'll likely already have the town's ID in your store or as a prop
+    // Example: 
+    apiServices
+      .get(`/town/${this.town_username}/show/town`) // Replace with actual route
+      .then((response) => {
+        if (response.status === 200 && response.data.town) {
+          this.name = response.data.town.name;
+          // Don't fetch the password for security reasons
+        } else {
+          this.errorMessage = "Error loading town information.";
+          this.showErrorMessage = true;
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching town details:", error);
+        this.errorMessage = "Error loading town information.";
+        this.showErrorMessage = true;
+      });
+  },
+
+  methods: {
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      // Validation (basic, you'll likely want more robust validation)
+      if (!this.password || !this.newPassword || !this.confirmPassword) {
+        this.errorMessage = "Please fill in all fields.";
+        this.showErrorMessage = true;
+        return;
+      }
+
+      if (this.newPassword !== this.confirmPassword) {
+        this.errorMessage = "Passwords do not match.";
+        this.showErrorMessage = true;
+        return;
+      }
+
+      try {
+        const response = await apiServices.post("/town/update/town", {
+          // Assuming your backend expects the following data:
+          name: this.name,
+          password: this.password,
+          new_password: this.newPassword,
+        });
+
+        if (response.status === 200) {
+          console.log("Town updated successfully:", response.data);
+          this.showSuccessMessage = true;
+
+          // Clear the form
+          this.password = "";
+          this.newPassword = "";
+          this.confirmPassword = "";
+
+          // Optional: Redirect to the town dashboard after a short delay
+          // setTimeout(() => {
+          //   this.$router.push({ name: "town-dashboard" }); // Replace with actual route name
+          // }, 1500);
+        } else {
+          this.errorMessage =
+            "Error updating town: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        if (error.response && error.response.status === 401) {
+          // Handle unauthorized access (incorrect password)
+          this.errorMessage = "Incorrect password.";
+        } else {
+          this.errorMessage = "An error occurred. Please try again later.";
+        }
+        console.error("Error:", error);
+      }
+    },
   },
 };
 </script>

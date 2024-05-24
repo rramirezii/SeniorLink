@@ -57,7 +57,7 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import apiServices from '@/services/apiServices';
   
   export default {
     data() {
@@ -85,7 +85,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
+        const response = await apiServices.get('/town/show/barangay');  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;
@@ -107,7 +107,7 @@
     async deleteItem(itemId) {
       if (confirm("Are you sure you want to delete this item?")) {
         try {
-          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
+          const response = await axios.delete(`/town/barangay/${itemId}`);
           // Handle successful deletion (e.g., remove from tableData)
           console.log("Item deleted:", response.data);
         } catch (error) {

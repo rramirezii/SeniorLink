@@ -56,54 +56,105 @@
     </div>
   </template>
   
+  <template>
+    <div class="view-select-town">
+      <header class="header">
+      </header>
+  
+      <div>
+        <h2>Towns List</h2>
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." v-model="searchQuery" />
+          <button @click="performSearch">Search</button>
+        </div>
+      </div>
+  
+      <div class="table-container">
+        <p v-if="loading" class="loading-message">Loading...</p>
+        <p v-else-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+        <table v-else-if="filteredTableData.length > 0" class="table">
+          <thead>
+            <tr>
+              <th v-for="header in tableHeaders" :key="header">
+                {{ header }}
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="town in filteredTableData" :key="town.id">
+              <td>{{ town.name }}</td>
+              <td>{{ town.zip_code }}</td>
+              <td>
+                <div class="button-container">
+                  <router-link :to="{ name: 'ViewTown', params: { id: town.id } }">
+                    <button class="view-button">View</button>
+                  </router-link>
+                  <button @click="deleteTown(town.id)" class="delete-button">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p v-else class="no-results">No results found.</p>
+      </div>
+    </div>
+  </template>
+  
   <script>
-  import axios from 'axios';
+  import apiServices from "@/services/apiServices";
   
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Zip Code'],  // Default headers
+        tableHeaders: ["Name", "Zip Code"],
         tableData: [],
-        searchQuery: '',
+        searchQuery: "",
         loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
+        errorMessage: "",
       };
     },
     computed: {
-    filteredTableData() {
+      filteredTableData() {
         const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
+        return this.tableData.filter((item) => {
+          return this.tableHeaders.some((header) =>
+            String(item[header]).toLowerCase().includes(query)
+          );
         });
-        });
-    },
+      },
     },
     async mounted() {
       try {
-        const response = await axios.get('/data.json');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
+        const response = await apiServices.get("/town/show/all"); 
+        this.tableData = response.data.towns;
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching towns:", error);
+        this.errorMessage = "Failed to fetch towns. Please try again later.";
+      } finally {
         this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
       }
     },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
-    }
+    methods: {
+      async deleteTown(townId) {
+        if (confirm("Are you sure you want to delete this town?")) {
+          try {
+            const response = await apiServices.post(`/town/${townId}/delete`); // Use your delete endpoint
+            if (response.status === 200) {
+              this.tableData = this.tableData.filter(item => item.id !== townId);
+            } else {
+              this.errorMessage = "Error deleting town: " + response.data.message;
+            }
+          } catch (error) {
+            console.error("Error deleting town:", error);
+            this.errorMessage = "An error occurred while deleting the town.";
+          }
+        }
+      },
+      performSearch() {
+        console.log("Searching for:", this.searchQuery);
+      },
+    },
   };
   </script>
 

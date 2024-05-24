@@ -48,47 +48,52 @@
   </div>
 </template>
   
-  <script>
-  import apiServices from '@/services/apiServices';
-  
-  export default {
-    data() {
-      return {
-        tableHeaders: ['Name', 'Username'],  // Default headers
-        tableData: [],
-        searchQuery: '',
-        loading: true,
-        excludedFields: ['id'], // Array of fields to exclude
-        error: null
-      };
-    },
-    computed: {
-    filteredTableData() {
-        const query = this.searchQuery.toLowerCase();
-        return this.tableData.filter(item => {
-          return item.name.toLowerCase().includes(query) || item.username.includes(query);
-        });
-      },
-    },
-    async mounted() {
-      try {
-        const response = await apiServices.get('/admin/show/super_admin');  //file should be in the `public` folder 
-        this.tableData = response.data;
-       
-        this.loading = false;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        this.loading = false;
-        // Handle errors appropriately (show an error message to the user)
-      } 
-    },
-    methods: {
-      performSearch() {
-        console.log("Searching for:", this.searchQuery);
-      }
-    }
+<template>
+</template>
+
+<script>
+import apiServices from "@/services/apiServices";
+
+export default {
+data() {
+  return {
+    tableHeaders: ["Name", "Username"],
+    tableData: [],
+    searchQuery: "",
+    loading: true,
+    error: null, // Added error state variable
   };
-  </script>
+},
+computed: {
+  filteredTableData() {
+    const query = this.searchQuery.toLowerCase();
+    return this.tableData.filter((item) => {
+      // Check if query matches name or username (case-insensitive)
+      return (
+        item.name.toLowerCase().includes(query) ||
+        item.username.toLowerCase().includes(query)
+      );
+    });
+  },
+},
+async mounted() {
+  try {
+    const response = await apiServices.get("/admin/show/all"); 
+    this.tableData = response.data.super_admins;
+    this.loading = false;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    this.error = "An error occurred while fetching data.";
+    this.loading = false;
+  }
+},
+methods: {
+  performSearch() {
+    console.log("Searching for:", this.searchQuery);
+  },
+},
+};
+</script>
   
   <style scoped>
   .view-client {
