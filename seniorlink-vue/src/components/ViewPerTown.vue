@@ -53,6 +53,9 @@
         </tbody>
       </table>
       </div>
+      <button @click="goBack" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+      </button>
     </div>
   </template>
   
@@ -98,6 +101,9 @@
     methods: {
       performSearch() {
         console.log("Searching for:", this.searchQuery);
+      },
+      goBack() {
+        this.$router.push('/admin/dashboard'); // Use the path directly
       }
     },
     navigateToTown(id) {
@@ -361,6 +367,17 @@ padding: 8px;
   cursor: pointer;
   margin-top: 0cm;
   margin-left: 10px;
+}
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
 }
 </style>
 

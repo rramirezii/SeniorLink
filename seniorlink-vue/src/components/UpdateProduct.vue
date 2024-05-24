@@ -54,7 +54,9 @@
         <button type="submit">Update Information</button>
       </div>
     </form>
-  
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Cancel Update
+    </button>
   </div>
 </template>
 
@@ -123,6 +125,9 @@ export default {
           console.error(`Error updating product ${this.productId}:`, error);
           // Add error handling
         });
+    },
+    goBack() {
+      this.$router.push('/establishment/dashboard'); // Use the path directly
     }
   }
 };

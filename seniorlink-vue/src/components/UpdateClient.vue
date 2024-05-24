@@ -56,7 +56,9 @@
         <button type="submit">Update Information</button>
       </div>
     </form>
-  
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Cancel Update
+    </button>
   </div>
 </template>
 
@@ -73,6 +75,11 @@ export default {
       password: ''
     };
   },
+  methods: {
+    goBack() {
+      this.$router.go(-1); // Use the path directly
+    }
+  }
 };
 </script>
 

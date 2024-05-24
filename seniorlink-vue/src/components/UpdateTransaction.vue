@@ -59,7 +59,9 @@
         <button type="submit">Update Transaction</button>
       </div>
     </form>
-  
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Cancel Update
+    </button>
   </div>
 </template>
 
@@ -82,7 +84,10 @@ export default {
     handleSubmit() {
       // Your transaction submission logic here
       console.log('Transaction:', this.name, this.quantity, this.price, this.attendant);
-    }
+    },
+    goBack() {
+      this.$router.go(-1); // Use the path directly
+    }  
   }
 };
 </script>

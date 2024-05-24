@@ -51,7 +51,9 @@
         <button type="submit">Create Account</button>
       </div>
     </form>
-  
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Cancel Creation
+    </button>
   </div>
 </template>
 
@@ -101,6 +103,9 @@ export default {
         console.error('Error:', error);
         // Handle network errors or other exceptions
       }
+    },
+    goBack() {
+      this.$router.go(-1); // Use the path directly
     }
   }
 };
@@ -345,7 +350,16 @@ a:hover {
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.back-button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
 </style>
 
   <style>

@@ -47,6 +47,9 @@
         </tr>
       </tbody>
     </table>
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
   </div>
   </div>
 </template>
@@ -60,6 +63,9 @@ export default {
     formatCurrency(value) {
       return `Php ${value.toFixed(2)}`; 
     },
+    goBack() {
+      this.$router.go(-1); // Use the path directly
+    }
   },
 };
 </script>
@@ -285,7 +291,17 @@ a:hover {
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
+}
 </style>
 
   <style>

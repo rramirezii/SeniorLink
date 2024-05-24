@@ -62,7 +62,9 @@
         </table>
       </template>
     </div>
-
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
     <p v-if="filteredTransactionsByDate.length === 0" class="no-results">No available data.</p>
   </div>
 </template>

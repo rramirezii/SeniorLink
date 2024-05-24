@@ -42,6 +42,9 @@
         </tbody>
       </table>
     </div>
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </button>
   </div>
 </template>
 
@@ -84,6 +87,9 @@ export default {
     },
     toggleProfileDropdown() {
       // Toggle profile dropdown logic
+    },
+    goBack() {
+      this.$router.push('/admin/dashboard'); // Use the path directly
     }
   }
 };
@@ -323,6 +329,18 @@ export default {
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
+}
+
+.back-button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
 }
 
   </style>

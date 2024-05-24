@@ -19,7 +19,6 @@ const routes = [
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' },
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangay' },
-    { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangay' },
     { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' },
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' },
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },

@@ -41,7 +41,9 @@
       </div>
       
     </form>
-  
+    <button @click="goBack" class="back-button">
+      <i class="fas fa-arrow-left"></i> Cancel Update
+    </button>
   </div>
 </template>
 
@@ -97,7 +99,10 @@ export default {
     },
     redirectToHome() {
     this.$router.push('/senior/dashboard'); // Use the path directly
-  },
+    },
+    goBack() {
+      this.$router.go(-1); // Use the path directly
+    }
   },
 };
 </script>
@@ -227,6 +232,17 @@ button[type="submit"] {
   form input[type="file"] {
     font-size: 0.9rem;
   }
+}
+
+.back-button {
+  padding: 1em;
+  background-color: #2c3e50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
 }
 </style>
 
