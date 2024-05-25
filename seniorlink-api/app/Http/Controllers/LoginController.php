@@ -44,11 +44,11 @@ class LoginController extends Controller
     
         // Determine the user's role based on the table where credentials were found
         if ($superAdmin) {
-            return response()->json(["message" => "Success", "role" => "admin_0"], 200);
+            return response()->json(["message" => "Success", "role" => "admin"], 200);
         } elseif ($town) {
-            return response()->json(["message" => "Success", "role" => "admin_1"], 200);
+            return response()->json(["message" => "Success", "role" => "town"], 200);
         } elseif ($barangay) {
-            return response()->json(["message" => "Success", "role" => "admin_2"], 200);
+            return response()->json(["message" => "Success", "role" => "barangay"], 200);
         } elseif ($establishment) {
             return response()->json(["message" => "Success", "role" => "establishment"], 200);
         } else {
