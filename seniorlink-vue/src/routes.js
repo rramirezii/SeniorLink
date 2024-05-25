@@ -20,7 +20,7 @@ const routes = [
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangay, name: 'ViewBarangay' },
     { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
-    { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' }, //add deelete button
+    { path: '/admin/view/admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdminUpdateDelete' },
     { path: '/admin/view/establishments', component: views.ViewEstablishmentUpdateDelete, name: 'ViewEstablishmentUpdateDelete' },
     { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
     { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' },
@@ -28,7 +28,7 @@ const routes = [
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
 
     { path: '/admin/update/town/:username', component: views.UpdateTown, name: 'UpdateTown',  props: true},
-    { path: '/admin/update/super-admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
+    { path: '/admin/update/admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
     { path: '/admin/update/establishment/:username', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
 
     // deletes are enforcedd in view

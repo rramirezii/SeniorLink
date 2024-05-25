@@ -22,13 +22,17 @@
     <h2>Update Admin Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
+        <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name">
+      </div>
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" required>
-      </div>  
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" readonly>
+        </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <input type="password" id="password" v-model="password">
       </div>
     </div>
       <div class="form-actions">
@@ -40,12 +44,64 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+import router from '@/router'; 
+
 export default {
   data() {
     return {
-      username: '',
+      id: '',
+      name: '',
       password: '',
+      error: null,
     };
+  },
+  computed: {
+    username() {
+      return `admin_${this.name}`;
+    }
+  },
+  async created() {
+    const username = this.$route.params.username;
+
+    try {
+      const response = await apiServices.get(`/admin/show/super_admin/${username}`);
+      const item = response.data[0];
+
+      this.id = item.id || '';
+      this.name = item.name || '';
+      this.username = item.username || '';
+    } catch (error) {
+      console.error('Error fetching town details:', error);
+      this.error = 'Error fetching town details. Please try again later.';
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const updatedData = {
+        id: this.id,
+        name: this.name,
+        username: this.username,
+      };
+      if (this.password) {
+        updatedData.password = this.password;
+      }
+
+      const payload = {
+        type: "super_admin",
+        contents: updatedData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/admin/update/`, payload);
+        alert('Establishment information updated successfully');
+        router.push({ name: 'UpdateSuperAdmin', params: { username: this.username } });
+      } catch (error) {
+        console.error('Error updating super admin information:', error);
+        alert('Error updating super admin information');
+      }
+    },
   },
 };
 </script>

@@ -23,7 +23,7 @@ export { default as ViewPerBarangay } from './components/ViewPerBarangay.vue'; /
 // export { default as ViewPerTown } from './components/ViewPerTown.vue'; // NOT RESOLED
 export { default as ViewClientList } from './components/ViewClientList.vue';
 export { default as ViewBarangay } from './components/ViewBarangay.vue';
-// export { default as ViewSuperAdmin } from './components/ViewSuperAdmin-wdelete.vue'; #NOT RESOLVED
+export { default as ViewSuperAdmin } from './components/ViewSuperAdmin.vue';
 export { default as ViewEstablishment } from './components/ViewEstablishment.vue';
 export { default as ViewEstablishmentViewButton } from './components/ViewEstablishment-viewbutton.vue';
 export { default as ViewBarangayUpdateDelete } from './components/ViewBarangay-wdelete.vue';

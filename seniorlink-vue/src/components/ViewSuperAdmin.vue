@@ -32,6 +32,7 @@
           <tr>
             <th>Name</th>
             <th>Username</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +42,15 @@
           <tr v-for="item in filteredTableData" :key="item.id"> 
             <td>{{ item.name }}</td>
             <td>{{ item.username }}</td>
+            <td> <div class="button-container">
+              <!-- send the whole item -->
+              <router-link :to="{ name: 'UpdateSuperAdmin', params: { username: item.username }}"> 
+                <button class="update-button">Update</button>
+              </router-link>
+              <!-- to see if function -->
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </div>
+          </td> 
           </tr>
         </tbody>
       </table>
@@ -54,7 +64,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Username'],  // Default headers
+        tableHeaders: ['Name', 'Username', 'Actions'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -324,6 +334,25 @@
 }
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
+}
+.update-button{
+padding: 0.5rem 1rem;
+background-color: #2c3e50;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+margin-top: 0cm;
+}
+.delete-button{
+  padding: 0.5rem 1rem;
+  background-color: #7e3e3e;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0cm;
+  margin-left: 10px;
 }
 
   </style>

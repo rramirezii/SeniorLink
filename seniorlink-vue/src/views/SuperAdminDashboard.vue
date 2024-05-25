@@ -35,7 +35,7 @@
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewTown')">Towns</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewBarangay')">Barangay</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewClientList')">Clients</router-link></li>
-            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewSuperAdmin')">Super Admin</router-link></li>
+            <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewSuperAdminUpdateDelete')">Super Admin</router-link></li>
             <li class="dropdown-buttons"><router-link to='#' @click.prevent="redirectTo('ViewEstablishmentUpdateDelete')">Establishment</router-link></li>
             </ul>
         </li>
