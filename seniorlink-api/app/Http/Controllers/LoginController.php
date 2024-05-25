@@ -2,14 +2,8 @@
 
 namespace App\Http\Controllers;
 
-// use App\Models\Senior;
-// use App\Models\SuperAdmin;
-// use App\Models\Barangay;
-// use App\Models\Town;
-// use App\Models\Establishment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use App\Http\Controllers\SuperAdminController;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -17,11 +11,11 @@ class LoginController extends Controller
     {
         $userName = $request->input('username');
 
-        $senior = Senior::where('username', $userName)->first();
-        $superAdmin = SuperAdmin::where('username', $userName)->first();
-        $barangay = Barangay::where('username', $userName)->first();
-        $town = Town::where('username', $userName)->first();
-        $establishment = Establishment::where('username', $userName)->first();
+        $senior = DB::table('senior')->where('username', $userName)->first();
+        $superAdmin = DB::table('super_admin')->where('username', $userName)->first();
+        $barangay = DB::table('barangay')->where('username', $userName)->first();
+        $town = DB::table('town')->where('username', $userName)->first();
+        $establishment = DB::table('establishment')->where('username', $userName)->first();
 
         if ($senior) {
             return response()->json(["message" => "User found.", "role" => "basic"], 200);
@@ -41,12 +35,12 @@ class LoginController extends Controller
     {
         $password = $request->input('password');
 
-        $superAdmin = SuperAdmin::where('password', $password)->first();
-        $barangay = Barangay::where('password', $password)->first();
-        $town = Town::where('password', $password)->first();
-        $establishment = Establishment::where('password', $password)->first();
+        $superAdmin = DB::table('super_admin')->where('password', $password)->first();
+        $barangay = DB::table('barangay')->where('password', $password)->first();
+        $town = DB::table('town')->where('password', $password)->first();
+        $establishment = DB::table('establishment')->where('password', $password)->first();
 
-        // refine to avoid attack on unathorized access
+        // refine to avoid attack on unauthorized access
         if ($superAdmin){
             return response()->json(["message" => "Success", "role" => "admin_0"], 200);
         }elseif($town){
@@ -59,5 +53,4 @@ class LoginController extends Controller
             return response()->json(["message" => "Invalid password"], 401);
         }
     }
-
 }

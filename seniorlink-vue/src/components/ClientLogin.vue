@@ -47,7 +47,7 @@ export default {
       }
 
       try {
-          const response = await apiServices.post('/api/enter-password', { password: this.pass }); //CHANGE THIS TO API
+          const response = await apiServices.post('/login', { username: this.loginID });
 
           if (response.status === 200 && response.data.success) {
             const role = response.data.role; // Assuming response.data.role contains the role
