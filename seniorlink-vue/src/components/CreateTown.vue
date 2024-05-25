@@ -49,7 +49,6 @@
 
 <script>
 import apiServices from '@/services/apiServices';
-import router from '@/router'; 
 
 export default {
   data() {
@@ -82,7 +81,11 @@ export default {
         // const username = this.$route.params.username;
         await apiServices.post(`/admin/create`, payload);
         alert('New Town created successfully');
-        router.push({ name: 'CreateTown'});
+
+        this.name = '';
+        this.zip_code = '';
+        this.username = '';
+        this.password = '';
       } catch (error) {
         console.error('Error creating town:', error);
         alert('Error creating town');

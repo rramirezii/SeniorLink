@@ -42,12 +42,13 @@ class SuperAdminController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this->makeRulesRequired($rules);
-        $validator = Validator::make($contents, $rules);
+        // UNCOMMENT THIS SOON
+        // $rules = $this->makeRulesRequired($rules);
+        // $validator = Validator::make($contents, $rules);
 
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
+        // if ($validator->fails()) {
+        //     throw new \Exception($this->generateErrorMessage($validator));
+        // }
 
         $id = DB::table($table)->insertGetId($contents);
 
