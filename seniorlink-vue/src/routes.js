@@ -1,5 +1,3 @@
-@@ -1,4 +1,3 @@
-
 import * as views from '@/view';
 
 const routes = [
