@@ -13,6 +13,7 @@
     <h2>Update Town Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
+        <input type="hidden" id="id" v-model="id">
         <div class="form-group">
           <label for="name">Name:</label>
           <input type="text" id="name" v-model="name">
@@ -43,6 +44,7 @@ import apiServices from '@/services/apiServices';
 export default {
   data() {
     return {
+      id: '',
       name: '',
       zipcode: '',
       password: '',
@@ -61,6 +63,7 @@ export default {
       const response = await apiServices.get(`/admin/show/town/${username}`);
       const item = response[0];
 
+      this.id = item.id || '';
       this.name = item.name || '';
       this.zipcode = item.zip_code || '';
     } catch (error) {
@@ -71,6 +74,7 @@ export default {
   methods: {
     async handleSubmit() {
       const updatedData = {
+        id: this.id,
         name: this.name,
         zip_code: this.zipcode,
         username: this.username
@@ -79,9 +83,14 @@ export default {
         updatedData.password = this.password;
       }
 
+      const payload = {
+        type: "town",
+        contents: updatedData,
+      };
+
       try {
-        const username = this.$route.params.username;
-        await apiServices.post(`/api/town/${username}`, updatedData);
+        // const username = this.$route.params.username;
+        await apiServices.post(`/admin/update/`, payload);
         alert('Town information updated successfully');
       } catch (error) {
         console.error('Error updating town information:', error);

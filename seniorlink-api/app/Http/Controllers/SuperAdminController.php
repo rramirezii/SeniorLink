@@ -143,7 +143,7 @@ class SuperAdminController extends BaseController
         if ($validation !== null) {
             return $validation;
         }
-
+        
         $type = $request->input('type');
         $contents = $request->input('contents');
 
@@ -163,8 +163,10 @@ class SuperAdminController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this->transformRulesForUpdate($rules, $contents);
+        $rules['id'] = 'required|integer';
         $validator = Validator::make($contents, $rules);
+
+        $validator->setPresenceVerifier(app('validation.presence'));
 
         if ($validator->fails()) {
             throw new \Exception($this->generateErrorMessage($validator));
