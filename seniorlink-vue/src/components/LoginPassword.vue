@@ -1,62 +1,58 @@
 <template>
-    <div class="login-web">
-      <header class="header">
-        <div class="brand">
-          <h1>SeniorLink</h1>
-        </div>
-      </header>
-      <h2>Log-In</h2>
-      <form @submit.prevent="enterPassword">
-        <div class="form-container">
-          <div class="form-group">
+  <div class="login-web">
+    <header class="header">
+      <div class="brand">
+        <h1>SeniorLink</h1>
+      </div>
+    </header>
+    <h2>Log-In</h2>
+    <h3>Hello, {{ username }}</h3> 
+    <form @submit.prevent="enterPassword">
+      <div class="form-container">
+        <div class="form-group">
           <label for="password">Password:</label>
           <input type="password" id="password" v-model="password" required>
         </div>
       </div>
-        <div class="form-actions">
-          <button type="submit">Log-In</button>
-        </div>
-      </form>
-    
-    </div>
-  </template>
-  
-  <script>
-  import apiServices from '@/services/apiServices';
+      <div class="form-actions">
+        <button type="submit">Log-In</button>
+      </div>
+    </form>
+  </div>
+</template>
 
-  export default {
-    data() {
-      return {
-        password: '',
-        username:''
-      };
-    },
-    methods: {
-      async enterPassword() {
-        const password = this.password;
+<script>
+import apiServices from '@/services/apiServices';
 
-        // Check if the entered date is a valid date
-        if (isNaN(pass)) { 
-          this.error = "Invalid date of birth. Please enter a valid date.";
-          return;
+export default {
+  data() {
+    return {
+      password: '',
+      username: ''
+    };
+  },
+  async created() {
+    const username = this.$route.params.username;
+    this.username = username;
+  },
+  methods: {
+    async enterPassword() {
+      try {
+        const response = await apiServices.post('/validate', { password: this.password, username: this.username }); 
+        
+        if (response.status === 200) {
+          const role = response.data.role; // Assuming response.data.role contains the role
+          this.$router.push(`/${role}/dashboard`);
+        } else {
+          this.error = response.data.message || "An error occurred. Please try again."; 
         }
-
-        try {
-          const response = await apiServices.post('/api/enter-password', { password: this.password }); //CHANGE THIS TO API
-
-          if (response.status === 200 && response.data.success) {
-            const role = response.data.role; // Assuming response.data.role contains the role
-            this.$router.push(`/${role}/dashboard`);
-          } else {
-            this.error = response.data.message || "An error occurred. Please try again."; 
-          }
-        } catch (error) {
-          // hello error
-        }
+      } catch (error) {
+        alert("Error Logging in: Invalid Password");
       }
     }
-  };
-  </script>
+  }
+};
+</script>
   
   <style scoped>
   
