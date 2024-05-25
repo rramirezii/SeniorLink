@@ -13,7 +13,6 @@ const routes = [
 
     { path: '/admin/create/town', component: views.CreateTown, name: 'CreateTown' },
     { path: '/admin/create/establishment', component: views.CreateEstablishment, name: 'CreateEstablishment' },
-    //craete super admin
     { path: '/admin/create/superadmin', component: views.CreateSuperAdmin, name: 'CreateSuperAdmin' },
 
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, 

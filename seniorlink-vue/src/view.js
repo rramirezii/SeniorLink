@@ -10,7 +10,7 @@ export { default as TownDashboard } from './views/TownDashboard.vue';
 
 //create
 export { default as CreateTown } from './components/CreateTown.vue';
-// export { default as CreateSuperAdmin } from './components/CreateSuperAdmin.vue'; //NOT RESOLVED
+export { default as CreateSuperAdmin } from './components/CreateSuperAdmin.vue';
 export { default as CreateEstablishment } from './components/CreateEstablishment.vue'; //create establishment
 export { default as CreateBarangay } from './components/CreateBarangay.vue';
 export { default as CreateClient } from './components/CreateClient.vue';
