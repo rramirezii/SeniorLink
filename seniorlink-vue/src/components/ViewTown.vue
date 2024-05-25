@@ -25,10 +25,9 @@
       <table v-else class="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Zip Code</th>
-            <th>Username</th>
-            <th>Actions</th>
+            <th v-for="header in tableHeaders" :key="header">
+              {{ header }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -60,7 +59,7 @@ import apiServices from '@/services/apiServices';
 export default {
   data() {
     return {
-      tableHeaders: ['Name', 'Zip Code', 'Username'],
+      tableHeaders: ['Name', 'Zip Code', 'Username','Actions'],
       tableData: [],
       searchQuery: '',
       loading: true,
