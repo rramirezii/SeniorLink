@@ -39,9 +39,16 @@
             <td colspan="9" class="no-results">No results found.</td>
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
-            </td>
+            <td>{{ item.fname }}</td>
+            <td>{{ item.mname }}</td>
+            <td>{{ item.lname }}</td>
+            <td>{{ item.osca_id }}</td>
+            <td>{{ item.barangay_name}}</td>
+            <td>{{ item.town_name}}</td>
+            <td>{{ item.birthdate}}</td>
+            <td>{{ item.contact_number}}</td>
+            <td>{{ item.username}}</td>
+            <td>{{ item.profile_image}}</td>
           </tr>
         </tbody>
       </table>
@@ -50,12 +57,12 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import apiServices from '@/services/apiServices';
   
   export default {
     data() {
       return {
-        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number', 'QR'],  // Default headers
+        tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay','Town', 'Birthdate', 'Contact Number', 'Username','Profile Image'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -66,21 +73,21 @@
     filteredTableData() {
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id' && header !== 'Birthday' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
+          return this.tableHeaders.some(header => {
+            if (header.toLowerCase() !== 'id' && header !== 'QR' && header !== 'Password') { // Exclude the "id" column
+              return String(item[header]).toLowerCase().includes(query);
             } else {
-            return false; // Don't include "id" in the search
+              return false; // Don't include "id" in the search
             }
-        });
+          });
         });
     },
     },
     async mounted() {
       try {
-        const response = await axios.get('/senior.json');  //file should be in the `public` folder 
+        const response = await apiServices.get('/admin/show/senior');  //file should be in the `public` folder 
         this.tableData = response.data;
-       
+        console.log(this.tableData);
         this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
