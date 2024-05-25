@@ -24,15 +24,23 @@
       <div class="form-container">
       <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name" required>
+        <input type="text" id="name" v-model="name">
+      </div>
+      <div class="form-group">
+        <label for="address">Code:</label>
+        <input type="text" id="code" v-model="code">
       </div>
       <div class="form-group">
         <label for="address">Address:</label>
-        <input type="text" id="address" v-model="address" required>
+        <input type="text" id="address" v-model="address">
       </div>
       <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" readonly>
+        </div>
+      <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <input type="password" id="password" v-model="password">
       </div>
     </div>
       <div class="form-actions">
@@ -44,13 +52,70 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+import router from '@/router'; 
+
 export default {
   data() {
     return {
+      id: '',
       name: '',
+      code: '',
       address: '',
       password: '',
+      error: null,
     };
+  },
+  computed: {
+    username() {
+      return `e${this.code}`;
+    }
+  },
+  async created() {
+    const username = this.$route.params.username;
+
+    try {
+      const response = await apiServices.get(`/admin/show/establishment/${username}`);
+      const item = response.data[0];
+
+      this.id = item.id || '';
+      this.name = item.name || '';
+      this.code = item.code || '';
+      this.address = item.address || '';
+      this.username = item.username || '';
+    } catch (error) {
+      console.error('Error fetching town details:', error);
+      this.error = 'Error fetching town details. Please try again later.';
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const updatedData = {
+        id: this.id,
+        name: this.name,
+        code: this.code,
+        username: this.username,
+        address: this.address,
+      };
+      if (this.password) {
+        updatedData.password = this.password;
+      }
+
+      const payload = {
+        type: "establishment",
+        contents: updatedData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/admin/update/`, payload);
+        alert('Establishment information updated successfully');
+        router.push({ name: 'UpdateEstablisment', params: { username: this.username } });
+      } catch (error) {
+        console.error('Error updating establishment information:', error);
+        alert('Error updating establishment information');
+      }
+    },
   },
 };
 </script>

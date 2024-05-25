@@ -83,7 +83,7 @@ class BaseController extends Controller
             case 'establishment':
                 return [
                     'name' => 'string|max:255',
-                    'code' => 'integer|unique:establishment',
+                    'code' => 'string|unique:establishment',
                     'address' => 'string|max:255',
                     'username' => 'string|unique:establishment|max:255',
                     'password' => 'string|max:255',

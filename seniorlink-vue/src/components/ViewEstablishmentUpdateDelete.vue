@@ -47,7 +47,7 @@
           <td>{{ item.username }}</td>
           <td> <div class="button-container">
               <!-- send the whole item -->
-              <router-link :to="{ name: 'UpdateEstablishment', params: { item }}"> 
+              <router-link :to="{ name: 'UpdateEstablishment', params: { username: item.username }}"> 
                 <button class="update-button">Update</button>
               </router-link>
               <!-- to see if function -->
@@ -78,14 +78,17 @@ export default {
     filteredTableData() {
       const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-        return item.name.toLowerCase().includes(query) || item.code.includes(query) || item.address.includes(query) || item.username.includes(query);
+        return item.name.toLowerCase().includes(query) ||
+               item.code.includes(query) || 
+               item.address.includes(query) || 
+               item.username.includes(query);
       });
     }
   },
   async mounted() {
     try {
       const response = await apiServices.get('/admin/show/establishment');  //file should be in the `public` folder 
-      this.tableData = response || [];
+      this.tableData = response.data;
       this.loading = false;
     } catch (error) {
         console.error("Error fetching data:", error);

@@ -16,7 +16,7 @@ const routes = [
     //craete super admin
     { path: '/admin/create/superadmin', component: views.CreateSuperAdmin, name: 'CreateSuperAdmin' },
 
-    { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
+    { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, 
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangay, name: 'ViewBarangay' },
     { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
@@ -28,8 +28,8 @@ const routes = [
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
 
     { path: '/admin/update/town/:username', component: views.UpdateTown, name: 'UpdateTown',  props: true},
-    { path: '/admin/update/super-admin', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
-    { path: '/admin/update/establishment', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
+    { path: '/admin/update/super-admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
+    { path: '/admin/update/establishment/:username', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
 
     // deletes are enforcedd in view
 
