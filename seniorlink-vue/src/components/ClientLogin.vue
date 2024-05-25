@@ -13,7 +13,6 @@
             id="loginID" 
             v-model="loginID"
             placeholder="Login ID" 
-            pattern="[0-9]{5}_[0-9]+"
             required
             aria-describedby="loginError"
           />
