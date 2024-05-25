@@ -18,7 +18,7 @@ export { default as CreateTransaction } from './components/CreateTransaction.vue
 export { default as CreateProduct }  from './components/CreateProduct.vue'
 
 //view
-// export { default as ViewTown } from './components/ViewPerTown.vue'; // NOT RESOLVED
+export { default as ViewTown } from './components/ViewTown.vue';
 export { default as ViewPerBarangay } from './components/ViewPerBarangay.vue'; //changed name
 // export { default as ViewPerTown } from './components/ViewPerTown.vue'; // NOT RESOLED
 export { default as ViewClientList } from './components/ViewClientList.vue';

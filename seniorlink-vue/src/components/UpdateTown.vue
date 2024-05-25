@@ -4,104 +4,74 @@
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div> -->
-      <div class="profile-container" @click="toggleProfileDropdown"> 
+      <div class="profile-container" @click="toggleProfileDropdown">
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
       </div>
     </header>
     <h2>Update Town Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
         <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name">
+          <label for="name">Name:</label>
+          <input type="text" id="name" v-model="name">
+        </div>
+        <div class="form-group">
+          <label for="zipcode">Zip Code:</label>
+          <input type="number" id="zipcode" v-model="zipcode">
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="zipcode">Zip Code:</label>
-        <input type="number" id="zipcode" v-model="zipcode">
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password">
-      </div>
-    </div>
       <div class="form-actions">
         <button type="submit">Update Information</button>
       </div>
     </form>
-  
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 import { ref } from 'vue';
 
 export default {
-  setup() {
-    // Ref for each field to store initial/current value
-    const name = ref('');
-    const zipcode = ref('');
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+  },
+  mounted() {
+    console.log(this.item); // Access the passed item here
+  },
+  setup(props) {
+    const name = ref(props.item.name || '');
+    const zipcode = ref(props.item.zip_code || '');
     const password = ref('');
 
-    // Refs to store initial values separately
-    const initialName = ref('');
-    const initialZipcode = ref('');
-    const initialPassword = ref('');
-
-    // Fetch the initial values
-    const fetchInitialValues = async () => {
-      try {
-        const response = await axios.get('/api/town');
-        initialName.value = response.data.name; // Assuming your API response has these properties
-        initialZipcode.value = response.data.zipcode;
-        initialPassword.value = response.data.password;
-
-        // Set the initial values to the form fields
-        name.value = initialName.value;
-        zipcode.value = initialZipcode.value;
-        password.value = initialPassword.value;
-      } catch (error) {
-        // Handle error fetching initial values (e.g., show an error message)
-        console.error("Error fetching initial values:", error);
-      }
-    };
-
-    // Call the function to fetch initial values when the component is created
-    fetchInitialValues();
-
     const handleSubmit = async () => {
-      // Only send updated fields in the payload
-      const updatedData = {};
-      if (name.value !== initialName.value) updatedData.name = name.value;
-      if (zipcode.value !== initialZipcode.value) updatedData.zipcode = zipcode.value;
-      if (password.value !== initialPassword.value) updatedData.password = password.value;
+      const updatedData = {
+        name: name.value,
+        zipcode: zipcode.value,
+      };
+      if (password.value) {
+        updatedData.password = password.value;
+      }
 
-      // Send the updatedData to your backend API for processing
       try {
-        await axios.put('/api/town', updatedData);
-        // Optionally, update the initial values after successful update
-        // initialName.value = name.value;
-        // initialZipcode.value = zipcode.value;
-        // initialPassword.value = password.value;
-        // Show success message to the user
+        await apiServices.post('/api/town', updatedData);
+        alert('Town information updated successfully');
       } catch (error) {
-        // Handle error and show error message to the user
+        console.error('Error updating town information:', error);
+        alert('Error updating town information');
       }
     };
 
     return { name, zipcode, password, handleSubmit };
-  },
+  }
 };
 </script>
 

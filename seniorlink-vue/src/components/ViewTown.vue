@@ -28,6 +28,7 @@
             <th>Name</th>
             <th>Zip Code</th>
             <th>Username</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -38,6 +39,15 @@
             <td>{{ item.name }}</td>
             <td>{{ item.zip_code }}</td>
             <td>{{ item.username }}</td>
+            <td> <div class="button-container">
+              <!-- send the whole item -->
+              <router-link :to="{ name: 'UpdateTown', params: { item }}"> 
+                <button class="update-button">Update</button>
+              </router-link>
+              <!-- to see if function -->
+              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+            </div>
+          </td> 
           </tr>
         </tbody>
       </table>
@@ -49,6 +59,12 @@
 import apiServices from '@/services/apiServices';
 
 export default {
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       tableHeaders: ['Name', 'Zip Code', 'Username'],
@@ -291,6 +307,26 @@ export default {
     margin-right: 0.5rem; /* Add some space between the icon and text */
   }
 
+  .update-button{
+    padding: 0.5rem 1rem;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0cm;
+    }
+    .delete-button{
+      padding: 0.5rem 1rem;
+      background-color: #7e3e3e;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0cm;
+      margin-left: 10px;
+    }
+
   .table-container {
   margin-top: 60px; /* Adjust as needed */
   width: 80%; /* Or set a specific width */
@@ -325,7 +361,7 @@ export default {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
 
-  </style>
+</style>
   
     <style>
     #app {

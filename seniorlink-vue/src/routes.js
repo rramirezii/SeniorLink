@@ -17,7 +17,6 @@ const routes = [
     { path: '/admin/create/superadmin', component: views.CreateSuperAdmin, name: 'CreateSuperAdmin' },
 
     { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' }, //add delete vutton
-    { path: '/admin/view/towns', component: views.ViewTown, name: 'ViewTown' },
     { path: '/admin/view/seniors', component: views.ViewClientList, name: 'ViewClientListBarangay' },
     { path: '/admin/view/barangays', component: views.ViewBarangay, name: 'ViewBarangay' },
     { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
@@ -28,7 +27,7 @@ const routes = [
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' },
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
 
-    { path: '/admin/update/town', component: views.UpdateTown, name: 'UpdateTown' },
+    { path: '/admin/update/town', component: views.UpdateTown, name: 'UpdateTown', props: true },
     { path: '/admin/update/super-admin', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
     { path: '/admin/update/establishment', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
 
