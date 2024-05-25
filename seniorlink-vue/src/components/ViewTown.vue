@@ -39,15 +39,14 @@
             <td>{{ item.name }}</td>
             <td>{{ item.zip_code }}</td>
             <td>{{ item.username }}</td>
-            <td> <div class="button-container">
-              <!-- send the whole item -->
-              <router-link :to="{ name: 'UpdateTown', params: { item }}"> 
-                <button class="update-button">Update</button>
-              </router-link>
-              <!-- to see if function -->
-              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
-            </div>
-          </td> 
+            <td>
+              <div class="button-container">
+                <router-link :to="{ name: 'UpdateTown', params: { username: item.username, item: item }}"> 
+                  <button class="update-button">Update</button>
+                </router-link>
+                <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -59,12 +58,6 @@
 import apiServices from '@/services/apiServices';
 
 export default {
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-  },
   data() {
     return {
       tableHeaders: ['Name', 'Zip Code', 'Username'],
@@ -78,7 +71,9 @@ export default {
     filteredTableData() {
       const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-        return item.name.toLowerCase().includes(query) || item.zip_code.includes(query) || item.username.includes(query);
+        return item.name.toLowerCase().includes(query) || 
+                item.zip_code.includes(query) || 
+                item.username.includes(query);
       });
     }
   },
@@ -86,7 +81,6 @@ export default {
     try {
       const response = await apiServices.get('/admin/show/town');
       this.tableData = response;  // Ensure response is correctly structured
-      console.log(this.tableData);
     } catch (error) {
         console.error('Error fetching data:', error);
         this.error = 'Error fetching data. Please try again later.';

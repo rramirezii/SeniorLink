@@ -54,27 +54,22 @@ class SuperAdminController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /admin/show/{clients}
-    public function read($client)
+    public function read($client, $username = null)
     {
         $fields = '*';
         $extraClause = '';
-
+    
         switch ($client) {
             case 'town':
                 $fields = 'id, name, zip_code, username';
                 break;
             case 'barangay':
                 $fields = 'barangay.id, barangay.name, town.name as town, barangay.username';
-                $extraClause = 'JOIN town 
-                                ON town.id = barangay.town_id';
+                $extraClause = 'JOIN town ON town.id = barangay.town_id';
                 break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id 
-                                LEFT JOIN town 
-                                ON barangay.town_id = town.id';
+                $extraClause = 'LEFT JOIN barangay ON senior.barangay_id = barangay.id LEFT JOIN town ON barangay.town_id = town.id';
                 break;
             case 'establishment':
                 $fields = 'id, name, code, address, username';
@@ -85,8 +80,12 @@ class SuperAdminController extends BaseController
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
         }
-
-        return $this->generateReadResponse($fields, $extraClause, $client);
+    
+        if ($username) {
+            $extraClause .= " WHERE $client.username = ?";
+        }
+    
+        return $this->generateReadResponse($fields, $extraClause, $client, $username);
     }
 
     // get /admin/show/town/{town_username}/barangay

@@ -26,16 +26,19 @@ class BaseController extends Controller
         return null;
     }
 
-    protected function generateReadResponse($fields, $extraClause, $table, $bindings = [])
+    protected function generateReadResponse($fields, $extraClause, $client, $username = null)
     {
+        $table = $client;
         $query = "SELECT $fields FROM $table $extraClause";
-        $result = DB::select($query, $bindings);
-
-        if (empty($result)) {
-            return response()->json(['error' => 'No data found'], 404);
+    
+        $params = $username ? [$username] : [];
+        $result = DB::select($query, $params);
+    
+        if ($username && empty($result)) {
+            return response()->json(['error' => 'Record not found'], 404);
         }
-
-        return response()->json($result, 200);
+    
+        return response()->json($result);
     }
 
     protected function generateErrorMessage($originator)

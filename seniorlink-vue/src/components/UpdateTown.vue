@@ -4,74 +4,91 @@
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <div class="profile-container" @click="toggleProfileDropdown">
+      <!-- <div class="search-bar">
+        <input type="text" placeholder="Search..." />
+        <button>Search</button>
+      </div> -->
+      <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
+        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
+          <li class="dropdown-buttons">
+            <a href="#" @click.prevent="signOut">Sign Out</a>
+          </li>
+        </ul> -->
       </div>
     </header>
     <h2>Update Town Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
         <div class="form-group">
-          <label for="name">Name:</label>
-          <input type="text" id="name" v-model="name">
-        </div>
-        <div class="form-group">
-          <label for="zipcode">Zip Code:</label>
-          <input type="number" id="zipcode" v-model="zipcode">
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" id="password">
-        </div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name">
       </div>
+      <div class="form-group">
+        <label for="zipcode">Zip Code:</label>
+        <input type="number" id="zipcode" v-model="zipcode">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="password">
+      </div>
+    </div>
       <div class="form-actions">
         <button type="submit">Update Information</button>
       </div>
     </form>
+  
   </div>
 </template>
 
 <script>
 import apiServices from '@/services/apiServices';
-import { ref } from 'vue';
 
 export default {
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
+  data() {
+    return {
+      name: '',
+      zipcode: '',
+      password: '',
+      error: null,
+    };
   },
-  mounted() {
-    console.log(this.item); // Access the passed item here
+  async created() {
+    const id = this.$route.params.username;
+    console.log("baisbfia");
+    console.log(this.$route.params.item);
+    try {
+      const response = await apiServices.get(`/admin/show/town/${id}`);
+      const item = response.data;
+      this.name = item.name || '';
+      this.zipcode = item.zip_code || '';
+    } catch (error) {
+      console.error('Error fetching town details:', error);
+      this.error = 'Error fetching town details. Please try again later.';
+    }
   },
-  setup(props) {
-    const name = ref(props.item.name || '');
-    const zipcode = ref(props.item.zip_code || '');
-    const password = ref('');
-
-    const handleSubmit = async () => {
+  methods: {
+    async handleSubmit() {
       const updatedData = {
-        name: name.value,
-        zipcode: zipcode.value,
+        name: this.name,
+        zip_code: this.zipcode,
       };
-      if (password.value) {
-        updatedData.password = password.value;
+      if (this.password) {
+        updatedData.password = this.password;
       }
 
       try {
-        await apiServices.post('/api/town', updatedData);
+        const id = this.$route.params.id;
+        await apiServices.post(`/api/town/${id}`, updatedData);
         alert('Town information updated successfully');
       } catch (error) {
         console.error('Error updating town information:', error);
         alert('Error updating town information');
       }
-    };
-
-    return { name, zipcode, password, handleSubmit };
-  }
+    },
+  },
 };
 </script>
 
