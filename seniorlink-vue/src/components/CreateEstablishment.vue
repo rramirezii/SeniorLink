@@ -27,8 +27,16 @@
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
+        <label for="address">Code:</label>
+        <input type="text" id="code" v-model="code">
+      </div>
+      <div class="form-group">
         <label for="address">Address:</label>
         <input type="text" id="address" v-model="address" required>
+      </div>
+      <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" :disabled="true">
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
@@ -44,13 +52,53 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+
 export default {
   data() {
     return {
       name: '',
+      code: '',
       address: '',
       password: '',
     };
+  },
+  computed: {
+    username() {
+      const formattedName = this.code.toLowerCase().replace(/\s+/g, '_');
+      return `e_${formattedName}`;
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const newData = {
+        name: this.name,
+        code: this.code,
+        address: this.address,
+        username: this.username,
+        password: this.password,
+      }
+
+      const payload = {
+        type: "establishment",
+        contents: newData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/admin/create`, payload);
+        alert('New Establishment created successfully');
+
+        this.name = '';
+        this.code = '';
+        this.username = '';
+        this.address = '';
+        this.password = '';
+      } catch (error) {
+        console.error('Error creating establishment:', error);
+        alert('Error creating establishment');
+      }
+    },
   },
 };
 </script>
