@@ -22,7 +22,7 @@ const routes = [
     { path: '/admin/view/town/barangay', component: views.ViewBarangayPerTown, name: 'ViewBarangayPerTown' }, //not working
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' }, //add deelete button
     { path: '/admin/view/establishments', component: views.ViewEstablishmentUpdateDelete, name: 'ViewEstablishmentUpdateDelete' },
-    { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangay' },
+    { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
     { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' },
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' },
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
