@@ -24,7 +24,7 @@
         </div>
         <div class="form-group">
           <label for="username">Username:</label>
-          <input type="text" id="username" v-model="username" readonly>
+          <input type="text" id="username" v-model="username" :disabled="true">
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
@@ -54,7 +54,8 @@ export default {
   },
   computed: {
     username() {
-      return `t${this.zipcode}`;
+      const formattedName = this.name.toLowerCase().replace(/\s+/g, '_');
+      return `t_${formattedName}`;
     }
   },
   async created() {
