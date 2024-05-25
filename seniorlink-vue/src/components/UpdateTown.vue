@@ -4,42 +4,36 @@
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <!-- <div class="search-bar">
-        <input type="text" placeholder="Search..." />
-        <button>Search</button>
-      </div> -->
       <div class="profile-container" @click="toggleProfileDropdown"> 
         <router-link to="/profile">
           <div class="profile-placeholder"></div>
         </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
       </div>
     </header>
     <h2>Update Town Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
         <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name">
+          <label for="name">Name:</label>
+          <input type="text" id="name" v-model="name">
+        </div>
+        <div class="form-group">
+          <label for="zipcode">Zip Code:</label>
+          <input type="number" id="zipcode" v-model="zipcode">
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" readonly>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="password">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="zipcode">Zip Code:</label>
-        <input type="number" id="zipcode" v-model="zipcode">
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password">
-      </div>
-    </div>
       <div class="form-actions">
         <button type="submit">Update Information</button>
       </div>
     </form>
-  
   </div>
 </template>
 
@@ -55,13 +49,18 @@ export default {
       error: null,
     };
   },
+  computed: {
+    username() {
+      return `t${this.zipcode}`;
+    }
+  },
   async created() {
-    const id = this.$route.params.username;
-    console.log("baisbfia");
-    console.log(this.$route.params.item);
+    const username = this.$route.params.username;
+
     try {
-      const response = await apiServices.get(`/admin/show/town/${id}`);
-      const item = response.data;
+      const response = await apiServices.get(`/admin/show/town/${username}`);
+      const item = response[0];
+
       this.name = item.name || '';
       this.zipcode = item.zip_code || '';
     } catch (error) {
@@ -74,14 +73,15 @@ export default {
       const updatedData = {
         name: this.name,
         zip_code: this.zipcode,
+        username: this.username
       };
       if (this.password) {
         updatedData.password = this.password;
       }
 
       try {
-        const id = this.$route.params.id;
-        await apiServices.post(`/api/town/${id}`, updatedData);
+        const username = this.$route.params.username;
+        await apiServices.post(`/api/town/${username}`, updatedData);
         alert('Town information updated successfully');
       } catch (error) {
         console.error('Error updating town information:', error);
@@ -91,6 +91,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .update-town {

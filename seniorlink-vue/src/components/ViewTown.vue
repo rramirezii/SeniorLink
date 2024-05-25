@@ -41,7 +41,7 @@
             <td>{{ item.username }}</td>
             <td>
               <div class="button-container">
-                <router-link :to="{ name: 'UpdateTown', params: { username: item.username, item: item }}"> 
+                <router-link :to="{ name: 'UpdateTown', params: { username: item.username}}"> 
                   <button class="update-button">Update</button>
                 </router-link>
                 <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
