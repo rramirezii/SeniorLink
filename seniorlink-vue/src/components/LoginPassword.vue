@@ -9,8 +9,8 @@
       <form @submit.prevent="enterPassword">
         <div class="form-container">
           <div class="form-group">
-          <label for="pass">Password:</label>
-          <input type="password" id="pass" v-model="pass" required>
+          <label for="password">Password:</label>
+          <input type="password" id="password" v-model="password" required>
         </div>
       </div>
         <div class="form-actions">
@@ -27,12 +27,13 @@
   export default {
     data() {
       return {
-        pass: ''
+        password: '',
+        username:''
       };
     },
     methods: {
       async enterPassword() {
-        const pass = this.pass;
+        const password = this.password;
 
         // Check if the entered date is a valid date
         if (isNaN(pass)) { 
@@ -41,7 +42,7 @@
         }
 
         try {
-          const response = await apiServices.post('/api/enter-password', { password: this.pass }); //CHANGE THIS TO API
+          const response = await apiServices.post('/api/enter-password', { password: this.password }); //CHANGE THIS TO API
 
           if (response.status === 200 && response.data.success) {
             const role = response.data.role; // Assuming response.data.role contains the role

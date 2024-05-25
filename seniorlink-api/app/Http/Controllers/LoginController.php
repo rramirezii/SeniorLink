@@ -33,24 +33,27 @@ class LoginController extends Controller
 
     public function validateLogin(Request $request)
     {
+        // Sanitize input
+        $username = $request->input('username');
         $password = $request->input('password');
-
-        $superAdmin = DB::table('super_admin')->where('password', $password)->first();
-        $barangay = DB::table('barangay')->where('password', $password)->first();
-        $town = DB::table('town')->where('password', $password)->first();
-        $establishment = DB::table('establishment')->where('password', $password)->first();
-
-        // refine to avoid attack on unauthorized access
-        if ($superAdmin){
+    
+        $superAdmin = DB::table('super_admin')->where('username', $username)->where('password', $password)->first();
+        $barangay = DB::table('barangay')->where('username', $username)->where('password', $password)->first();
+        $town = DB::table('town')->where('username', $username)->where('password', $password)->first();
+        $establishment = DB::table('establishment')->where('username', $username)->where('password', $password)->first();
+    
+        // Determine the user's role based on the table where credentials were found
+        if ($superAdmin) {
             return response()->json(["message" => "Success", "role" => "admin_0"], 200);
-        }elseif($town){
+        } elseif ($town) {
             return response()->json(["message" => "Success", "role" => "admin_1"], 200);
-        }elseif($barangay){
+        } elseif ($barangay) {
             return response()->json(["message" => "Success", "role" => "admin_2"], 200);
-        }elseif($establishment){
-            return response()->json(["message" => "Success", "role" => "establishment"], 200); 
-        }else {
-            return response()->json(["message" => "Invalid password"], 401);
+        } elseif ($establishment) {
+            return response()->json(["message" => "Success", "role" => "establishment"], 200);
+        } else {
+            return response()->json(["message" => "Invalid username or password"], 401);
         }
     }
+    
 }
