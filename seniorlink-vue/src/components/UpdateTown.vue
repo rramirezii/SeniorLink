@@ -40,6 +40,7 @@
 
 <script>
 import apiServices from '@/services/apiServices';
+import router from '@/router'; 
 
 export default {
   data() {
@@ -92,6 +93,7 @@ export default {
         // const username = this.$route.params.username;
         await apiServices.post(`/admin/update/`, payload);
         alert('Town information updated successfully');
+        router.push({ name: 'UpdateTown', params: { username: this.username } });
       } catch (error) {
         console.error('Error updating town information:', error);
         alert('Error updating town information');
