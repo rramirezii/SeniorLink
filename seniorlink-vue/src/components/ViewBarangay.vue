@@ -40,7 +40,7 @@
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
             <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }} 
+              {{ item[header.toLowerCase()] }} 
             </td>
           </tr>
         </tbody>
@@ -55,7 +55,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
+        tableHeaders: ['Name', 'Town', 'Username'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -66,21 +66,20 @@
     filteredTableData() {
         const query = this.searchQuery.toLowerCase();
         return this.tableData.filter(item => {
-        return this.tableHeaders.some(header => {
-            if (header.toLowerCase() !== 'id') { // Exclude the "id" column
-            return String(item[header]).toLowerCase().includes(query);
-            } else {
-            return false; // Don't include "id" in the search
-            }
-        });
+          return this.tableHeaders.some(header => {
+              if (header.toLowerCase() !== 'id') { // Exclude the "id" column
+                return String(item[header]).toLowerCase().includes(query);
+              } else {
+                return false; // Don't include "id" in the search
+              }
+          });
         });
     },
     },
     async mounted() {
       try {
-        const response = await apiServices.get('/brgy.json');  //file should be in the `public` folder 
+        const response = await apiServices.get('/admin/show/barangay');  
         this.tableData = response.data;
-       
         this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
