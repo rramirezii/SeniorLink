@@ -80,7 +80,7 @@ export default {
   async mounted() {
     try {
       const response = await apiServices.get('/admin/show/town');
-      this.tableData = response;  // Ensure response is correctly structured
+      this.tableData = response.data;  // Ensure response is correctly structured
     } catch (error) {
         console.error('Error fetching data:', error);
         this.error = 'Error fetching data. Please try again later.';

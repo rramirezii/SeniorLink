@@ -28,8 +28,7 @@
 
 <script>
 import apiServices from '@/services/apiServices';
-
-// import axios from 'axios';
+import router from '@/router'; 
 
 export default {
   data() {
@@ -47,13 +46,13 @@ export default {
       }
       try {
         const response = await apiServices.post('/login', { username: this.loginID });
-        console.log(response.status);
-        if (response.status === 200 && response.data.success) {
-          const role = response.data.role; // Assuming response.data.role contains the role
+        console.log(response);
+        if (response.status === 200) {
+          const role = response.data.role;
           if (role === 'basic') {
-            this.$router.push('/authentication/senior');
+            router.push({ name: 'ClientAuth', params: { username: this.loginID } });
           } else {
-            this.$router.push('/authentication/admin');
+            router.push({ name: 'LoginPassword', params: { username: this.loginID } });
           }
         } else {
           this.error = response.data.message || "Login failed";

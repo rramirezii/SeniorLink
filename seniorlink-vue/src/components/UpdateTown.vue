@@ -62,7 +62,7 @@ export default {
 
     try {
       const response = await apiServices.get(`/admin/show/town/${username}`);
-      const item = response[0];
+      const item = response.data[0];
 
       this.id = item.id || '';
       this.name = item.name || '';

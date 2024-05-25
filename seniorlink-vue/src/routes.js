@@ -3,9 +3,9 @@ import * as views from '@/view';
 const routes = [
     // GENERAL
     { path: '/', component: views.ClientLogin, name: 'ClientLogin' },
-    { path: '/authentication/senior', component: views.ClientAuth, name: 'ClientAuth' },
+    { path: '/authentication/senior/:username', component: views.ClientAuth, name: 'ClientAuth', props:true },
     { path: '/profile', component: views.ClientProfile, name: 'ClientProfile' },
-    { path: '/authentication/admin', component: views.LoginPassword, name: 'LoginPassword' },
+    { path: '/authentication/admin/:username', component: views.LoginPassword, name: 'LoginPassword', props: true },
   
     // super admin
     { path: '/admin/dashboard', component: views.SuperAdminDashboard, name: 'SuperAdminDashboard' },
