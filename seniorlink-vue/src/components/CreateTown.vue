@@ -27,9 +27,13 @@
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="zipcode">Zip Code:</label>
-        <input type="number" id="zipcode" v-model="zipcode" required>
+        <label for="zip_code">Zip Code:</label>
+        <input type="number" id="zip_code" v-model="zip_code" required>
       </div>
+      <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" :disabled="true">
+        </div>
       <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required>
@@ -44,13 +48,46 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+import router from '@/router'; 
+
 export default {
   data() {
     return {
       name: '',
-      zipCode: '',
+      zip_code: '',
       password: '',
     };
+  },
+  computed: {
+    username() {
+      return `t_${this.zip_code}`;
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const newData = {
+        name: this.name,
+        zip_code: this.zip_code,
+        username: this.username,
+        password: this.password,
+      }
+
+      const payload = {
+        type: "town",
+        contents: newData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/admin/create`, payload);
+        alert('New Town created successfully');
+        router.push({ name: 'CreateTown'});
+      } catch (error) {
+        console.error('Error creating town:', error);
+        alert('Error creating town');
+      }
+    },
   },
 };
 </script>

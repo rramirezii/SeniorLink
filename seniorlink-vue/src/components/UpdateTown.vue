@@ -21,7 +21,7 @@
         <div class="form-group">
           <label for="zipcode">Zip Code:</label>
           <input type="number" id="zipcode" v-model="zipcode">
-        </div>
+        </div>d
         <div class="form-group">
           <label for="username">Username:</label>
           <input type="text" id="username" v-model="username" :disabled="true">
@@ -47,15 +47,14 @@ export default {
     return {
       id: '',
       name: '',
-      zipcode: '',
+      zip_code: '',
       password: '',
       error: null,
     };
   },
   computed: {
     username() {
-      const formattedName = this.name.toLowerCase().replace(/\s+/g, '_');
-      return `t_${formattedName}`;
+      return `t_${this.zip_code}`;
     }
   },
   async created() {
