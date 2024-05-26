@@ -1,69 +1,67 @@
 <template>
-  <div class="senior-link">
-    <header class="header" @click.stop>
+  <div class="client-start">
+    <header class="header">
       <div class="brand">
         <h1>SeniorLink</h1>
       </div>
-      <div class="search-bar">
-        <!-- <input type="text" placeholder="Search..." />
-        <button>Search</button> -->
-      </div>
-      <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
+  </header>
+  <main class="main-content">
+      <div class="profile-section">
+        <div class="profile-container"> 
           <div class="profile-placeholder"></div>
-        </router-link>
-        <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
-          <li class="dropdown-buttons">
-            <a href="#" @click.prevent="signOut">Sign Out</a>
-          </li>
-        </ul> -->
+        </div>
+        <h2 class="welcome-message">Welcome, {{ name }}!</h2>
       </div>
-    </header>
     <nav>
-      <ul class="nav-buttons">
-        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('UpdateClientSelf')">Update Account</router-link></li>
-        </ul>
+      <ul class="nav-buttons vertical">
+        <li @click="navigateTo('ClientProfile')">View Profile</li>
+        <li @click="navigateTo('ClientQR')">View QR</li>
+        <li @click="navigateTo('ClientTransactions')">View Transactions</li>
+        <li @click="navigateTo('ClientPrint')">Print Transactions</li>
+      </ul>
     </nav>
-  </div>
+    </main>
+</div>
 </template>
 
 <script>
+// import apiServices from '@/services/apiServices';
+import router from '@/router';
+
 export default {
-  data() {
-    return {
-      activeDropdown: null, // Track the currently active dropdown
-      maxWidth: 0,
-    };
-  },
-  methods: {
-    toggle(dropdown) {
-      // Close other dropdowns if a different one is clicked
-      if (this.activeDropdown && this.activeDropdown !== dropdown) {
-        this.activeDropdown = null;
-      } 
+data() {
+  return {
+    name: "",
+    username: '',
+  };
+},
 
-      // Toggle the clicked dropdown
-      this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+async mounted() {
+  this.name = sessionStorage.getItem('name');
+  this.username = sessionStorage.getItem('username');
+  //ADD THIS FOR RETRIEVEING PROFILE
+  // try {
+  //   const response = await apiServices.get('/api/user'); // Replace with your API endpoint
+  //   this.name = response.data.name; // Assuming the API response has a "name" property
+  // } catch (error) {
+  //   console.error("Error fetching user data:", error);
+  //   // Handle error, e.g., set a default name or display an error message
+  // }
+},
 
-      // Calculate max width when dropdown is opened
-      if (this.active) {
-        this.$nextTick(() => {
-          const links = this.$el.querySelectorAll('.dropdown-content a');
-          this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
-        });
-      }
-    }
+methods: {
+  navigateTo(route) {
+    router.push({ name: route, params: { username: this.username } });
   }
+}
 };
 </script>
 
 <style scoped>
-.senior-link {
+.client-start {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem;
 }
 
 .header {
@@ -79,8 +77,14 @@ export default {
   z-index: 10; /* Ensure the header stays on top of other elements */
 }
 
+.profile-and-search {
+display: flex; /* Makes this a flex container */
+align-items: center; /* Vertically aligns items within this container */
+gap: 1rem; /* Add some space between the search and profile elements */
+}
+
 .brand{
-  padding-left: 2%;
+  padding-left: 5%;
 }
 
 .logo {
@@ -114,7 +118,7 @@ export default {
 /* buttons */
 nav {
   width: 100%;
-  margin-top: 200px;
+  margin-top: 4rem;
 }
 
 nav ul {
@@ -189,6 +193,7 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
+  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -197,6 +202,7 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
+  height: fit-content;
 }
 
 
@@ -229,25 +235,142 @@ a:hover {
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
-.profile-placeholder {
-  width: 55px;         
-  height: 55px;
-  background-color: #d3d3d3;  /* Placeholder background color (light gray) */
-  border-radius: 10%;      /* Make it a square */
-  cursor: pointer;
-  transition: background-color 0.25s; /* Smooth transition */
+.profile-button {
   display: inline-flex;   /* Use inline-flex to align icon and text */
-  margin-right: 2rem;
-  margin-top: 1ex;
+  align-items: center;
+  padding: 0.5rem 1rem; 
+  margin-right: 1rem;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none; /* Remove default underline from link */
+}
+
+.profile-button:hover {
+  background-color: #ccc;
+  transition: background-color 0.25s;
+  color: rgb(75, 69, 69);
+}
+
+.profile-button i {
+  margin-right: 0.5rem; /* Add some space between the icon and text */
+}
+
+/* Table Styles for Responsiveness */
+.table-container {
+width: 100%;          /* Make table take up most of screen width */
+overflow-x: auto;    /* Enable horizontal scrolling if needed */
+margin: 0 auto;  /* Center the table horizontally */
+}
+
+.table {
+width: 100%; 
+table-layout: fixed; /* Distribute column width evenly */
+border-collapse: collapse;
+}
+
+.table td {
+/* Adjust padding as needed for smaller screens */
+padding: 0.5rem;    
+text-align: center; /* Center text in cells */
+white-space: nowrap; /* Prevent text from wrapping */
+border: 2px solid #acacac;
+overflow: hidden; /* Hide overflowing text */
+text-overflow: ellipsis;      /* Add ellipsis (...) if content overflows */
+max-width: 100px;            /* Adjust max-width as needed */
+}
+.table th{
+/* Adjust padding as needed for smaller screens */
+padding: 0.5rem;    
+text-align: center; /* Center text in cells */
+border: 2px solid #acacac;
+max-width: 100%;
+overflow: hidden;
+box-sizing: border-box;
+min-width: fit-content; /* Shrink to fit text */
+/* text-overflow: ellipsis; */
+}
+
+/* Media Query for Smaller Screens (e.g., phones) */
+@media (max-width: 600px) {
+.table td {
+  font-size: 12px; /* Make font smaller on smaller screens */
+  max-width: 100px;         /* Further reduce max-width on very small screens */
+}
+}
+@media (max-width: 600px) {
+.table th{
+  font-size: 15px; /* Make font smaller on smaller screens */
+  padding-top: 2%;
+  padding-left: 0;
+  padding-right: 0;
+}
+}
+.profile-placeholder {
+width: 150px;         
+height: 150px;
+background-color: #d3d3d3;  /* Placeholder background color (light gray) */
+border-radius: 10%;      /* Make it a square */
+cursor: pointer;
+transition: background-color 0.25s; /* Smooth transition */
+display: inline-flex;   /* Use inline-flex to align icon and text */
+margin-right: 2rem;
+margin-top: 1rem;
+margin-left: 0;
 }
 
 .profile-placeholder:hover {
-  background-color: #808080; /* Slightly darker on hover */
+background-color: #808080; /* Slightly darker on hover */
 }
 .profile-container {
-  position: relative; /* Allows absolute positioning of the dropdown */
+position: relative; /* Allows absolute positioning of the dropdown */
+margin: 1rem 0 0 0;
+align-self: auto; /* Align profile to the left within start-frame */
 }
 
+/* Responsive Profile Placeholder */
+@media (min-width: 768px) { /* Adjust breakpoint as needed */
+.profile-placeholder {
+  width: 200px;      /* Increase size on larger screens */
+  height: 200px;
+  margin: 1rem; 
+}
+}
+/* Main Content */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem; /* Adjust padding as needed */
+  width: 80%;
+  max-width: 600px; /* This sets a maximum width to prevent the content from getting too wide on large screens */
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center; /* Align image and welcome text vertically */
+  gap: 1rem; 
+}
+
+/* Vertical Navigation Button Styles */
+.nav-buttons.vertical {
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: stretch;    /* Make buttons fill container width */
+  gap: 1rem;              /* Add spacing between buttons */
+  width: 90%;
+}
+
+.nav-buttons.vertical li {
+  width: 100%;             /* Ensure each button takes full width */
+  text-align: center;      /* Center the button text */
+  margin-top: 5%;
+}
+.welcome-message {
+  font-size: 1.2rem;
+}
 </style>
 
   <style>

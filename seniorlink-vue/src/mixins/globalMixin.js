@@ -17,10 +17,8 @@ export const globalMixin = {
                 console.log("API Response:", response);
                 this.saveToJson(response.data);
               }
-              console.log(this.$router.getRoutes());
-              // Redirect to the corresponding Vue file
+
               this.$router.push({ name: componentName });
-              console.log("Navigation successful.");
             } catch (error) {
               console.error('Error redirecting:', error);
               // Handle the error appropriately

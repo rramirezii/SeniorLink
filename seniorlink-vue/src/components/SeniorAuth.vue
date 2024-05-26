@@ -70,8 +70,12 @@ export default {
         const response = await apiServices.post('/validate-birthday', { birthday: this.birthday, username: this.username }); //CHANGE THIS TO API
 
         if (response.status === 200) {
-          const username = response.data.username; // Assuming response.data.role contains the role
-          this.$router.push(`/profile/${username}`);
+          const role = response.data.role; // Assuming response.data.role contains the role
+          sessionStorage.setItem('username', this.username);
+          sessionStorage.setItem('role', role);
+          sessionStorage.setItem('id', response.data.id);
+          sessionStorage.setItem('name', response.data.name);
+          this.$router.push(`/senior/dashboard`);
         } else {
           // If the backend validation fails (e.g., not a senior)
           this.error = response.data.message || "An error occurred. Please try again."; 

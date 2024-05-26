@@ -4,7 +4,6 @@ const routes = [
     // GENERAL
     { path: '/', component: views.ClientLogin, name: 'ClientLogin' },
     { path: '/authentication/senior/:username', component: views.ClientAuth, name: 'ClientAuth', props:true },
-    { path: '/profile', component: views.ClientProfile, name: 'ClientProfile' },
     { path: '/authentication/admin/:username', component: views.LoginPassword, name: 'LoginPassword', props: true },
   
     // super admin
@@ -83,15 +82,17 @@ const routes = [
     { path: '/senior/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' }, // WHICH IS THE DASHBOARD
     { path: '/senior/', redirect: '/senior/dashboard'},
 
+    { path: '/senior/profile/:username', component: views.ClientProfile, name: 'ClientProfile', props:true }, // WHICH IS THE DASHBOARD
+    { path: '/senior/qr/:username', component: views.ClientQR, name: 'ClientQR', props:true },
+    { path: '/senior/transaction/:username', component: views.ClientTransactions, name: 'ClientTransactions', props:true},
+
     { path: '/senior/dashboard/phone', component: views.ClientDashboardPhone, name: 'ClientDashboardPhone' },
     { path: '/senior/dashboard/menu', component: views.ClientSelectMenu, name: 'ClientSelectMenu' }, //WHICH IS THE DASHBOARD
-    { path: '/senior/dashboard', component: views.ClientDashboard, name: 'ClientDashboard' }, //THIS IS THE SENIOR DASHBOARD
-    { path: '/senior/qr', component: views.ClientQR, name: 'ClientQR' },
+    
 
     { path: '/senior/update/self', component: views.UpdateClientSelect, name: 'UpdateClientSelect' },
-    { path: '/senior/transactions', component: views.ClientMain, name: 'ClientMain' },
+    // { path: '/senior/transactions', component: views.ClientMain, name: 'ClientMain' }, # waht is this?
     { path: '/senior/update/self', component: views.UpdateClientSelf, name: 'UpdateClientSelf' },
-    { path: '/senior/transactions', component: views.ClientTransactions, name: 'ClientTransactions' },
     { path: '/senior/transactions-print', component: views.PrintTransactions, name: 'PrintTransactions' },
 
 

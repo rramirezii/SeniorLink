@@ -29,7 +29,7 @@ export { default as ViewProductsTransaction } from './components/ViewProductsTra
 export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.vue'; // integrate soon
 export { default as ClientMain } from './views/ClientMain.vue';
 export { default as ClientDashboard } from './views/ClientDashboard.vue';
-export { default as ClientSelectMenu } from './components/ClientSelectMenu.vue';
+export { default as ClientSelectMenu } from './views/ClientDashboard.vue';
 export { default as ClientLogin } from './components/LoginPage.vue';
 export { default as ClientAuth } from './components/SeniorAuth.vue';
 export { default as ClientQR } from './components/ClientQR.vue';
@@ -58,7 +58,6 @@ export { default as UpdateProduct } from './components/UpdateProduct.vue';
 export { default as ViewEstablishmentUpdateDelete } from './components/ViewEstablishmentUpdateDelete.vue';
 //client
 export { default as ClientTransactions } from './views/ClientMain.vue';
-// export { default as ClientDashboardSelectMenu } from './views/ClientSelectMenu.vue'; #NOT RESOLVED
 // export { default as PrintTransactions } from './components/PrintTransactions.vue'; # NOT RESOLVED
 
 //lacking create establishment
