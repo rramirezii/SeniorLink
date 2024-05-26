@@ -23,16 +23,32 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
       <div class="form-group">
-        <label for="name">Name:</label>
+        <label for="name">Product Name:</label>
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
+          <label for="quantity">Quantity:</label>
+          <input 
+            type="number" 
+            id="quantity" 
+            v-model="quantity" 
+            min="0"                
+            @input="handleNumberInput('quantity')"
+          >
+        </div>
+        <div class="form-group">
+          <label for="price">Price:</label>
+          <input 
+            type="number" 
+            id="price" 
+            v-model="price" 
+            min="0"                
+            @input="handleNumberInput('price')"
+          >
+        </div>
       <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
+        <label for="name">Attendant:</label>
+        <input type="text" id="name" v-model="name" required>
       </div>
     </div>
       <div class="form-actions">
@@ -44,14 +60,82 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
     return {
       name: '',
-      quantity: '',
-      price: '',
+      quantity: 0,
+      price: 0,
+      attendant: '',
+      seniorId: null, // Assuming you have the senior ID available somewhere
+      establishmentId: null, // Assuming you have the establishment ID
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
+  methods: {
+    handleNumberInput(field) {
+      // Ensure quantity and price are non-negative
+      this[field] = Math.max(0, this[field]); 
+    },
+
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        // Input validation
+        if (!this.name || !this.quantity || !this.price || !this.attendant) {
+          this.errorMessage = "Please fill in all fields.";
+          return;
+        }
+
+        const response = await apiServices.post('/establishment/create/transaction', {
+          senior_id: this.seniorId,
+          establishment_id: this.establishmentId,
+          date: new Date().toISOString().slice(0, 10), // Current date
+          products: [
+            {
+              name: this.name,
+              quantity: this.quantity,
+              price: this.price,
+            }
+          ],
+          attendant: this.attendant,
+        });
+
+        if (response.status === 201) {
+          console.log('Transaction created successfully:', response.data);
+          this.showSuccessMessage = true;
+
+          // Clear the form
+          this.name = '';
+          this.quantity = 0;
+          this.price = 0;
+          this.attendant = '';
+
+          setTimeout(() => {
+            this.router.push({ name: 'EstablishmentDashboard' }); // Redirect to transaction history or home page
+          }, 1500);
+        } else {
+          this.errorMessage = "Error creating transaction: " + response.data.message;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error('Error:', error);
+      }
+    },
+  }
 };
 </script>
 
