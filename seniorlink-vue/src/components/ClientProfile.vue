@@ -10,9 +10,9 @@
           <button @click="performSearch">Search</button>
         </div> -->
         <div class="profile-container" @click="toggleProfileDropdown"> 
-        <router-link to="/profile">
+        <!-- <router-link to="/profile">
           <div class="profile-placeholder-mini"></div>
-        </router-link>
+        </router-link> -->
         <!-- <ul v-if="showProfileDropdown" class="dropdown-profile">
           <li class="dropdown-buttons">
             <a href="#" @click.prevent="signOut">Sign Out</a>
@@ -33,28 +33,24 @@
         <div class="profile-details">
           <div class="detail-row">
             <span class="label">Name:</span>
-            <span class="value">{{ profileData['First Name'] }} {{ profileData['Middle Name'] }} {{ profileData['Last Name'] }}</span>
+            <span class="value">{{ profileData['fname'] }} {{ profileData['mname'] }} {{ profileData['lname'] }}</span>
           </div>
           <div class="detail-row">
             <span class="label">OSCA ID:</span>
-            <span class="value">{{ profileData['OSCA ID'] }}</span>
+            <span class="value">{{ profileData['osca_id'] }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Barangay:</span>
-            <span class="value">{{ profileData.Barangay }}</span>
+            <span class="label">Address:</span>
+            <span class="value">{{ address }}</span>
           </div>
           <div class="detail-row">
             <span class="label">Birthday:</span>
-            <span class="value">{{ formatDate(profileData.Birthday) }}</span>
+            <span class="value">{{ formatDate(profileData.birthdate) }}</span>
           </div>
           <div class="detail-row">
             <span class="label">Contact Number:</span>
-            <span class="value">{{ profileData['Contact Number'] }}</span>
+            <span class="value">{{ profileData['contact_number'] }}</span>
           </div>
-          <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
-      </div>
         </div>
       </div>
       <button @click="goBack" class="back-button">Back to Home</button>
@@ -63,13 +59,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
     return {
       profileData: null,
       profileImage: null,
+      address: '',
       loading: true,
       error: null,
     };
@@ -80,9 +77,16 @@ export default {
   methods: {
     async fetchProfileData() {
       try {
-        const response = await axios.get('/profile.json');
+        const response = await apiServices.get(`/senior/${sessionStorage.getItem('id')}`);
         this.profileData = response.data;
-        this.profileImage = response.data.Image; 
+        this.profileImage = response.data.profile_image;
+        this.qrImage = response.data.qr_image;
+        
+        var responseBar = await apiServices.get(`/barangay/${this.profileData.barangay_id}`);
+        this.address = responseBar.data.name;
+        responseBar = await apiServices.get(`/town/${responseBar.data.town_id}`);
+        this.address = this.address +", "+ responseBar.data.name;
+
       } catch (error) {
         console.error('Error fetching profile data:', error);
         this.error = 'Failed to load profile';

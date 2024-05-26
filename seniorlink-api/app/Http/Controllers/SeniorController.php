@@ -74,6 +74,14 @@ class SeniorController extends BaseController
         return response($senior->qr_image, 200)->header('Content-Type', 'image/jpeg');
     }
 
+    // get /senior/{id}
+    public function getSelf($id)
+    {
+        $senior = DB::table('senior')->find($id);
+
+        return response()->json($senior, 200);
+    }
+
     // post /senior/retrieve
     public function getDetailFromQR(Request $request)
     {
