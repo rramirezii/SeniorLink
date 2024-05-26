@@ -158,7 +158,7 @@ nav li:hover{
 
 a {
   text-decoration: none;
-  color: #000;
+  color: white;
 }
 
 a:hover {
