@@ -67,8 +67,8 @@
       </div>
       <nav v-show="showNav">
         <ul class="nav-buttons">
-          <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
-          <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
+          <li><router-link to='#' @click.prevent="redirectToLocal('CreateTransaction', {senior_username: this.senior_username})">Create Transaction</router-link></li>
+          <li><router-link to='#' @click.prevent="redirectToLocal('ViewTransaction', {senior_username: this.senior_username})">View Transactions</router-link></li>
           </ul>
       </nav>
     </main>
@@ -78,6 +78,7 @@
 <script>
 import jsQR from 'jsqr';
 import apiServices from '@/services/apiServices';
+import router from '@/router';
 
 export default {
   data() {
@@ -191,6 +192,9 @@ export default {
     proceed(){
       this.showNav = true;
       this.seniorProfile = false;
+    },
+    redirectToLocal(route, params){
+      router.push({name: route, params: params});
     }
   }
 };

@@ -22,7 +22,7 @@
         </div> 
     </header>
     <div>
-    <h2>Barangays List</h2>
+    <h2>Transaction List</h2>
   </div>
   <div class="table-container">
       <p v-if="loading" class="loading-message">Loading...</p>
@@ -57,12 +57,13 @@
 </template>
   
   <script>
-  import axios from 'axios';
+import apiServices from '@/services/apiServices';
+
   
   export default {
   data() {
     return {
-      tableHeaders: ['Name', 'Product ID', 'Transaction ID', 'Quantity', 'Price'],
+      tableHeaders: ['Transaction ID', 'Date', 'Establishment', 'Establishment Code'],
       tableData: [],
       currentTransactionId: null, // Store the ID of the transaction being displayed
       searchQuery: '',
@@ -86,7 +87,7 @@
   },
   async mounted() {
     try {
-      const response = await axios.get('/producttransact.json'); 
+      const response = await apiServices.get('/producttransact.json'); 
       this.tableData = response.data;
 
       // Set the initial transaction ID (you might want a more sophisticated way to choose this)
