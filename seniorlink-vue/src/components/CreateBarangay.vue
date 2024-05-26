@@ -62,7 +62,8 @@ export default {
   computed: {
     username() {
       const formattedName = this.name.toLowerCase().replace(/\s+/g, '_');
-      return `b_${formattedName}`;
+
+      return `b${this.town_id}_${formattedName}`;
     }
   },
   async created() {

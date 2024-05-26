@@ -43,14 +43,15 @@ class TownController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this -> makeRulesRequired($rules);
-        $validator = Validator::make($contents, $rules);
+        // ENABLE THIS SOON
+        // $rules = $this -> makeRulesRequired($rules);
+        // $validator = Validator::make($contents, $rules);
 
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
+        // if ($validator->fails()) {
+        //     throw new \Exception($this->generateErrorMessage($validator));
+        // }
 
-        DB::table($table)->insert($contents);
+        $id = DB::table($table)->insertGetId($contents);
 
         return $id; // Return the newly created entity's ID
     }
