@@ -58,7 +58,7 @@ class SeniorController extends BaseController
     }
 
     // for test 
-    // get /senior/{senior_username}/show/qr
+    // get /senior/qr/{senior_username}
     public function getQR($senior_username)
     {
         $senior = Senior::where('username', $senior_username)->first();

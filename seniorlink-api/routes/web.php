@@ -83,7 +83,7 @@ $router->group(['prefix' => 'barangay'], function () use ($router) {
 $router->group(['prefix' => 'senior'], function () use ($router) {
     $router->get('/{senior_username}/show/{client}', 'SeniorController@read'); // read
 
-    $router->get('/{senior_username}/show/qr', 'SeniorController@getQR'); // read
+    $router->get('/qr/{senior_username}', 'SeniorController@getQR'); // read
 
     $router->get('/{id}', 'SeniorController@getSelf'); // read
 

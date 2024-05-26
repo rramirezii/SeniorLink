@@ -28,8 +28,8 @@
       <div v-else class="profile-details">
         <div class="profile-image">
           <img v-if="profileImage" :src="profileImage" alt="Profile" />
-          <img v-else src="/image.jpg" alt="Profile placeholder" class="dp-holder" /> 
-        </div>
+          <img v-else :src="require('@/assets/images/profile-default.png')" alt="Profile placeholder" class="dp-holder" /> 
+</div>
         <div class="profile-details">
           <div class="detail-row">
             <span class="label">Name:</span>
