@@ -36,7 +36,7 @@
           </tr>
         </thead>
         <tbody>
-            <tr v-for="(product, index) in products" :key="index">
+            <tr v-for="(product, index) in products" :key="index" aria-disabled="true">
                 <td><input type="text" v-model="product.name" @input="recordChange(index)" :class="{ 'red-border': !product.name }" required></td>
                 <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index); recordChange(index)" :class="{ 'red-border': !product.quantity }"></td>
                 <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index); recordChange(index)" :class="{ 'red-border': !product.price }"></td>
@@ -67,6 +67,9 @@
         loading: '',
         changedRows: {},
       };
+    },
+    computed: {
+       //ds
     },
     async mounted() {
         this.products = []; 
@@ -104,10 +107,10 @@
             });
         },
         deleteRow(index) {
-            if (this.products.length === 1) {
-                return;
+            if (index >= 0 && index < this.products.length) {
+                this.products[index].hidden = true;
+                this.changedRows.push({ ...this.products[index], deleted: true });
             }
-            this.products.splice(index, 1);
         },
         recordChange(index) {
             const changedProduct = this.products[index];
@@ -139,35 +142,20 @@
                 }
           
                 const payload = {
-                    type: 'transaction',
-                    contents: {
-                        senior_username: this.$route.params.senior_username,
-                        establishment_id: sessionStorage.getItem('id'),
-                        date: new Date().toISOString().slice(0, 10),
-                        products: this.products.map(product => ({
-                            name: product.name,
-                            quantity: product.quantity,
-                            price: product.price,
-                        }))
-                    }
+                    type: 'products',
+                    contents: this.changedRows,
                 };
 
                 console.log(payload);
                 
-                const response = await apiServices.post('/establishment/create/transaction', payload);
+                const response = await apiServices.post('/establishment/update/transaction', payload);
 
                 console.log(response);
-                if (response.status === 201) {
+                if (response.status === 200) {
                     console.log('Transaction created successfully:', response.data);
                     this.showSuccessMessage = true;
 
-                    this.name = '';
-                    this.quantity = 0;
-                    this.price = 0;
-
-                    setTimeout(() => {
-                        this.$router.push({ name: 'EstablishmentDashboard' });
-                    }, 1500);
+                    this.goBack();
                 } else {
                     this.errorMessage = "Error creating transaction: " + response.data.message;
                 }

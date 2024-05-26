@@ -48,6 +48,7 @@ $router->group(['prefix' => 'establishment'], function () use ($router) {
     $router->get('/showById/transaction/{transaction_id}', 'EstablishmentController@readTransactionById'); // read
     
     $router->post('/update', 'EstablishmentController@update'); // update
+    $router->post('/update/transaction', 'EstablishmentController@updateTransaction'); // update
 
     $router->post('/delete', 'EstablishmentController@deleteTransaction'); // delete
 });

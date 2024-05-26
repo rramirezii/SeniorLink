@@ -1419,3 +1419,50 @@
 #30 /home/samsonrollolocal/SeniorLink/seniorlink-api/public/index.php(28): Laravel\\Lumen\\Application->run()
 #31 {main}
 "} 
+[2024-05-26 20:06:12] local.ERROR: Error updating transaction: Undefined array key "id"  
+[2024-05-26 20:07:51] local.ERROR: Class "App\Http\Controllers\Product" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Controllers\\Product\" not found at /home/samsonrollolocal/SeniorLink/seniorlink-api/app/Http/Controllers/EstablishmentController.php:241)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\EstablishmentController->updateTransaction()
+#1 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#3 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#4 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#5 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#6 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#7 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#8 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#9 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#10 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#11 /home/samsonrollolocal/SeniorLink/seniorlink-api/app/Http/Middleware/CorsMiddleware.php(20): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#12 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/pipeline/Pipeline.php(183): App\\Http\\Middleware\\CorsMiddleware->handle()
+#13 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#14 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/pipeline/Pipeline.php(119): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#15 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#16 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#17 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#18 /home/samsonrollolocal/SeniorLink/seniorlink-api/public/index.php(28): Laravel\\Lumen\\Application->run()
+#19 {main}
+"} 
+[2024-05-26 20:09:19] local.ERROR: Call to undefined method stdClass::update() {"exception":"[object] (Error(code: 0): Call to undefined method stdClass::update() at /home/samsonrollolocal/SeniorLink/seniorlink-api/app/Http/Controllers/EstablishmentController.php:251)
+[stacktrace]
+#0 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(36): App\\Http\\Controllers\\EstablishmentController->updateTransaction()
+#1 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#2 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#3 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#4 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#5 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(391): Illuminate\\Container\\Container->call()
+#6 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(333): Laravel\\Lumen\\Application->callControllerCallable()
+#7 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(284): Laravel\\Lumen\\Application->callControllerAction()
+#8 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(269): Laravel\\Lumen\\Application->callActionOnArrayBasedRoute()
+#9 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(171): Laravel\\Lumen\\Application->handleFoundRoute()
+#10 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(48): Laravel\\Lumen\\Application->Laravel\\Lumen\\Concerns\\{closure}()
+#11 /home/samsonrollolocal/SeniorLink/seniorlink-api/app/Http/Middleware/CorsMiddleware.php(20): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#12 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/pipeline/Pipeline.php(183): App\\Http\\Middleware\\CorsMiddleware->handle()
+#13 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Routing/Pipeline.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#14 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/illuminate/pipeline/Pipeline.php(119): Laravel\\Lumen\\Routing\\Pipeline->Laravel\\Lumen\\Routing\\{closure}()
+#15 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(428): Illuminate\\Pipeline\\Pipeline->then()
+#16 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(167): Laravel\\Lumen\\Application->sendThroughPipeline()
+#17 /home/samsonrollolocal/SeniorLink/seniorlink-api/vendor/laravel/lumen-framework/src/Concerns/RoutesRequests.php(112): Laravel\\Lumen\\Application->dispatch()
+#18 /home/samsonrollolocal/SeniorLink/seniorlink-api/public/index.php(28): Laravel\\Lumen\\Application->run()
+#19 {main}
+"} 

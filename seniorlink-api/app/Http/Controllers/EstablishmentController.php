@@ -222,45 +222,54 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // post /establishment/update/product
-    public function updateProduct(Request $request)
+    // post /establishment/update/transaction
+    public function updateTransaction(Request $request)
     {
-        //create here
+        if (!$request->filled(['type', 'contents'])) {
+            return response()->json(['error' => 'Missing parameters'], 400);
+        }
+
+        $type = $request->input('type');
+        $contents = $request->input('contents');
+
+        if ($type === 'products') {
+            try {
+                DB::beginTransaction();
+
+                foreach ($contents as $productData) {
+                    $productId = $productData['id'];
+                    $product = DB::table('products')->where('id', $productId)->first();
+                    
+                    if (!$product) {
+                        return response()->json(['error' => 'Product not found'], 404);
+                    }
+                    if (isset($productData['deleted']) && $productData['deleted']) {
+                        DB::table('product_transaction')->where('products_id', $productId)->delete();
+                        DB::table('products')->where('id', $productId)->delete();
+                    } else {
+                        $productDataWithoutId = collect($productData)->except('id')->toArray();
+                        DB::table('products')->where('id', $productId)->update($productDataWithoutId);
+                    }
+                }
+
+                DB::commit();
+
+                return response()->json(['message' => 'Products updated successfully'], 200);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::error('Error updating transaction: ' . $e->getMessage());
+                return response()->json(['error' => 'An error occurred while updating products'], 500);
+            }
+        } else {
+            return response()->json(['error' => 'Invalid table specified'], 400);
+        }
     }
 
-    private function updateEntity($table, $contents)
+
+    // post /establishment/delete/product
+    public function deleteProduct(Request $request)
     {
-        $rules = $this->getRules($table);
 
-        if (empty($rules)) {
-            throw new \Exception('Invalid table name or missing validation rules.');
-        }
-
-        // create validator for product and transaction
-
-        $rules = $this->transformRulesForUpdate($rules, $contents); // check for this validaty 
-        $validator = Validator::make($contents, $rules);
-
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
-
-        if (!isset($contents['id'])) {
-            throw new \Exception('ID not provided for update');
-        }
-
-        $id = $contents['id'];
-        unset($contents['id']); // remove id from content to avoid update of id
-
-        $contents = array_filter($contents, function ($value) {
-            return $value !== "" && $value !== null;
-        });
-
-        $affected = DB::table($table)->where('id', $id)->update($contents);
-
-        if ($affected === 0) {
-            throw new \Exception('No record found to update or no valid changes made');
-        }
     }
 
     // post /establishment/delete/transaction
