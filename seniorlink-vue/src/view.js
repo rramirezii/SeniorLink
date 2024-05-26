@@ -26,7 +26,7 @@ export { default as ViewBarangay } from './components/ViewBarangay.vue';
 export { default as ViewSuperAdmin } from './components/ViewSuperAdmin.vue';
 export { default as ViewEstablishment } from './components/ViewEstablishment.vue';
 export { default as ViewEstablishmentViewButton } from './components/ViewEstablishment-viewbutton.vue';
-export { default as ViewBarangayUpdateDelete } from './components/ViewBarangay-wdelete.vue';
+export { default as ViewBarangayUpdateDelete } from './components/ViewBarangayUpdateDelete.vue';
 export { default as ViewProductsTransaction } from './components/ViewProductsTransaction.vue';
 export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.vue'; // integrate soon
 export { default as ClientMain } from './views/ClientMain.vue';

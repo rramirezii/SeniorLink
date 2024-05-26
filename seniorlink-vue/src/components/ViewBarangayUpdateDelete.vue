@@ -32,7 +32,6 @@
             <th v-for="header in tableHeaders" :key="header">
               {{ header }}
             </th>
-            <th>Actions</th> 
           </tr>
         </thead>
         <tbody>
@@ -44,10 +43,15 @@
               {{ item[header] }}
             </td>
             <td>
-              <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
-                <button class="view-button">View</button>
-              </router-link>
-              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+              <div class="button-container">
+                <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
+                  <button class="view-button">View</button>
+                </router-link>
+                <router-link :to="{ name: 'UpdateBarangay', params: { username: item.username }}"> 
+                  <button class="update-button">Update</button>
+                </router-link>
+                <button @click="confirmDelete(item.id, `barangay`)" class="delete-button">Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -57,12 +61,12 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import apiServices from '@/services/apiServices';
   
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Town ID'],  // Default headers
+        tableHeaders: ['Name', 'Username', 'Actions'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -85,7 +89,7 @@
     },
     async mounted() {
       try {
-        const response = await axios.get('/brgy.json');  //file should be in the `public` folder 
+        const response = await apiServices.get(`/town/{town_username}/show/barangay`);  //file should be in the `public` folder 
         this.tableData = response.data;
        
         this.loading = false;
@@ -103,18 +107,6 @@
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
       this.$router.push({ name: 'ViewTown', params: { id: id } });
-    },
-    async deleteItem(itemId) {
-      if (confirm("Are you sure you want to delete this item?")) {
-        try {
-          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
-          // Handle successful deletion (e.g., remove from tableData)
-          console.log("Item deleted:", response.data);
-        } catch (error) {
-          console.error("Error deleting item:", error);
-          // Handle errors (e.g., show error message)
-        }
-      }
     }
 };
   </script>

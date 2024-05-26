@@ -45,12 +45,11 @@
           <td>{{ item.code }}</td>
           <td>{{ item.address }}</td>
           <td>{{ item.username }}</td>
-          <td> <div class="button-container">
-              <!-- send the whole item -->
+          <td> 
+            <div class="button-container">
               <router-link :to="{ name: 'UpdateEstablishment', params: { username: item.username }}"> 
                 <button class="update-button">Update</button>
               </router-link>
-              <!-- to see if function -->
               <button @click="confirmDelete(item.id, `establishment`)" class="delete-button">Delete</button>
             </div>
           </td> 
