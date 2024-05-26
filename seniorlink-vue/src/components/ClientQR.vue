@@ -7,7 +7,7 @@
   </header>
   <main class="main-content">
     <div class="qr-code-container">
-      <img v-if="qrCodeUrl" :src="qrCodeUrl" alt="QR Code" class="qr-code" />
+      <img v-if="qrCodeImage" :src="qrCodeImage" alt="QR Code" class="qr-code" />
       <img v-else src="/sample_qr.png" alt="QR code placeholder" class="qr-code" /> 
     </div>
     <button @click="goBack" class="back-button">Back to Home</button>
@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
     return {
-      qrCodeUrl: null,
+      qrCodeImage: null,
     };
   },
   created() { // Lifecycle hook to fetch the QR code URL
@@ -31,16 +31,25 @@ export default {
     async fetchQRCode() {
       try {
         // Fetch the QR code URL from your API
-        const response = await axios.get('/api/qr-code'); // Replace with your endpoint
-        this.qrCodeUrl = response.data.qrCodeUrl;
+        const response = await apiServices.get(`/senior/qr/${sessionStorage.getItem('id')}`);
+        const data = response.data;
+        console.log(response.data);
+        if (data) {
+          // Convert SVG blob to data URI
+          const svgBlob = new Blob([data], { type: 'image/svg+xml' });
+          this.qrCodeImage = URL.createObjectURL(svgBlob);
+        } else {
+          console.warn("QR image is not available in the response");
+          this.qrCodeImage = null; // Set a default value/message
+        }
       } catch (error) {
         console.error("Error fetching QR code:", error);
         // Handle the error, e.g., show an error message to the user
       }
     },
     goBack() {
-      this.$router.push('/'); 
-    },
+      this.$router.go(-1);
+    }
   }
 };
 </script>

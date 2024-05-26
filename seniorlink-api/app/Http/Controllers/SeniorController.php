@@ -21,15 +21,6 @@ class SeniorController extends BaseController
         $extraClause = '';
 
         switch($client){
-            case 'senior':
-                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
-                $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id
-                                LEFT JOIN town 
-                                ON barangay.town_id = town.id
-                                WHERE senior.username = :senior_username';
-
-                break;
             case 'transaction':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, 
                             barangay.name as barangay_name, town.name as town_name, senior.birthdate, 
@@ -58,20 +49,16 @@ class SeniorController extends BaseController
     }
 
     // for test 
-    // get /senior/qr/{senior_username}
-    public function getQR($senior_username)
+    // get /senior/qr/{id}
+    public function getQR($id)
     {
-        $senior = Senior::where('username', $senior_username)->first();
+        $senior = DB::table('senior')->find($id);
 
         if (!$senior) {
             return response()->json(['error' => 'Senior not found'], 404);
         }
 
-        if (!$senior->qr_image) {
-            return response()->json(['error' => 'QR image not found for the senior'], 404);
-        }
-
-        return response($senior->qr_image, 200)->header('Content-Type', 'image/jpeg');
+        return response($senior->qr_image, 200);
     }
 
     // get /senior/{id}

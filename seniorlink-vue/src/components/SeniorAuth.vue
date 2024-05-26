@@ -14,7 +14,6 @@
             type="date" 
             id="birthday" 
             v-model="birthday"
-            :max="maxDate" 
             :min="minDate"
             placeholder="Birthday" 
             required
