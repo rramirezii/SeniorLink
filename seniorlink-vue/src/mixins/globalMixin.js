@@ -31,6 +31,7 @@ export const globalMixin = {
         },
         signOut() {
             sessionStorage.removeItem('username');
+            sessionStorage.removeItem('role');
             this.$router.push({ name: 'ClientLogin' }); // Redirect to the login page
         },
         async confirmOnDelete(itemId, type) {
