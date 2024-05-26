@@ -43,7 +43,7 @@
                 <router-link :to="{ name: 'UpdateTown', params: { username: item.username}}"> 
                   <button class="update-button">Update</button>
                 </router-link>
-                <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+                <button @click="confirmDelete(item.id, `town`)" class="delete-button">Delete</button>
               </div>
             </td>
           </tr>
@@ -55,8 +55,10 @@
 
 <script>
 import apiServices from '@/services/apiServices';
+import { globalMixin } from '@/mixins/globalMixin';
 
 export default {
+  mixins: [globalMixin],
   data() {
     return {
       tableHeaders: ['Name', 'Zip Code', 'Username','Actions'],
@@ -93,6 +95,22 @@ export default {
     },
     toggleProfileDropdown() {
       // Toggle profile dropdown logic
+    },
+    async confirmDelete(itemId, type) {
+      this.confirmOnDelete(itemId, type);
+    },
+    async refreshData() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await apiServices.get('/admin/show/town');
+        this.tableData = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        this.error = 'Error fetching data. Please try again later.';
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };
