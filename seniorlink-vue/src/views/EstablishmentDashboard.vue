@@ -20,11 +20,14 @@
       </div>
     </header>
     <main>
-      <div class="senior-input">
+      <div v-show="showInit" class="senior-input">
         <input type="text" placeholder="Senior ID" v-model="seniorId" />
         <div class="button-container">
           <button @click="openTransaction">Open Transaction</button>
           <button @click="scanSeniorQR">Scan Senior QR</button>
+        </div>
+        <div v-if="showScanner" class="scanner">
+          <video ref="video" autoplay></video>
         </div>
       </div>
       <nav v-show="showNav">
@@ -40,6 +43,8 @@
 </template>
 
 <script>
+import jsQR from 'jsqr';
+
 export default {
   data() {
     return {
@@ -47,6 +52,9 @@ export default {
       maxWidth: 0,
       seniorId: '',
       showNav: false,
+      showScanner: true,
+      showInit: true,
+      senior_username: '',
     };
   },
   methods: {
@@ -68,8 +76,45 @@ export default {
     openTransaction(){
 
     },
-    scanSeniorQR(){
+    async scanSeniorQR() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        this.$refs.video.srcObject = stream;
+        this.$refs.video.play();
+        this.scanFrame(stream);
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+      }
+    },
+    scanFrame(stream) {
+      const video = this.$refs.video;
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
 
+      const scan = () => {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            console.log('QR code detected:', code.data);
+            // Stop the video stream
+            stream.getTracks().forEach(track => track.stop());
+            this.showScanner = false;
+            this.showNav = true;
+            this.showInit = false;
+            this.senior_username = code.data;
+          } else {
+            requestAnimationFrame(scan);
+          }
+        } else {
+          requestAnimationFrame(scan);
+        }
+      };
+
+      scan();
     },
     redirectTo(route){
       console.log(route);
@@ -79,6 +124,12 @@ export default {
 </script>
 
 <style scoped>
+.scanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .senior-link {
   display: flex;
   flex-direction: column;
