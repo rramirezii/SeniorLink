@@ -100,6 +100,11 @@
                     alert(this.errorMessage);
                     return;
                 }
+
+                const confirmed = window.confirm("Are you sure you want to proceed with the transaction?");
+                if (!confirmed) {
+                    return;
+                }
           
                 const payload = {
                     type: 'transaction',
@@ -120,21 +125,20 @@
                 const response = await apiServices.post('/establishment/create/transaction', payload);
 
                 console.log(response);
-                // if (response.status === 201) {
-                // console.log('Transaction created successfully:', response.data);
-                // this.showSuccessMessage = true;
+                if (response.status === 201) {
+                    console.log('Transaction created successfully:', response.data);
+                    this.showSuccessMessage = true;
 
-                // this.name = '';
-                // this.quantity = 0;
-                // this.price = 0;
-                // this.attendant = '';
+                    this.name = '';
+                    this.quantity = 0;
+                    this.price = 0;
 
-                // setTimeout(() => {
-                //     this.router.push({ name: 'EstablishmentDashboard' });
-                // }, 1500);
-                // } else {
-                // this.errorMessage = "Error creating transaction: " + response.data.message;
-                // }
+                    setTimeout(() => {
+                        this.$router.push({ name: 'EstablishmentDashboard' });
+                    }, 1500);
+                } else {
+                    this.errorMessage = "Error creating transaction: " + response.data.message;
+                }
             } catch (error) {
                 this.showErrorMessage = true;
                 this.errorMessage = "An error occurred. Please try again later.";
