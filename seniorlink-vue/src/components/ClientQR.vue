@@ -24,29 +24,25 @@ export default {
       qrCodeImage: null,
     };
   },
-  created() { // Lifecycle hook to fetch the QR code URL
-    this.fetchQRCode();
+  async mounted() {
+  try {
+      // Fetch the QR code URL from your API
+      const response = await apiServices.get(`/senior/qr/${sessionStorage.getItem('id')}`);
+      const data = response.data;
+
+      if (data) {
+        const svgBlob = new Blob([data], { type: 'image/svg+xml' });
+        this.qrCodeImage = URL.createObjectURL(svgBlob);
+      } else {
+        console.warn("QR image is not available in the response");
+        this.qrCodeImage = null;
+      }
+    } catch (error) {
+      console.error("Error fetching QR code:", error);
+      // Handle the error, e.g., show an error message to the user
+    }
   },
   methods: {
-    async fetchQRCode() {
-      try {
-        // Fetch the QR code URL from your API
-        const response = await apiServices.get(`/senior/qr/${sessionStorage.getItem('id')}`);
-        const data = response.data;
-        console.log(response.data);
-        if (data) {
-          // Convert SVG blob to data URI
-          const svgBlob = new Blob([data], { type: 'image/svg+xml' });
-          this.qrCodeImage = URL.createObjectURL(svgBlob);
-        } else {
-          console.warn("QR image is not available in the response");
-          this.qrCodeImage = null; // Set a default value/message
-        }
-      } catch (error) {
-        console.error("Error fetching QR code:", error);
-        // Handle the error, e.g., show an error message to the user
-      }
-    },
     goBack() {
       this.$router.go(-1);
     }
