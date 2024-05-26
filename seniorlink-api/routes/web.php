@@ -20,6 +20,8 @@ $router->post('/login', 'LoginController@login');
 
 $router->post('/validate', 'LoginController@validateLogin');
 
+$router->post('/validate-birthday', 'LoginController@validateBirthday');
+
 // admin routes;
 $router->group(['prefix' => 'admin'], function () use ($router) {
     $router->post('/create', 'SuperAdminController@create'); // create

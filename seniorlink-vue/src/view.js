@@ -30,8 +30,8 @@ export { default as ClientDashboardPhone } from './views/ClientDashboard-Phone.v
 export { default as ClientMain } from './views/ClientMain.vue';
 export { default as ClientDashboard } from './views/ClientDashboard.vue';
 export { default as ClientSelectMenu } from './components/ClientSelectMenu.vue';
-export { default as ClientLogin } from './components/ClientLogin.vue';
-export { default as ClientAuth } from './components/ClientAuth.vue';
+export { default as ClientLogin } from './components/LoginPage.vue';
+export { default as ClientAuth } from './components/SeniorAuth.vue';
 export { default as ClientQR } from './components/ClientQR.vue';
 export { default as ClientProfile } from './components/ClientProfile.vue';
 export { default as UpdateBarangaySelect } from './components/UpdateBarangaySelect.vue';
@@ -50,7 +50,7 @@ export { default as UpdateBarangay } from './components/UpdateBarangay.vue';
 export { default as UpdateClient } from './components/UpdateClient.vue';
 // export { default as UpdateProduct } from './components/UpdateProduct.vue';
 // export { default as UpdateProductTransaction } from './components/UpdateProductTransaction.vue';
-export { default as LoginPassword } from './components/LoginPassword.vue';
+export { default as LoginPassword } from './components/AdminAuth.vue';
 // export { default as UpdateClientSelf } from './components/UpdateClientSelf.vue'; #NOT RESOLVED
 export { default as UpdateProduct } from './components/UpdateProduct.vue';
 // export { default as UpdateEstablishmentSelf } from './components/UpdateEstablishmentSelf.vue'; #NOT RESOLVED

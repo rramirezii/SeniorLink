@@ -6,7 +6,8 @@
       </div>
   </header>
   <main class="main-content">
-      <h3 class="heading">Enter Birthday</h3>
+      <h2 class="heading">Enter Birthday</h2>
+      <h3>Hello, {{ username }}</h3> 
       <form @submit.prevent="enterBirthday">
         <div class="form-container">
           <input 
@@ -36,6 +37,7 @@ export default {
     return {
       birthday: '',
       error: null,
+      username: '',
     };
   },
   computed: {
@@ -50,6 +52,10 @@ export default {
       return today.toISOString().split('T')[0];
     },
   },
+  async created() {
+    const username = this.$route.params.username;
+    this.username = username;
+  },
   methods: {
     async enterBirthday() {
       const birthDate = new Date(this.birthday);
@@ -61,9 +67,9 @@ export default {
       }
 
       try {
-        const response = await apiServices.post('/api/enter-birthday', { birthday: this.birthday }); //CHANGE THIS TO API
+        const response = await apiServices.post('/validate-birthday', { birthday: this.birthday, username: this.username }); //CHANGE THIS TO API
 
-        if (response.status === 200 && response.data.success) {
+        if (response.status === 200) {
           const username = response.data.username; // Assuming response.data.role contains the role
           this.$router.push(`/profile/${username}`);
         } else {

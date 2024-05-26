@@ -55,5 +55,20 @@ class LoginController extends Controller
             return response()->json(["message" => "Invalid username or password"], 401);
         }
     }
-    
+
+    public function validateBirthday(Request $request)
+    {
+        // Sanitize input
+        $username = $request->input('username');
+        $birthdate = $request->input('birthday');
+
+
+        $senior = DB::table('senior')->where('username', $username)->where('birthdate', $birthdate)->first();
+
+        if($senior){
+            return response()->json(["message" => "Success", "role" => "basic", "id" => $senior->id, "name" => $senior->fname], 200);
+        } else {
+            return response()->json(["message" => "Invalid username or birthday"], 401);
+        }
+    }
 }
