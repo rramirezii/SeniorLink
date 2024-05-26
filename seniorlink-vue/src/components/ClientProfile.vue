@@ -79,14 +79,17 @@ export default {
       try {
         const response = await apiServices.get(`/senior/${sessionStorage.getItem('id')}`);
         this.profileData = response.data;
-        this.profileImage = response.data.profile_image;
-        this.qrImage = response.data.qr_image;
         
         var responseBar = await apiServices.get(`/barangay/${this.profileData.barangay_id}`);
         this.address = responseBar.data.name;
         responseBar = await apiServices.get(`/town/${responseBar.data.town_id}`);
         this.address = this.address +", "+ responseBar.data.name;
 
+        if(this.profileData.qr_image !== null){
+          const binaryData = new Uint8Array(this.profileData.qr_image.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+          this.profileImage = URL.createObjectURL(blob);
+        }
       } catch (error) {
         console.error('Error fetching profile data:', error);
         this.error = 'Failed to load profile';
