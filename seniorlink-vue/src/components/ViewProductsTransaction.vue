@@ -39,14 +39,15 @@
           <tr v-if="filteredTableData.length === 0">
             <td :colspan="tableHeaders.length + 1" class="no-results">No results found.</td> 
           </tr>
-          <tr v-for="item in filteredTableData" :key="item.id"> 
-            <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
-            </td>
+          <tr v-for="item in tableData" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.establishment_name }}</td>
+            <td>{{ item.establishment_code }}</td>
             <td>
-              <router-link :to="{ name: 'View', params: { id: item.id }}">
+              <!-- <router-link :to="{ name: 'View', params: { id: item.id }}">
                 <button class="view-button">View</button>
-              </router-link>
+              </router-link> -->
               <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
             </td>
           </tr>
@@ -65,34 +66,23 @@ import apiServices from '@/services/apiServices';
     return {
       tableHeaders: ['Transaction ID', 'Date', 'Establishment', 'Establishment Code'],
       tableData: [],
-      currentTransactionId: null, // Store the ID of the transaction being displayed
       searchQuery: '',
       loading: true,
     };
   },
   computed: {
     filteredTableData() {
-      const query = this.searchQuery.toLowerCase();
+      // // const query = this.searchQuery.toLowerCase();
       return this.tableData.filter(item => {
-        return item.TransactionID === this.currentTransactionId &&  // Filter by transaction ID
-               this.tableHeaders.some(header => {
-                 if (!['id', 'Quantity', 'Price'].includes(header.toLowerCase())) { 
-                   return String(item[header]).toLowerCase().includes(query);
-                 } else {
-                   return false; 
-                 }
-               });
+        return item
       });
     },
   },
   async mounted() {
     try {
-      const response = await apiServices.get('/producttransact.json'); 
+      const response = await apiServices.get(`/establishment/show/transaction/${this.$route.params.senior_username}`); 
+      
       this.tableData = response.data;
-
-      // Set the initial transaction ID (you might want a more sophisticated way to choose this)
-      this.currentTransactionId = this.tableData.length > 0 ? this.tableData[0].TransactionID : null;
-
       this.loading = false;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -104,21 +94,18 @@ import apiServices from '@/services/apiServices';
         console.log("Searching for:", this.searchQuery);
       }
     },
-    navigateToTown(id) {
-      console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
-    },
     async deleteItem(itemId) {
-      if (confirm("Are you sure you want to delete this item?")) {
-        try {
-          const response = await apiServices.delete(`/your-api-endpoint/${itemId}`);
-          // Handle successful deletion (e.g., remove from tableData)
-          console.log("Item deleted:", response.data);
-        } catch (error) {
-          console.error("Error deleting item:", error);
-          // Handle errors (e.g., show error message)
-        }
-      }
+      console.log(itemId);
+      // if (confirm("Are you sure you want to delete this item?")) {
+      //   try {
+      //     const response = await apiServices.delete(`/your-api-endpoint/${itemId}`);
+      //     // Handle successful deletion (e.g., remove from tableData)
+      //     console.log("Item deleted:", response.data);
+      //   } catch (error) {
+      //     console.error("Error deleting item:", error);
+      //     // Handle errors (e.g., show error message)
+      //   }
+      // }
     }
 };
   </script>

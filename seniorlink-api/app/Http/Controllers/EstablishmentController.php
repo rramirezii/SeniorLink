@@ -134,32 +134,46 @@ class EstablishmentController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
-    //get /establishment/{establishment_username}/show/senior/{senior_username}/{client}
-    public function readSenior($client, $establishment_username, $senior_username)
+    // get /establishment/show/transaction/{senior_username}
+    public function readTransaction($senior_username)
     {
-        //create a reader here ==>> created the content for this readSenior function
+        $senior = DB::table('senior')->where('username', $senior_username)->first();
 
-        // Check for missing parameters
-        if (is_null($client) || is_null($establishment_username) || is_null($senior_username)) {
-            return response()->json(['error' => 'Missing required parameters'], 400);
+        if (!$senior) {
+            return response()->json(['error' => 'Senior not found'], 404);
         }
-        
-        // Validate client type (optional, can be modified for more client types)
-        if ($client !== 'establishment') {
-            return response()->json(['error' => 'Unauthorized access'], 403);
+
+        $transactions = DB::table('transaction')
+            ->where('senior_id', $senior->id)
+            ->get();
+
+        $formattedTransactions = [];
+        foreach ($transactions as $transaction) {
+            $establishment = DB::table('establishment')
+                ->where('id', $transaction->establishment_id)
+                ->first();
+
+            $productIds = DB::table('product_transaction')
+                ->where('transaction_id', $transaction->id)
+                ->pluck('products_id')
+                ->toArray();
+
+            $products = DB::table('products')
+                ->whereIn('id', $productIds)
+                ->get();
+
+            $formattedTransaction = [
+                'id' => $transaction->id,
+                'date' => $transaction->date,
+                'establishment_name' => $establishment->name,
+                'establishment_code' => $establishment->code,
+                'products' => $products,
+            ];
+
+            $formattedTransactions[] = $formattedTransaction;
         }
-        
-        // Use query builder to retrieve senior data with establishment relation
-        $query = DB::table('senior')
-            ->select('senior.id', 'senior.osca_id', 'senior.fname', 'senior.mname', 'senior.lname', 'barangay.name as barangay_name', 'senior.birthdate', 'senior.contact_number', 'senior.username')
-            ->leftJoin('barangay', 'senior.barangay_id', '=', 'barangay.id')
-            ->where('senior.username', $senior_username);
-        
-        // No need to filter by establishment_username since seniors are not directly linked to establishments
-        
-        // Handle data retrieval success or failure (assuming logic in generateReadResponse)
-        $results = $query->get();
-        return $this->generateReadResponse($results, null, $client); // No extraClause needed
+
+        return response()->json($formattedTransactions, 200);
     }
 
     // post /establishment/update

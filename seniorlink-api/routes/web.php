@@ -42,9 +42,10 @@ $router->group(['prefix' => 'establishment'], function () use ($router) {
 
     $router->group(['prefix' => '{establishment_username}/show'], function () use ($router) {
         $router->get('/{client}', 'EstablishmentController@read'); // read
-        $router->get('/senior/{senior_username}/{client}', 'EstablishmentController@readSenior'); // read
     });
 
+    $router->get('/show/transaction/{senior_username}', 'EstablishmentController@readTransaction'); // read
+    
     $router->post('/update', 'EstablishmentController@update'); // update
     $router->post('/update/product', 'EstablishmentController@updateProduct'); // update
 
