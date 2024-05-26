@@ -40,7 +40,7 @@
                 <td><input type="text" v-model="product.name" @input="recordChange(index)" :class="{ 'red-border': !product.name }" required></td>
                 <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index); recordChange(index)" :class="{ 'red-border': !product.quantity }"></td>
                 <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index); recordChange(index)" :class="{ 'red-border': !product.price }"></td>
-                <td><button @click="deleteRow(index)">Delete</button></td>
+                <td><button @click="deleteRow(index, product.id)">Delete</button></td>
                 <input type="hidden" v-model="product.id">
             </tr>
         </tbody>
@@ -106,10 +106,13 @@
                 price: price,
             });
         },
-        deleteRow(index) {
-            if (index >= 0 && index < this.products.length) {
-                this.products[index].hidden = true;
-                this.changedRows.push({ ...this.products[index], deleted: true });
+        deleteRow(index, id) {
+            if (this.products.length === 1) {
+                return;
+            }
+
+            if(this.confirmOnDelete(id, `products`, `establishment`)){
+                this.products.splice(index, 1);
             }
         },
         recordChange(index) {

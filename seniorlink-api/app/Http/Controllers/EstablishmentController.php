@@ -265,11 +265,22 @@ class EstablishmentController extends BaseController
         }
     }
 
-
-    // post /establishment/delete/product
-    public function deleteProduct(Request $request)
+    private function removeProduct($contents)
     {
+        try {
+            DB::beginTransaction();
+    
+            $productId = $request->input('id');
+            DB::table('product_transaction')->where('products_id', $productId)->delete();
+            DB::table('products')->where('id', $productId)->delete();
+            DB::commit();
 
+            return response()->json(['message' => 'Product and its relations removed successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error removing product: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while removing the product'], 500);
+        }
     }
 
     // post /establishment/delete/transaction
@@ -277,6 +288,10 @@ class EstablishmentController extends BaseController
     {
         $type = $request->input('type');
         $contents = $request->input('contents');
+
+        if($type==='products'){
+            return deleteProduct($contents);
+        }
 
         DB::beginTransaction();
 

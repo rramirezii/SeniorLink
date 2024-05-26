@@ -49,15 +49,17 @@ export const globalMixin = {
 
               if(confirmDelete) {
                 this.deleteItem(itemId, type, doer);
-                // this.refreshData(); 
+                return true;
               }
 
             } else {
               alert("Username or password verification failed. Please try again.");
+              return false;
             }
           }catch(error) {
             console.error("Error verifying credentials:", error);
             alert("Error verifying credentials. Please try again later.");
+            return false;
           }
         },
         async deleteItem(itemId, type, doer){
