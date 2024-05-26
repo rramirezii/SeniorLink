@@ -38,8 +38,7 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
 // establishment routes
 $router->group(['prefix' => 'establishment'], function () use ($router) {
-    $router->post('/create', 'EstablishmentController@create'); // create
-    $router->post('/create/product', 'EstablishmentController@createProduct'); // create
+    $router->post('/create/transaction', 'EstablishmentController@create'); // create
 
     $router->group(['prefix' => '{establishment_username}/show'], function () use ($router) {
         $router->get('/{client}', 'EstablishmentController@read'); // read

@@ -14,90 +14,97 @@ class EstablishmentController extends BaseController
         return response()->json(["role" => "establishment", "session" => session()->all()], 200); //edit to return session as well ==>> already added session
     }
 
-    // post /establishment/create
+    // post /establishment/create/transaction
     public function create(Request $request)
     {
-        $validation = $this -> checkRequest($request,$this->getStrictScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
-        $type = $request->input('type');
-        $contents = $request->input('contents');
+        DB::beginTransaction();
 
         try {
-            $id = $this->createEntity($type, $contents);
-            return response()->json(['message' => 'Created successfully', 'id' => $id], 201);
+            $validation = $this->checkRequest($request, $this->getStrictScope());
+            if ($validation !== null) {
+                throw new \Exception($validation); // Rollback the transaction
+            }
+
+            $contents = $request->input('contents');
+            $productList = $contents['products'];
+            $date = $contents['date'];
+            $establishment_id = $contents['establishment_id'];
+            $senior_username = $contents['senior_username'];
+
+            $senior = DB::table('senior')->where('username', $senior_username)->first();
+            if (!$senior) {
+                throw new \Exception('Senior not found'); // Rollback the transaction
+            }
+            $senior_id = $senior->id;
+
+            $transactionID = $this->createTransaction($date, $establishment_id, $senior_id);
+
+            // Create product transactions
+            foreach ($productList as $product) {
+                $productID = $this->createProduct($product);
+                $this->createProductTransaction($productID, $transactionID);
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            return response()->json(['message' => 'Created successfully', 'id' => $transactionID], 201);
         } catch (\Exception $e) {
+            // Rollback the transaction on error
+            DB::rollback();
+
             return response()->json(['error' => 'Creation failed', 'message' => $e->getMessage()], 400);
         }
     }
 
-    public function createProduct(Request $request){
-        //create a product  ==>> created the content for this createProduct function
-        
-        // Validate request data
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0',
-        ]);
+    private function createTransaction($date, $establishment_id, $senior_id)
+    {
+        try {
+            $transactionID = DB::table('transaction')->insertGetId([
+                'date' => $date,
+                'establishment_id' => $establishment_id,
+                'senior_id' => $senior_id
+            ]);
 
-        // Handle validation errors (return 422 with error messages)
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            if (!$transactionID) {
+                throw new \Exception("Failed to create transaction.");
+            }
+
+            return $transactionID;
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        // Create a new product instance
-        $product = new Product;
-        $product->name = $request->input('name');
-        $product->quantity = $request->input('quantity');
-        $product->price = $request->input('price');
-
-        // Save the product to the database
-        $product->save();
-
-        // Return a success response with the created product data
-        return response()->json(['message' => 'Product created successfully!', 'data' => $product], 201); // Created status code        
     }
 
-    private function createEntity($table, $contents)
+    private function createProduct($product)
     {
-        $rules = $this->getRules($table);
-
-        if (empty($rules)) {
-            throw new \Exception('Invalid table name or missing validation rules.');
-        }
-
-        // add additional validation for transaction; must contain date, senior_id, estab_id    ==>> Added the following code block
-        if ($table === 'transaction') {
-            $rules = array_merge($rules, [
-              'date' => 'required|date',
-              'senior_id' => 'required|integer|exists:seniors,id',
-              'establishment_id' => 'required|integer|exists:establishments,id',
+        try {
+            $productID = DB::table('products')->insertGetId([
+                'name' => $product['name'],
+                'price' => $product['price'],
+                'quantity' => $product['quantity']
             ]);
-          }
 
-        // add additional validation for products   ==>> Added the following code block
-        if ($table === 'products') {
-            $rules = array_merge($rules, [
-              'name' => 'required|string|max:255', // Product name is required and has a max length
-              'quantity' => 'required|integer|min:0', // Quantity is required, must be an integer, and cannot be negative
-              'price' => 'required|numeric|min:0', // Price is required, must be a numeric value, and cannot be negative
-            ]);
-          }
+            if (!$productID) {
+                throw new \Exception("Failed to create product.");
+            }
 
-        $validator = Validator::make($contents, $rules); // edit content to contain only the product array or the transaction array
-
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
+            return $productID;
+        } catch (\Exception $e) {
+            throw $e;
         }
+    }
 
-        // make this transaction so that create must be made to product, transaction, and transaction_products table at once
-        DB::table($table)->insert($contents);
-
-        return $id; // Return the newly created entity's ID
+    private function createProductTransaction($productID, $transactionID)
+    {
+        try {
+            DB::table('product_transaction')->insert([
+                'products_id' => $productID,
+                'transaction_id' => $transactionID,
+            ]);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     // get /establishment/{establishment_username}/show/{client}

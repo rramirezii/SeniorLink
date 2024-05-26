@@ -36,12 +36,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(product, index) in products" :key="index">
-            <td><input type="text" v-model="product.name" required></td>
-            <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index)"></td>
-            <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index)"></td>
-            <td><button @click="deleteRow(index)">Delete</button></td>
-          </tr>
+            <tr v-for="(product, index) in products" :key="index">
+                <td><input type="text" v-model="product.name" :class="{ 'red-border': !product.name }" required></td>
+                <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index)" :class="{ 'red-border': !product.quantity }"></td>
+                <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index)" :class="{ 'red-border': !product.price }"></td>
+                <td><button @click="deleteRow(index)">Delete</button></td>
+            </tr>
         </tbody>
       </table>
       <button @click="addRow">Add Product</button>
@@ -52,6 +52,8 @@
 </template>
 
   <script>
+    import apiServices from '@/services/apiServices'; 
+
   export default {
     data() {
       return {
@@ -59,7 +61,6 @@
           name: '',
           quantity: 0,
           price: 0,
-          attendant: ''
         }],
         searchQuery: '',
       };
@@ -72,26 +73,77 @@
         handleNumberInput(field) {
             this[field] = Math.max(0, this[field]); 
         },
-      addRow() {
-        this.products.push({
-          name: '',
-          quantity: 0,
-          price: 0,
-          attendant: ''
-        });
-      },
-      deleteRow(index) {
-        if (this.products.length === 1) {
-            return;
+        addRow() {
+            this.products.push({
+            name: '',
+            quantity: 0,
+            price: 0,
+            attendant: ''
+            });
+        },
+        deleteRow(index) {
+            if (this.products.length === 1) {
+                return;
+            }
+            this.products.splice(index, 1);
+        },
+        async handleSubmit() {
+            this.showSuccessMessage = false;
+            this.showErrorMessage = false;
+            this.errorMessage = "";
+
+            try {
+                const hasEmptyFields = this.products.some(product => !product.name || !product.quantity || !product.price);
+                
+                if (hasEmptyFields) {
+                    this.errorMessage = "Please fill in all fields.";
+                    alert(this.errorMessage);
+                    return;
+                }
+          
+                const payload = {
+                    type: 'transaction',
+                    contents: {
+                        senior_username: this.$route.params.senior_username,
+                        establishment_id: sessionStorage.getItem('id'),
+                        date: new Date().toISOString().slice(0, 10),
+                        products: this.products.map(product => ({
+                            name: product.name,
+                            quantity: product.quantity,
+                            price: product.price,
+                        }))
+                    }
+                };
+
+                console.log(payload);
+                
+                const response = await apiServices.post('/establishment/create/transaction', payload);
+
+                console.log(response);
+                // if (response.status === 201) {
+                // console.log('Transaction created successfully:', response.data);
+                // this.showSuccessMessage = true;
+
+                // this.name = '';
+                // this.quantity = 0;
+                // this.price = 0;
+                // this.attendant = '';
+
+                // setTimeout(() => {
+                //     this.router.push({ name: 'EstablishmentDashboard' });
+                // }, 1500);
+                // } else {
+                // this.errorMessage = "Error creating transaction: " + response.data.message;
+                // }
+            } catch (error) {
+                this.showErrorMessage = true;
+                this.errorMessage = "An error occurred. Please try again later.";
+                console.error('Error:', error);
+            }
+        },
+        goBack() {
+            this.$router.go(-1);
         }
-        this.products.splice(index, 1);
-      },
-      handleSubmit() {
-        // Handle form submission
-      },
-      goBack() {
-        this.$router.go(-1);
-      }
     }
   }
   </script>
@@ -103,6 +155,9 @@
     align-items: center;
     padding: 1rem;
   }
+  .red-border {
+        border: 1px solid red;
+    }
   
   .header {
     position: fixed; /* Stick to the top */
