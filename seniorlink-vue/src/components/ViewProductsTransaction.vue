@@ -84,7 +84,6 @@ import apiServices from '@/services/apiServices';
       const response = await apiServices.get(`/establishment/show/transaction/${this.$route.params.senior_username}`); 
       
       this.tableData = response.data;
-      console.log(this.tableData);
       this.loading = false;
     } catch (error) {
       console.error("Error fetching data:", error);

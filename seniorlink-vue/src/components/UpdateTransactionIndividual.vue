@@ -37,10 +37,11 @@
         </thead>
         <tbody>
             <tr v-for="(product, index) in products" :key="index">
-                <td><input type="text" v-model="product.name" :class="{ 'red-border': !product.name }" required></td>
-                <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index)" :class="{ 'red-border': !product.quantity }"></td>
-                <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index)" :class="{ 'red-border': !product.price }"></td>
+                <td><input type="text" v-model="product.name" @input="recordChange(index)" :class="{ 'red-border': !product.name }" required></td>
+                <td><input type="number" v-model="product.quantity" min="0" @input="handleNumberInput('quantity', index); recordChange(index)" :class="{ 'red-border': !product.quantity }"></td>
+                <td><input type="number" v-model="product.price" min="0" @input="handleNumberInput('price', index); recordChange(index)" :class="{ 'red-border': !product.price }"></td>
                 <td><button @click="deleteRow(index)">Delete</button></td>
+                <input type="hidden" v-model="product.id">
             </tr>
         </tbody>
       </table>
@@ -64,6 +65,7 @@
         searchQuery: '',
         tableData: [],
         loading: '',
+        changedRows: {},
       };
     },
     async mounted() {
@@ -72,7 +74,7 @@
             const response = await apiServices.get(`/establishment/showById/transaction/${this.$route.params.transaction_id}`);
             this.tableData = response.data;
             this.tableData.forEach(item => {
-                this.addRowWithData(item.name, item.quantity, item.price);
+                this.addRowWithData(item.id, item.name, item.quantity, item.price);
             });
             this.loading = false;
         } catch (error) {
@@ -82,8 +84,9 @@
         } 
     },
     methods: {
-        handleNumberInput(field) {
+        handleNumberInput(field, index) {
             this[field] = Math.max(0, this[field]); 
+            this.recordChange(index); 
         },
         addRow() {
             this.products.push({
@@ -92,8 +95,9 @@
             price: 0,
             });
         },
-        addRowWithData(name, quantity, price){
+        addRowWithData(id, name, quantity, price){
             this.products.push({
+                id: id,
                 name: name,
                 quantity: quantity,
                 price: price,
@@ -104,6 +108,16 @@
                 return;
             }
             this.products.splice(index, 1);
+        },
+        recordChange(index) {
+            const changedProduct = this.products[index];
+            this.changedRows[changedProduct.id || index] = {
+                id: changedProduct.id,
+                name: changedProduct.name,
+                quantity: changedProduct.quantity,
+                price: changedProduct.price,
+            };
+            console.log('Changed rows:', this.changedRows);
         },
         async handleSubmit() {
             this.showSuccessMessage = false;
