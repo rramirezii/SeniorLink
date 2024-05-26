@@ -44,6 +44,7 @@ export default {
           const role = response.data.role; // Assuming response.data.role contains the role
           sessionStorage.setItem('username', this.username);
           sessionStorage.setItem('role', role);
+          sessionStorage.setItem('id', response.data.id);
           this.$router.push(`/${role}/dashboard`);
         } else {
           this.error = response.data.message || "An error occurred. Please try again."; 
