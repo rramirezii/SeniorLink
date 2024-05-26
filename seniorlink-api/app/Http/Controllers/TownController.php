@@ -69,10 +69,12 @@ class TownController extends BaseController
                                 WHERE town.username= ?'; // dynamic suppmentation
                 break;
             case 'senior': //fix this to return seniors using the town_username and take the barangay name
-                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
+                $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, town.name as town_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
-                                ON senior.barangay_id = barangay.id 
-                                WHERE barangay.town_id = ?';
+                                ON senior.barangay_id = barangay.id
+                                LEFT JOIN town 
+                                ON town.id = barangay.town_id 
+                                WHERE town.username = ?';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);

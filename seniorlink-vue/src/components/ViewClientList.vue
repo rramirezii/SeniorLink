@@ -85,7 +85,12 @@
     },
     async mounted() {
       try {
-        const response = await apiServices.get('/admin/show/senior');  //file should be in the `public` folder 
+        const role = sessionStorage.getItem('role');
+        var query = `/${role}/show/senior`;
+        if(role==='town'){
+          query = `/${role}/${sessionStorage.getItem('username')}/show/senior`;
+        }
+        const response = await apiServices.get(query); 
         this.tableData = response.data;
         console.log(this.tableData);
         this.loading = false;
