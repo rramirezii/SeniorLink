@@ -45,6 +45,7 @@ export default {
           sessionStorage.setItem('username', this.username);
           sessionStorage.setItem('role', role);
           sessionStorage.setItem('id', response.data.id);
+          sessionStorage.setItem('name', response.data.name);
           this.$router.push(`/${role}/dashboard`);
         } else {
           this.error = response.data.message || "An error occurred. Please try again."; 

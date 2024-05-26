@@ -23,13 +23,18 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
       <div class="form-group">
+        <input type="hidden" id="town_id" v-model="town_id"> 
         <label for="name">Name:</label>
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="town_id">Town ID:</label>
-        <input type="number" id="town_id" v-model="town_id" required>
+        <label for="town_name">Town Name:</label>
+        <input type="text" id="town_name" v-model="town_name" :disabled="true">
       </div>
+      <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" v-model="username" :disabled="true">
+        </div>
       <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" required>
@@ -44,13 +49,49 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+
 export default {
   data() {
     return {
       name: '',
-      townID: '',
+      town_id: '',
       password: '',
     };
+  },
+  computed: {
+    username() {
+      const formattedName = this.name.toLowerCase().replace(/\s+/g, '_');
+      return `b_${formattedName}`;
+    }
+  },
+  async created() {
+    this.town_id = sessionStorage.getItem("id");
+    this.town_name = sessionStorage.getItem("name");
+  },
+  methods: {
+    async handleSubmit() {
+      const newData = {
+        name: this.name,
+        town_id: this.town_id,
+        username: this.username,
+        password: this.password,
+      }
+
+      const payload = {
+        type: "barangay",
+        contents: newData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/town/create`, payload);
+        alert('New Barangay created successfully');
+      } catch (error) {
+        console.error('Error creating new barangay:', error);
+        alert('Error creating new barangay');
+      }
+    },
   },
 };
 </script>
