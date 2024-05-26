@@ -19,14 +19,23 @@
         </ul> -->
       </div>
     </header>
-    <nav>
-      <ul class="nav-buttons">
-        <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
-        <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
-        </ul>
-    </nav>
+    <main>
+      <div class="senior-input">
+        <input type="text" placeholder="Senior ID" v-model="seniorId" />
+        <div class="button-container">
+          <button @click="openTransaction">Open Transaction</button>
+          <button @click="scanSeniorQR">Scan Senior QR</button>
+        </div>
+      </div>
+      <nav v-show="showNav">
+        <ul class="nav-buttons">
+          <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
+          <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
+          <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
+          <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
+          </ul>
+      </nav>
+    </main>
   </div>
 </template>
 
@@ -36,6 +45,8 @@ export default {
     return {
       activeDropdown: null, // Track the currently active dropdown
       maxWidth: 0,
+      seniorId: '',
+      showNav: false,
     };
   },
   methods: {
@@ -44,8 +55,6 @@ export default {
       if (this.activeDropdown && this.activeDropdown !== dropdown) {
         this.activeDropdown = null;
       } 
-
-      // Toggle the clicked dropdown
       this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
 
       // Calculate max width when dropdown is opened
@@ -55,6 +64,15 @@ export default {
           this.maxWidth = Math.max(...[...links].map(link => link.offsetWidth));
         });
       }
+    },
+    openTransaction(){
+
+    },
+    scanSeniorQR(){
+
+    },
+    redirectTo(route){
+      console.log(route);
     }
   }
 };
@@ -79,6 +97,31 @@ export default {
   background-color: #fff; /* Optional background color for the header */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
   z-index: 10; /* Ensure the header stays on top of other elements */
+}
+
+.senior-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px; /* Adjust margin to account for the fixed header */
+}
+
+.senior-input input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem; /* Spacing between input field and buttons */
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.button-container button {
+  flex: 1; /* Equal width for both buttons */
+  margin: 0 0.5rem; /* Adjust spacing between buttons */
 }
 
 .brand{
