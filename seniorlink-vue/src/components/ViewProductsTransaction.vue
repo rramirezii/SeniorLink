@@ -111,7 +111,7 @@ import apiServices from '@/services/apiServices';
     async deleteItem(itemId) {
       if (confirm("Are you sure you want to delete this item?")) {
         try {
-          const response = await axios.delete(`/your-api-endpoint/${itemId}`);
+          const response = await apiServices.delete(`/your-api-endpoint/${itemId}`);
           // Handle successful deletion (e.g., remove from tableData)
           console.log("Item deleted:", response.data);
         } catch (error) {

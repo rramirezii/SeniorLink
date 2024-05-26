@@ -31,23 +31,23 @@
             </div>
             <div class="profile-details" v-if="profileData">
               <div class="detail-row">
-                <span class="label">Name:</span>
+                <span class="label">Name: </span>
                 <span class="value">{{ profileData['fname'] }} {{ profileData['mname'] }} {{ profileData['lname'] }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">OSCA ID:</span>
+                <span class="label">OSCA ID: </span>
                 <span class="value">{{ profileData['osca_id'] }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">Address:</span>
+                <span class="label">Address: </span>
                 <span class="value">{{ address }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">Birthday:</span>
+                <span class="label">Birthday: </span>
                 <span class="value">{{ formatDate(profileData.birthdate) }}</span>
               </div>
               <div class="detail-row">
-                <span class="label">Contact Number:</span>
+                <span class="label">Contact Number: </span>
                 <span class="value">{{ profileData['contact_number'] }}</span>
               </div>
             </div>
