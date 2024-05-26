@@ -88,6 +88,8 @@ export default {
         // const username = this.$route.params.username;
         await apiServices.post(`/town/create`, payload);
         alert('New Barangay created successfully');
+        this.name = '';
+        this.password = '';
       } catch (error) {
         console.error('Error creating new barangay:', error);
         alert('Error creating new barangay');

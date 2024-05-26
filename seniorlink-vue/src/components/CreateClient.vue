@@ -116,6 +116,12 @@ export default {
         // const username = this.$route.params.username;
         await apiServices.post(`/barangay/create`, payload);
         alert('New Senior created successfully');
+        this.osca_id = '';
+        this.firstname = '';
+        this.middlename = '';
+        this.lastname = '';
+        this.contactNumber = '';
+        this.birthday = '';
       } catch (error) {
         console.error('Error creating new senior:', error);
         alert('Error creating new senior');
