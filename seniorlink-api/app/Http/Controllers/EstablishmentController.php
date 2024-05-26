@@ -134,6 +134,29 @@ class EstablishmentController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, ['sID' => $sID]);
     }
 
+    // get /establishment/showById/transaction/{transaction_id}
+    public function readTransactionById($transaction_id)
+    {
+        try {
+            $productIds = DB::table('product_transaction')
+                ->where('transaction_id', $transaction_id)
+                ->pluck('products_id');
+
+            if ($productIds->isEmpty()) {
+                return response()->json(['message' => 'No products found for this transaction'], 404);
+            }
+
+            $products = DB::table('products')
+                ->whereIn('id', $productIds)
+                ->get();
+
+            return response()->json($products, 200);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching transaction: ' . $e->getMessage());
+            return response()->json(['message' => 'Error fetching transaction'], 500);
+        }
+    }
+
     // get /establishment/show/transaction/{senior_username}
     public function readTransaction($senior_username)
     {
@@ -237,30 +260,34 @@ class EstablishmentController extends BaseController
         }
     }
 
-    // post /establishment/delete
-    public function delete(Request $request)
+    // post /establishment/delete/transaction
+    public function deleteTransaction(Request $request)
     {
-        $validation = $this->checkRequest($request, $this->getStrictScope());
-
-        if ($validation !== null) {
-            return $validation;
-        }
-
         $type = $request->input('type');
         $contents = $request->input('contents');
 
-        try {
-            $this->deleteEntity($type, $contents);
-            return response()->json(['message' => 'Deleted successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Deletion failed', 'message' => $e->getMessage()], 400);
-        }
-    }
+        DB::beginTransaction();
 
-    // post establishment/delete/product
-    public function deleteProduct(Request $request)
-    {
-        //createa a function
+        try {
+            $transactionId = $contents['id'];
+            $productIds = DB::table('product_transaction')
+                ->where('transaction_id', $transactionId)
+                ->pluck('products_id');
+
+
+            DB::table('product_transaction')->where('transaction_id', $transactionId)->delete();
+            DB::table('products')->whereIn('id', $productIds)->delete();
+            DB::table('transaction')->where('id', $transactionId)->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Transaction and associated products deleted successfully'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error deleting transaction: ' . $e->getMessage());
+
+            return response()->json(['message' => 'Error deleting transaction'], 500);
+        }
     }
 
     private function deleteEntity($table, $contents)

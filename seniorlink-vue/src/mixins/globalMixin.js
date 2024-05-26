@@ -49,7 +49,7 @@ export const globalMixin = {
 
               if(confirmDelete) {
                 this.deleteItem(itemId, type, doer);
-                this.refreshData(); 
+                // this.refreshData(); 
               }
 
             } else {

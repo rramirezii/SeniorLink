@@ -1281,3 +1281,5 @@
 #28 /home/samsonrollolocal/SeniorLink/seniorlink-api/public/index.php(28): Laravel\\Lumen\\Application->run()
 #29 {main}
 "} 
+[2024-05-26 17:47:59] local.ERROR: Error deleting transaction: Undefined array key "transaction_id"  
+[2024-05-26 17:48:47] local.ERROR: Error deleting transaction: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'senior_link.transactions' doesn't exist (Connection: mysql, SQL: delete from `transactions` where `id` = 2)  

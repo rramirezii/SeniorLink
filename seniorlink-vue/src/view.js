@@ -55,6 +55,7 @@ export { default as LoginPassword } from './components/AdminAuth.vue';
 export { default as UpdateProduct } from './components/UpdateProduct.vue';
 // export { default as UpdateEstablishmentSelf } from './components/UpdateEstablishmentSelf.vue'; #NOT RESOLVED
 
+export { default as UpdateTransactionIndividual } from './components/UpdateTransactionIndividual.vue';
 export { default as ViewEstablishmentUpdateDelete } from './components/ViewEstablishmentUpdateDelete.vue';
 //client
 export { default as ClientTransactions } from './views/ClientMain.vue';

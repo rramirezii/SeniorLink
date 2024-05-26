@@ -1,5 +1,5 @@
 
-  <template>
+<template>
     <div class="view-select-product">
       <header class="header">
         <div class="brand">
@@ -23,7 +23,7 @@
         </div> 
     </header>
     <div>
-    <h2>Create Transaction</h2>
+    <h2>View and Update Transaction</h2>
   </div>
   <div>
       <table>
@@ -44,8 +44,7 @@
             </tr>
         </tbody>
       </table>
-      <button @click="addRow">Add Product</button>
-      <button @click="handleSubmit">Create Transaction</button>
+      <button @click="handleSubmit">Update Transaction</button>
       <button @click="goBack">Back</button>
     </div>
   </div>
@@ -63,11 +62,25 @@
           price: 0,
         }],
         searchQuery: '',
+        tableData: [],
+        loading: '',
       };
     },
-    mounted() {
-        // Add a default row when the component is mounted
-        // this.addRow();
+    async mounted() {
+        this.products = []; 
+        try {
+            const response = await apiServices.get(`/establishment/showById/transaction/${this.$route.params.transaction_id}`);
+            this.tableData = response.data;
+            console.log(this.tableData);
+            this.tableData.forEach(item => {
+                this.addRowWithData(item.name, item.quantity, item.price);
+            });
+            this.loading = false;
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            this.loading = false;
+            // Handle errors appropriately (show an error message to the user)
+        } 
     },
     methods: {
         handleNumberInput(field) {
@@ -78,6 +91,13 @@
             name: '',
             quantity: 0,
             price: 0,
+            });
+        },
+        addRowWithData(name, quantity, price){
+            this.products.push({
+                name: name,
+                quantity: quantity,
+                price: price,
             });
         },
         deleteRow(index) {

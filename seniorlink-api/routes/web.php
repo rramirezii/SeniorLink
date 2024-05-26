@@ -45,12 +45,11 @@ $router->group(['prefix' => 'establishment'], function () use ($router) {
     });
 
     $router->get('/show/transaction/{senior_username}', 'EstablishmentController@readTransaction'); // read
+    $router->get('/showById/transaction/{transaction_id}', 'EstablishmentController@readTransactionById'); // read
     
     $router->post('/update', 'EstablishmentController@update'); // update
-    $router->post('/update/product', 'EstablishmentController@updateProduct'); // update
 
-    $router->post('/delete', 'EstablishmentController@delete'); // delete
-    $router->post('/delete/product', 'EstablishmentController@deleteProduct'); // delete
+    $router->post('/delete', 'EstablishmentController@deleteTransaction'); // delete
 });
 
 // town routes

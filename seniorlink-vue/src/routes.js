@@ -76,6 +76,7 @@ const routes = [
     { path: '/establishment/update-account', component: views.UpdateEstablishmentSelf, name: 'UpdateEstablishmentSelf' }, // update establishment password
     { path: '/establishment/create-product', component: views.CreateProduct, name: 'CreateProduct' },
     { path: '/establishment/update-product', component: views.UpdateProduct, name: 'UpdateProduct' },
+    { path: '/establishment/update/transaction/:senior_username/:transaction_id', component: views.UpdateTransactionIndividual, name: 'UpdateTransactionIndividual', props: true },
 
 
     // Senior

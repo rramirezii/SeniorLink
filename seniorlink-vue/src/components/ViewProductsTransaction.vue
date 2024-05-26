@@ -45,10 +45,10 @@
             <td>{{ item.establishment_name }}</td>
             <td>{{ item.establishment_code }}</td>
             <td>
-              <!-- <router-link :to="{ name: 'View', params: { id: item.id }}">
+              <router-link :to="{ name: 'UpdateTransactionIndividual', params: {senior_username: this.$route.params.senior_username, transaction_id: item.id}}">
                 <button class="view-button">View</button>
-              </router-link> -->
-              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+              </router-link>
+              <button @click="confirmOnDelete(item.id, `transaction`,  `establishment`)" class="delete-button">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -94,19 +94,19 @@ import apiServices from '@/services/apiServices';
         console.log("Searching for:", this.searchQuery);
       }
     },
-    async deleteItem(itemId) {
-      console.log(itemId);
-      // if (confirm("Are you sure you want to delete this item?")) {
-      //   try {
-      //     const response = await apiServices.delete(`/your-api-endpoint/${itemId}`);
-      //     // Handle successful deletion (e.g., remove from tableData)
-      //     console.log("Item deleted:", response.data);
-      //   } catch (error) {
-      //     console.error("Error deleting item:", error);
-      //     // Handle errors (e.g., show error message)
-      //   }
-      // }
-    }
+    // async refreshData() {
+    //   this.loading = true;
+    //   this.error = null;
+    //   try {
+    //     const response = await apiServices.get('/admin//establishment');
+    //     this.tableData = response.data;
+    //   } catch (error) {
+    //     console.error('Error fetching data:', error);
+    //     this.error = 'Error fetching data. Please try again later.';
+    //   } finally {
+    //     this.loading = false;
+    //   }
+    // },
 };
   </script>
 
