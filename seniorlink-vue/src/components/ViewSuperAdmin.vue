@@ -48,7 +48,7 @@
                 <button class="update-button">Update</button>
               </router-link>
               <!-- to see if function -->
-              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+              <button @click="confirmDelete(item.id, `super_admin`)" class="delete-button">Delete</button>
             </div>
           </td> 
           </tr>
@@ -58,10 +58,12 @@
   </div>
 </template>
   
-  <script>
-  import apiServices from '@/services/apiServices';
-  
-  export default {
+<script>
+import apiServices from '@/services/apiServices';
+import { globalMixin } from '@/mixins/globalMixin';
+
+export default {
+  mixins: [globalMixin],
     data() {
       return {
         tableHeaders: ['Name', 'Username', 'Actions'],  // Default headers
@@ -95,6 +97,22 @@
     methods: {
       performSearch() {
         console.log("Searching for:", this.searchQuery);
+      },
+      async confirmDelete(itemId, type) {
+        this.confirmOnDelete(itemId, type);
+      },
+      async refreshData() {
+        this.loading = true;
+        this.error = null;
+        try {
+          const response = await apiServices.get('/admin/show/super_admin');
+          this.tableData = response.data;
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          this.error = 'Error fetching data. Please try again later.';
+        } finally {
+          this.loading = false;
+        }
       }
     }
   };
