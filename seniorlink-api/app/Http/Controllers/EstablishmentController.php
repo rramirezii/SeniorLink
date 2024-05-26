@@ -176,14 +176,16 @@ class EstablishmentController extends BaseController
                 ->where('id', $transaction->establishment_id)
                 ->first();
 
-            $productIds = DB::table('product_transaction')
-                ->where('transaction_id', $transaction->id)
-                ->pluck('products_id')
-                ->toArray();
+            $products = DB::table('product_transaction')
+                ->join('products', 'product_transaction.products_id', '=', 'products.id')
+                ->where('product_transaction.transaction_id', $transaction->id)
+                ->get(['products.id', 'products.name', 'products.price', 'products.quantity']);
+    
 
-            $products = DB::table('products')
-                ->whereIn('id', $productIds)
-                ->get();
+            $expense = 0;
+            foreach ($products as $product) {
+                $expense += $product->price * $product->quantity;
+            }
 
             $formattedTransaction = [
                 'id' => $transaction->id,
@@ -191,6 +193,7 @@ class EstablishmentController extends BaseController
                 'establishment_name' => $establishment->name,
                 'establishment_code' => $establishment->code,
                 'products' => $products,
+                'expense' => $expense,
             ];
 
             $formattedTransactions[] = $formattedTransaction;

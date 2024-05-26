@@ -44,6 +44,7 @@
             <td>{{ item.date }}</td>
             <td>{{ item.establishment_name }}</td>
             <td>{{ item.establishment_code }}</td>
+            <td>{{ item.expense }}</td>
             <td>
               <router-link :to="{ name: 'UpdateTransactionIndividual', params: {senior_username: this.$route.params.senior_username, transaction_id: item.id}}">
                 <button class="view-button">View</button>
@@ -64,7 +65,7 @@ import apiServices from '@/services/apiServices';
   export default {
   data() {
     return {
-      tableHeaders: ['Transaction ID', 'Date', 'Establishment', 'Establishment Code'],
+      tableHeaders: ['Transaction ID', 'Date', 'Establishment', 'Establishment Code', 'Expense'],
       tableData: [],
       searchQuery: '',
       loading: true,
@@ -83,6 +84,7 @@ import apiServices from '@/services/apiServices';
       const response = await apiServices.get(`/establishment/show/transaction/${this.$route.params.senior_username}`); 
       
       this.tableData = response.data;
+      console.log(this.tableData);
       this.loading = false;
     } catch (error) {
       console.error("Error fetching data:", error);

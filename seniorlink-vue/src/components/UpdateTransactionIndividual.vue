@@ -71,7 +71,6 @@
         try {
             const response = await apiServices.get(`/establishment/showById/transaction/${this.$route.params.transaction_id}`);
             this.tableData = response.data;
-            console.log(this.tableData);
             this.tableData.forEach(item => {
                 this.addRowWithData(item.name, item.quantity, item.price);
             });
