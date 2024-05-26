@@ -20,8 +20,43 @@
       </div>
     </header>
     <main>
+      <div v-show="seniorProfile">
+        <main class="main-content">
+          <div v-if="loading" class="loading-message">Loading profile...</div>
+          <div v-else-if="error" class="error-message">{{ error }}</div>
+          <div v-else class="profile-details">
+            <div class="profile-image">
+              <img v-if="profileImage" :src="profileImage" alt="Profile" />
+              <img v-else :src="require('@/assets/images/profile-default.png')" alt="Profile placeholder" class="dp-holder" /> 
+            </div>
+            <div class="profile-details">
+              <div class="detail-row">
+                <span class="label">Name:</span>
+                <span class="value">{{ profileData['fname'] }} {{ profileData['mname'] }} {{ profileData['lname'] }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">OSCA ID:</span>
+                <span class="value">{{ profileData['osca_id'] }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Address:</span>
+                <span class="value">{{ address }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Birthday:</span>
+                <span class="value">{{ formatDate(profileData.birthdate) }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Contact Number:</span>
+                <span class="value">{{ profileData['contact_number'] }}</span>
+              </div>
+            </div>
+          </div>
+          <button @click="proceed" class="proceed-button">Proceed</button>
+        </main>
+      </div>
       <div v-show="showInit" class="senior-input">
-        <input type="text" placeholder="Senior ID" v-model="seniorId" />
+        <input type="text" placeholder="Senior ID" id="senior-username-text" v-model="seniorId" />
         <div class="button-container">
           <button @click="openTransaction">Open Transaction</button>
           <button @click="scanSeniorQR">Scan Senior QR</button>
@@ -34,8 +69,6 @@
         <ul class="nav-buttons">
           <li><router-link to='#' @click.prevent="redirectTo('CreateTransaction')">Create Transaction</router-link></li>
           <li><router-link to='#' @click.prevent="redirectTo('ViewTransaction')">View Transactions</router-link></li>
-          <li><router-link to='#' @click.prevent="redirectTo('UpdateTransaction')">Update Existing Transaction</router-link></li>
-          <li><router-link to='#' @click.prevent="redirectTo('DeleteTransaction')">Delete Transaction</router-link></li>
           </ul>
       </nav>
     </main>
@@ -44,6 +77,7 @@
 
 <script>
 import jsQR from 'jsqr';
+import apiServices from '@/services/apiServices';
 
 export default {
   data() {
@@ -55,6 +89,12 @@ export default {
       showScanner: true,
       showInit: true,
       senior_username: '',
+      seniorProfile: false,
+      profileData: '',
+      profileImage: null,
+      address: '',
+      error: '',
+      loading: false,
     };
   },
   methods: {
@@ -74,7 +114,8 @@ export default {
       }
     },
     openTransaction(){
-
+      var seniorIdValue = document.getElementById('senior-username-text').value;
+      this.fetchProfileData(seniorIdValue);
     },
     async scanSeniorQR() {
       try {
@@ -103,9 +144,8 @@ export default {
             // Stop the video stream
             stream.getTracks().forEach(track => track.stop());
             this.showScanner = false;
-            this.showNav = true;
-            this.showInit = false;
             this.senior_username = code.data;
+            this.fetchProfileData(code.data);
           } else {
             requestAnimationFrame(scan);
           }
@@ -115,6 +155,43 @@ export default {
       };
 
       scan();
+    },
+    async fetchProfileData(username) {
+      try {
+        const response = await apiServices.get(`/senior/username/${username}`);
+        this.profileData = response.data;
+        
+        var responseBar = await apiServices.get(`/barangay/${this.profileData.barangay_id}`);
+        this.address = responseBar.data.name;
+        responseBar = await apiServices.get(`/town/${responseBar.data.town_id}`);
+        this.address = this.address +", "+ responseBar.data.name;
+
+        if(this.profileData.qr_image !== null){
+          const binaryData = new Uint8Array(this.profileData.qr_image.data);
+          const blob = new Blob([binaryData], { type: 'image/png' });
+          this.profileImage = URL.createObjectURL(blob);
+        }
+        this.showInit = false;
+        this.seniorProfile = true;
+      } catch (error) {
+          console.error('Error fetching profile data:', error);
+          this.error = 'Failed to load profile';
+          this.showInit = true;
+          this.seniorProfile = false;
+          this.senior_username = '';
+          alert("Invalid Senior ID.");
+      } finally {
+        this.loading = false;
+      }
+    },
+    formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, options);
+    },
+    proceed(){
+      this.showNav = true;
+      this.seniorProfile = false;
     },
     redirectTo(route){
       console.log(route);

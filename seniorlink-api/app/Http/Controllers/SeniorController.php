@@ -69,6 +69,18 @@ class SeniorController extends BaseController
         return response()->json($senior, 200);
     }
 
+    // get /senior/username/{username}
+    public function getSelfFromUsername($username)
+    {
+        $senior = DB::table('senior')->where('username',$username)->first();
+
+        if($senior){
+            return response()->json($senior, 200);
+        }else{
+            return response()->json(['error'=>'Not Found.', 'message'=>'No Senior exists with that ID.'], 404);
+        }
+    }
+
     // post /senior/retrieve
     public function getDetailFromQR(Request $request)
     {
