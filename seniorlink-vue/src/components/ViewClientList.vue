@@ -92,7 +92,6 @@
         }
         const response = await apiServices.get(query); 
         this.tableData = response.data;
-        console.log(this.tableData);
         this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);

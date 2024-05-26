@@ -35,9 +35,7 @@ export const globalMixin = {
             this.$router.push({ name: 'ClientLogin' }); // Redirect to the login page
         },
         async confirmOnDelete(itemId, type) {
-          const username = prompt("Please enter your username for verification:");
-          if (username === null) return;
-
+          const username = sessionStorage.getItem('username');
           const password = prompt("Please enter your password for verification:");
           if (password === null) return; 
 
