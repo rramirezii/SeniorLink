@@ -23,33 +23,37 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
         <div class="form-group">
+        <label for="osca_id">OSCA ID:</label>
+        <input type="text" id="osca_id" v-model="osca_id" required>
+      </div>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" :disabled="true">
+      </div>
+      <div class="form-group">
         <label for="firstname">First Name:</label>
         <input type="text" id="firstname" v-model="firstname" required>
       </div>
       <div class="form-group">
         <label for="middle name">Middle Name:</label>
-        <input type="text" id="middlename" v-model="middlename" required>
+        <input type="text" id="middlename" v-model="middlename">
       </div>
       <div class="form-group">
         <label for="lastname">Last Name:</label>
         <input type="text" id="lastname" v-model="lastname" required>
       </div>
       <div class="form-group">
-        <label for="address">Address:</label>
-        <input type="text" id="address" v-model="address" required>
+        <label for="birthday">Birthday:</label>
+        <input type="date" id="birthday" v-model="birthday" required>
       </div>
       <div class="form-group">
-        <label for="barangay">Barangay:</label>
-        <input type="text" id="barangay" v-model="barangay" required>
+        <input type="hidden" id="barangay_id" v-model="barangay_id"> 
+        <label for="barangay_name">Barangay:</label>
+        <input type="text" id="barangay_name" v-model="barangay_name" :disabled="true">
       </div>
       <div class="form-group">
         <label for="contactNumber">Contact Number:</label>
         <input type="tel" id="contactNumber" v-model="contactNumber" required>
-      </div>
-    
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
       </div>
     </div>
       <div class="form-actions">
@@ -61,17 +65,84 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+import router from '@/router';
+
 export default {
   data() {
     return {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      address: '',
-      barangay: '',
+      osca_id: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      birthday: '',
+      town_zipcode: '',
+      barangay_id: '',
+      barangay_name: '',
       contactNumber: '',
-      password: ''
     };
+  },
+  computed: {
+    username() {
+      const formattedName = this.osca_id.toLowerCase().replace(/\s+/g, '_');
+      return `s${this.town_zipcode}${formattedName}`;
+    }
+  },
+  async created() {
+    const username = this.$route.params.username;
+
+    try {
+      const response = await apiServices.get(`/barangay/${sessionStorage.getItem('username')}/show/senior/${username}`);
+      const item = response.data[0];
+
+      this.id = item.id || '';
+      this.osca_id = item.osca_id || '';
+      this.firstname = item.fname || '';
+      this.middlename = item.mname || '';
+      this.lastname = item.lname || '';
+      this.birthday = item.birthdate || '';
+      this.barangay_name = sessionStorage.getItem("name") || '';
+      this.barangay_id = sessionStorage.getItem("id") || '';
+      this.contactNumber = item.contact_number;
+      this.username = item.username || '';
+
+      var responseBar = await apiServices.get(`/barangay/${this.barangay_id}`);
+      responseBar = responseBar.data.town_id;
+      responseBar = await apiServices.get(`/town/${responseBar}`);
+      this.town_zipcode = responseBar.data.zip_code;
+    } catch (error) {
+      console.error('Error fetching senior details:', error);
+      this.error = 'Error fetching senior details. Please try again later.';
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const updatedData = {
+        id: this.id,
+        fname: this.firstname,
+        mname: this.middlename,
+        lname: this.lastname,
+        osca_id: this.osca_id,
+        birthdate: this.birthday,
+        contact_number: this.contactNumber,
+        username: this.username,
+      };
+
+      const payload = {
+        type: "senior",
+        contents: updatedData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/barangay/update/`, payload);
+        alert('Senior information updated successfully');
+        router.push({ name: 'UpdateClient', params: { username: this.username } });
+      } catch (error) {
+        console.error('Error updating senior information:', error);
+        alert('Error updating senior information');
+      }
+    },
   },
 };
 </script>

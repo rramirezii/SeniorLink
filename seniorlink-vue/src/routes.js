@@ -27,8 +27,8 @@ const routes = [
     { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
 
     { path: '/admin/update/town/:username', component: views.UpdateTown, name: 'UpdateTown',  props: true},
-    { path: '/admin/update/admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin' },
-    { path: '/admin/update/establishment/:username', component: views.UpdateEstablishment, name: 'UpdateEstablishment' },
+    { path: '/admin/update/admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin', props: true },
+    { path: '/admin/update/establishment/:username', component: views.UpdateEstablishment, name: 'UpdateEstablishment', props: true },
 
     // deletes are enforcedd in view
 
@@ -59,7 +59,7 @@ const routes = [
     { path: '/barangay/view/seniors', component: views.ViewClientListUpdateDelete, name: 'ViewClientListUpdateDelete' },
     // read senior transaction
 
-    { path: '/barangay/update/senior', component: views.UpdateClient, name: 'UpdateClient' },
+    { path: '/barangay/update/senior/:username', component: views.UpdateClient, name: 'UpdateClient', props: true },
     { path: '/barangay/update/self', component: views.UpdateBarangaySelect, name: 'UpdateBarangaySelect' },
     { path: '/barangay/update/self', component: views.UpdateBarangaySelf, name: 'UpdateBarangaySelf' },
 

@@ -46,7 +46,7 @@
           <td>{{ item.username }}</td>
           <td>{{ item.profile_image }}</td>
           <td> <div class="button-container">
-              <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
+              <router-link :to="{ name: 'UpdateClient', params: { username: item.username }}">
                 <button class="update-button">Update</button>
               </router-link>
               <button @click="deleteItem(item.id)" class="delete-button">Delete</button>

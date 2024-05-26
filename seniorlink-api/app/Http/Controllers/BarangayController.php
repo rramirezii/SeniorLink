@@ -58,8 +58,8 @@ class BarangayController extends BaseController
         return $id; // Return the newly created entity's ID
     }
 
-    // get /barangay/{$barangay_username}/show/{client}
-    public function read($client, $barangay_username)
+    // get /barangay/{$barangay_username}/show/{client}[/{username}]
+    public function read($client, $barangay_username, $username =null)
     {
         $fields = '*';
         $extraClause = '';
@@ -83,6 +83,10 @@ class BarangayController extends BaseController
             } catch (ModelNotFoundException $exception) {
                 return response()->json(['error' => $exception->getMessage()], 400);
             }
+        }
+        if($username !== null && $client === 'senior'){
+            $extraClause = "WHERE username = ?";
+            $barangay_username = $username;
         }
 
         return $this->generateReadResponse($fields, $extraClause, $client, $barangay_username);
@@ -156,12 +160,13 @@ class BarangayController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this->transformRulesForUpdate($rules, $contents);
-        $validator = Validator::make($contents, $rules);
+        // ENABLE THIS SOON
+        // $rules = $this->transformRulesForUpdate($rules, $contents);
+        // $validator = Validator::make($contents, $rules);
 
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
+        // if ($validator->fails()) {
+        //     throw new \Exception($this->generateErrorMessage($validator));
+        // }
 
         if (!isset($contents['id'])) {
             throw new \Exception('ID not provided for update');
