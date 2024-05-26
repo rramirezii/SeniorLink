@@ -36,15 +36,15 @@ export const globalMixin = {
             sessionStorage.removeItem('name');
             this.$router.push({ name: 'ClientLogin' }); // Redirect to the login page
         },
-        async confirmOnDelete(itemId, type) {
+        async confirmOnDelete(itemId, type, doer) {
           const username = sessionStorage.getItem('username');
           const password = prompt("Please enter your password for verification:");
           if (password === null) return; 
 
           try {
             const response = await apiServices.post('/validate', {username: username, password: password});
-            
-            if (response.status === 200 && response.data.role === 'admin'){
+            console.log(response);
+            if (response.status === 200 && response.data.role === doer){
               const confirmDelete = confirm("Are you sure you want to delete this item?");
 
               if(confirmDelete) {

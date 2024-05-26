@@ -99,7 +99,7 @@ export default {
         console.log("Searching for:", this.searchQuery);
       },
       async confirmDelete(itemId, type) {
-        this.confirmOnDelete(itemId, type);
+        this.confirmOnDelete(itemId, type, 'admin');
       },
       async refreshData() {
         this.loading = true;

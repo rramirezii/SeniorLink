@@ -49,7 +49,7 @@
               <router-link :to="{ name: 'UpdateClient', params: { username: item.username }}">
                 <button class="update-button">Update</button>
               </router-link>
-              <button @click="deleteItem(item.id)" class="delete-button">Delete</button>
+              <button @click="confirmOnDelete(item.id, `senior`)" class="delete-button">Delete</button>
             </div>
           </td> 
         </tr>
@@ -64,9 +64,10 @@
 
 <script>
 import apiServices from '@/services/apiServices';
-
+import { globalMixin } from '@/mixins/globalMixin';
 
 export default {
+  mixins: [globalMixin],
   data() {
     return {
       tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Birthday', 'Contact Number', 'Username', 'Profile'],  // Default headers
@@ -104,6 +105,22 @@ export default {
   methods: {
     performSearch() {
       console.log("Searching for:", this.searchQuery);
+    },
+    async confirmDelete(itemId, type) {
+      this.confirmOnDelete(itemId, type, 'barangay');
+    },
+    async refreshData() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await apiServices.get(`/barangay/${sessionStorage.getItem('username')}/show/senior`);
+        this.tableData = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        this.error = 'Error fetching data. Please try again later.';
+      } finally {
+        this.loading = false;
+      }
     }
   },
   navigateToTown(id) {

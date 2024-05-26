@@ -63,8 +63,10 @@
   
   <script>
   import apiServices from '@/services/apiServices';
-  
+  import { globalMixin } from '@/mixins/globalMixin';
+
   export default {
+  mixins: [globalMixin],
     data() {
       return {
         tableHeaders: ['Name', 'Username'],  // Default headers
@@ -108,6 +110,22 @@
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
       this.$router.push({ name: 'ViewTown', params: { id: id } }); // this should be viewbarangay
+    },
+    async confirmDelete(itemId, type) {
+      this.confirmOnDelete(itemId, type, 'town');
+    },
+    async refreshData() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await apiServices.get(`/town/${sessionStorage.getItem('username')}show/barangay`);
+        this.tableData = response.data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        this.error = 'Error fetching data. Please try again later.';
+      } finally {
+        this.loading = false;
+      }
     }
 };
   </script>
