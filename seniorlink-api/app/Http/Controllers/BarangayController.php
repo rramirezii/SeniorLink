@@ -65,10 +65,6 @@ class BarangayController extends BaseController
         $extraClause = '';
 
         switch($client){
-            case 'barangay':
-                $fields = 'barangay.id, barangay.name, barangay.town_id, barangay.username';
-                $extraClause = 'WHERE barangay.username = :barangay_identification';
-                break;
             case 'senior':
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'WHERE senior.barangay_id = :barangay_identification';
@@ -89,7 +85,7 @@ class BarangayController extends BaseController
             }
         }
 
-        return $this->generateReadResponse($fields, $extraClause, $client, ['barangay_identification' => $barangay_username]);
+        return $this->generateReadResponse($fields, $extraClause, $client, $barangay_username);
     }
 
     // get /barangay/{barangay_username}/show/senior/{senior_username}/transaction

@@ -37,7 +37,9 @@
       </thead>
       <tbody>
         <tr v-for="item in filteredTableData" :key="item.id">
-          <td v-for="header in tableHeaders" :key="header">{{ item[header] }}</td>
+          <td v-for="header in tableHeaders" :key="header">
+            {{ item[header.toLowerCase()] }}
+          </td>
           <td> <div class="button-container">
               <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
                 <button class="update-button">Update</button>
@@ -56,7 +58,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
+
 
 export default {
   data() {
@@ -84,9 +87,9 @@ export default {
   },
   async mounted() {
     try {
-      const response = await axios.get('/senior.json');  //file should be in the `public` folder 
+      const response = await apiServices.get(`/barangay/${sessionStorage.getItem('username')}/show/senior`);  //file should be in the `public` folder 
       this.tableData = response.data;
-     
+      console.log(this.tableData);
       this.loading = false;
     } catch (error) {
       console.error("Error fetching data:", error);
