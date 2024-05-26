@@ -29,7 +29,7 @@
               <img v-if="profileImage" :src="profileImage" alt="Profile" />
               <img v-else :src="require('@/assets/images/profile-default.png')" alt="Profile placeholder" class="dp-holder" /> 
             </div>
-            <div class="profile-details">
+            <div class="profile-details" v-if="profileData">
               <div class="detail-row">
                 <span class="label">Name:</span>
                 <span class="value">{{ profileData['fname'] }} {{ profileData['mname'] }} {{ profileData['lname'] }}</span>
@@ -90,7 +90,7 @@ export default {
       showInit: true,
       senior_username: '',
       seniorProfile: false,
-      profileData: '',
+      profileData: null,
       profileImage: null,
       address: '',
       error: '',
@@ -157,21 +157,21 @@ export default {
       scan();
     },
     async fetchProfileData(username) {
-      console.log(username);
       try {
         const response = await apiServices.get(`/senior/username/ret/${username}`);
-        console.log(response);
         if (response.status !== 200) {
           throw new Error('Failed to fetch senior username');
         }
+        this.showInit = false;
+        this.seniorProfile = true;
+
+        
         this.profileData = response.data;
         var responseBar = await apiServices.get(`/barangay/${this.profileData.barangay_id}`);
         this.address = responseBar.data.name;
         responseBar = await apiServices.get(`/town/${responseBar.data.town_id}`);
         this.address = this.address +", "+ responseBar.data.name;
 
-        this.showInit = false;
-        this.seniorProfile = true;
       } catch (error) {
           console.error('Error fetching profile data:', error);
           this.error = 'Failed to load profile';
@@ -191,9 +191,6 @@ export default {
     proceed(){
       this.showNav = true;
       this.seniorProfile = false;
-    },
-    redirectTo(route){
-      console.log(route);
     }
   }
 };

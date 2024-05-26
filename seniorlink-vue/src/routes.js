@@ -70,7 +70,7 @@ const routes = [
     // read senior transation
 
     { path: '/view/transaction', component: views.ViewTransaction, name: 'ViewTransaction' },
-    { path: '/establishment/create/transaction', component: views.CreateTransaction, name: 'CreateTransaction' },
+    { path: '/establishment/create/transaction/:username', component: views.CreateTransaction, name: 'CreateTransaction', props: true },
     { path: '/establishment/update/transaction', component: views.UpdateTransaction, name: 'UpdateTransaction' },
     // update establishment password
     { path: '/establishment/update-account', component: views.UpdateEstablishmentSelf, name: 'UpdateEstablishmentSelf' }, // update establishment password
