@@ -50,7 +50,7 @@
               <router-link :to="{ name: 'UpdateEstablishment', params: { username: item.username }}"> 
                 <button class="update-button">Update</button>
               </router-link>
-              <button @click="confirmDelete(item.id, `establishment`)" class="delete-button">Delete</button>
+              <button @click="confirmDelete(item.id, `establishment`, `admin`)" class="delete-button">Delete</button>
             </div>
           </td> 
         </tr>
@@ -102,9 +102,6 @@ export default {
   methods: {
     performSearch() {
       console.log("Searching for:", this.searchQuery);
-    },
-    async confirmDelete(itemId, type) {
-      this.confirmOnDelete(itemId, type, 'admin');
     },
     async refreshData() {
       this.loading = true;

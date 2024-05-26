@@ -48,7 +48,7 @@
                 <button class="update-button">Update</button>
               </router-link>
               <!-- to see if function -->
-              <button @click="confirmDelete(item.id, `super_admin`)" class="delete-button">Delete</button>
+              <button @click="confirmDelete(item.id, `super_admin`, `admin`)" class="delete-button">Delete</button>
             </div>
           </td> 
           </tr>
@@ -97,9 +97,6 @@ export default {
     methods: {
       performSearch() {
         console.log("Searching for:", this.searchQuery);
-      },
-      async confirmDelete(itemId, type) {
-        this.confirmOnDelete(itemId, type, 'admin');
       },
       async refreshData() {
         this.loading = true;

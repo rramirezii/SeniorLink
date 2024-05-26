@@ -24,7 +24,6 @@ const routes = [
     { path: '/admin/view/barangays', component: views.ViewBarangayUpdateDelete, name: 'ViewBarangayUpdateDelete' },
     { path: '/admin/view/town/barangay', component: views.ViewPerTown, name: 'ViewPerTown' },
     { path: '/admin/view/super-admins', component: views.ViewSuperAdmin, name: 'ViewSuperAdmin' },
-    { path: '/admin/view/establishments', component: views.ViewEstablishment, name: 'ViewEstablishment' },
 
     { path: '/admin/update/town/:username', component: views.UpdateTown, name: 'UpdateTown',  props: true},
     { path: '/admin/update/admin/:username', component: views.UpdateSuperAdmin, name: 'UpdateSuperAdmin', props: true },

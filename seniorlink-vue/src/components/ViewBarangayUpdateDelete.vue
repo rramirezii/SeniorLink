@@ -51,7 +51,7 @@
                 <router-link :to="{ name: 'UpdateBarangay', params: { username: item.username }}"> 
                   <button class="update-button">Update</button>
                 </router-link>
-                <button @click="confirmDelete(item.id, `barangay`)" class="delete-button">Delete</button>
+                <button @click="confirmDelete(item.id, `barangay`, `town`)" class="delete-button">Delete</button>
               </div>
             </td>
           </tr>
@@ -110,9 +110,6 @@
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
       this.$router.push({ name: 'ViewTown', params: { id: id } }); // this should be viewbarangay
-    },
-    async confirmDelete(itemId, type) {
-      this.confirmOnDelete(itemId, type, 'town');
     },
     async refreshData() {
       this.loading = true;

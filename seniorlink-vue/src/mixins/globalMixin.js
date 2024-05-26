@@ -44,11 +44,13 @@ export const globalMixin = {
           try {
             const response = await apiServices.post('/validate', {username: username, password: password});
             console.log(response);
+            console.log(doer);
+            console.log(response.data.role === doer);
             if (response.status === 200 && response.data.role === doer){
               const confirmDelete = confirm("Are you sure you want to delete this item?");
 
               if(confirmDelete) {
-                this.deleteItem(itemId, type);
+                this.deleteItem(itemId, type, doer);
                 this.refreshData(); 
               }
 
@@ -60,9 +62,9 @@ export const globalMixin = {
             alert("Error verifying credentials. Please try again later.");
           }
         },
-        async deleteItem(itemId, type){
+        async deleteItem(itemId, type, doer){
           try{
-            const response = await apiServices.post('/admin/delete', { type:type, contents: { id: itemId } });
+            const response = await apiServices.post(`/${doer}/delete`, { type:type, contents: { id: itemId } });
             console.log(response);
             alert('Item deleted successfully');
           }catch(error){
