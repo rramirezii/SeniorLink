@@ -420,7 +420,17 @@ a:hover {
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
+button{
+    padding: 0.5rem 1rem;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0cm;
+    margin-left: 10px;
+    font-weight: bold;
+  }
 </style>
 
   <style>

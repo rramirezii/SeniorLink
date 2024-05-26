@@ -152,15 +152,16 @@ nav li:hover{
 .nav-buttons li {
   margin-right: 1rem; /* Adjust margin between buttons as needed */
   position: relative; /* Crucial for containing the dropdown */
-}
-
-a {
   text-decoration: none;
-  color: #000;
 }
 
-a:hover {
-  color: #2c3e50;
+.nav-buttons li a { /* Style for links within nav-buttons */
+  color: #ffffff; /* Default white color for other links */
+}
+
+.nav-buttons a {
+    color: #ffffff;
+    text-decoration: none; /* Remove underline for all buttons */
 }
 
 /* profile logo */
@@ -189,6 +190,7 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
+  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -197,6 +199,7 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
+  height: fit-content;
 }
 
 
@@ -222,6 +225,8 @@ a:hover {
   display: flex;            /* Enable flexbox for centering */
   justify-content: center; /* Center the text horizontally */
   align-items: center;    /* Center the text vertically */
+  padding-top: 2%;
+  padding-bottom: 1%;
 }
 
 .dropdown-buttons a {
@@ -248,6 +253,35 @@ a:hover {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
 
+/* Profile Dropdown */
+.dropdown-profile {
+  position: absolute;
+  top: 100%;         /* Position below the profile placeholder */
+  right: 0;          /* Align to the right edge of the placeholder */
+  width: 50px;      /* Adjust the width as needed */
+  /* Prevent Overflow */
+  transform: translateX(calc(-50% + 30px)); /* Adjust as needed */ 
+  border: #000 1px solid;
+  text-align: center; /* Center text within the dropdown */
+}
+.dropdown-profile ul {
+  padding: 0;
+  margin: 0;
+  display: inline;
+}
+
+.dropdown-profile-item {  
+  list-style: none;
+  padding: 0.5rem;      
+  width: 100%;       
+  text-align: center; 
+}
+.dropdown-profile-item a{
+  text-align: center;
+  text-decoration: none;
+  color: #2c3e50;
+  text-align: center; /* Center text within the dropdown */
+}
 </style>
 
   <style>
