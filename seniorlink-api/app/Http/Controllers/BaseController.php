@@ -89,7 +89,7 @@ class BaseController extends Controller
                     'password' => 'string|max:255',
                 ];
                 break;
-            case 'super_admin':
+            case 'superadmin':
                 return [
                     'name' => 'string|max:255',
                     'username' => 'string|unique:super_admin|max:255',

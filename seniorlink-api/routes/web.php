@@ -60,6 +60,7 @@ $router->group(['prefix' => 'town'], function () use ($router) {
         $router->get('/barangay/{barangay_username}/senior', 'TownController@readSenior'); // read
     });
 
+    $router->get('/{id}', 'TownController@getSelf'); // read self
     $router->post('/update', 'TownController@update'); // update
     $router->post('/delete', 'TownController@delete'); // delete
 });
@@ -71,6 +72,7 @@ $router->group(['prefix' => 'barangay'], function () use ($router) {
     $router->get('/{barangay_username}/show/{client}', 'BarangayController@read'); // read
     $router->get('/{barangay_username}/show/senior/{senior_username}/transaction', 'BarangayController@readTransaction'); // read
 
+    $router-> get('/{id}', 'BarangayController@getSelf'); // read self
     $router->post('/update', 'BarangayController@update'); // update
     $router->post('/delete', 'BarangayController@delete'); // delete
 });

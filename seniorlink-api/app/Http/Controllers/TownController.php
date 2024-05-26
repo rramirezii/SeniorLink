@@ -93,6 +93,14 @@ class TownController extends BaseController
         return $this->generateReadResponse($fields, $extraClause, $client, $town_username);
     }
 
+    // get /town/{id}
+    public function getSelf($id)
+    {
+        $town = DB::table('town')->find($id);
+
+        return response()->json($town, 200);
+    }
+
     //read seniors from a barangay
    // get /town/{town_username}/show/barangay/{barangay_username}/senior
     public function readSenior($town_username, $barangay_username)

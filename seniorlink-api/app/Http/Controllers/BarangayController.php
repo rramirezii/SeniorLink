@@ -43,11 +43,12 @@ class BarangayController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $validator = Validator::make($contents, $rules);
+        //ENABLE THIS SOON
+        // $validator = Validator::make($contents, $rules);
 
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
+        // if ($validator->fails()) {
+        //     throw new \Exception($this->generateErrorMessage($validator));
+        // }
 
         $id = DB::table($table)->insertGetId($contents);
 
@@ -120,6 +121,14 @@ class BarangayController extends BaseController
                         GROUP BY senior.id, senior.osca_id, senior.username, senior.fname, senior.mname, senior.lname, products.name, products.quantity, products.price, transaction.date, establishment.name';
  
         return $this->generateReadResponse($fields, $extraClause, $table, ['senior_identification' => $senior_username]);
+    }
+
+    // get /town/{id}
+    public function getSelf($id)
+    {
+        $barangay = DB::table('barangay')->find($id);
+
+        return response()->json($barangay, 200);
     }
 
     // post /barangay/update

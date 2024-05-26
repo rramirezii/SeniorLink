@@ -23,12 +23,20 @@
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
       <div class="form-group">
+        <label for="osca_id">OSCA ID:</label>
+        <input type="text" id="osca_id" v-model="osca_id" required>
+      </div>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" :disabled="true">
+      </div>
+      <div class="form-group">
         <label for="firstname">First Name:</label>
         <input type="text" id="firstname" v-model="firstname" required>
       </div>
       <div class="form-group">
         <label for="middle name">Middle Name:</label>
-        <input type="text" id="middlename" v-model="middlename" required>
+        <input type="text" id="middlename" v-model="middlename">
       </div>
       <div class="form-group">
         <label for="lastname">Last Name:</label>
@@ -39,12 +47,9 @@
         <input type="date" id="birthday" v-model="birthday" required>
       </div>
       <div class="form-group">
-        <label for="address">Address:</label>
-        <input type="text" id="address" v-model="address" required>
-      </div>
-      <div class="form-group">
-        <label for="barangay">Barangay:</label>
-        <input type="text" id="barangay" v-model="barangay" required>
+        <input type="hidden" id="barangay_id" v-model="barangay_id"> 
+        <label for="barangay_name">Barangay:</label>
+        <input type="text" id="barangay_name" v-model="barangay_name" :disabled="true">
       </div>
       <div class="form-group">
         <label for="contactNumber">Contact Number:</label>
@@ -60,17 +65,62 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+
 export default {
   data() {
     return {
-      firstName: '',
-      middleName: '',
-      lastName: '',
+      osca_id: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
       birthday: '',
-      address: '',
-      barangay: '',
+      town_zipcode: '',
+      barangay_id: '',
       contactNumber: '',
     };
+  },
+  computed: {
+    username() {
+      const formattedName = this.osca_id.toLowerCase().replace(/\s+/g, '_');
+      return `s${this.town_zipcode}${formattedName}`;
+    }
+  },
+  async created() {
+    this.barangay_id = sessionStorage.getItem("id");
+    this.barangay_name = sessionStorage.getItem("name");
+    var responseBar = await apiServices.get(`/barangay/${this.barangay_id}`);
+    responseBar = responseBar.data.town_id;
+    responseBar = await apiServices.get(`/town/${responseBar}`);
+    this.town_zipcode = responseBar.data.zip_code;
+  },
+  methods: {
+    async handleSubmit() {
+      const newData = {
+        fname: this.firstname,
+        mname: this.middlename,
+        lname: this.lastname,
+        osca_id: this.osca_id,
+        barangay_id: this.barangay_id,
+        username: this.username,
+        contact_number: this.contactNumber,
+        birthdate: this.birthday
+      }
+
+      const payload = {
+        type: "senior",
+        contents: newData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/barangay/create`, payload);
+        alert('New Senior created successfully');
+      } catch (error) {
+        console.error('Error creating new senior:', error);
+        alert('Error creating new senior');
+      }
+    },
   },
 };
 </script>
