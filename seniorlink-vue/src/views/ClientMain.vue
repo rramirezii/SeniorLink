@@ -57,12 +57,13 @@
     </template>
   </div>
   <p v-if="filteredTransactions.length === 0" class="no-results">No available data.</p>
+  <button @click="goBack" class="back-button">Back to Home</button>
 </div>
 </template>
 
 JavaScript
 <script>
-import axios from 'axios';
+import apiServices from '@/services/apiServices';
 
 export default {
 data() {
@@ -139,9 +140,9 @@ computed: {
 },
 async mounted() { 
   try {
-    const response = await axios.get('/transactions.json');
+    const response = await apiServices.get('/transactions.json');
 
-    const establishmentResponse = await axios.get('/establishment.json');
+    const establishmentResponse = await apiServices.get('/establishment.json');
     this.establishmentData = establishmentResponse.data;
 
     this.transactions = response.data; 
@@ -175,6 +176,9 @@ methods: {
     if (totalAmountElement) {
       totalAmountElement.textContent = "Php " + this.totalAmountForWeek;
     }
+  },
+  goBack() {
+    this.$router.go(-1);
   }
 }
 };
@@ -380,6 +384,18 @@ a:hover {
 
 .profile-button i {
   margin-right: 0.5rem; /* Add some space between the icon and text */
+}
+
+button {
+  background-color: #2c3e50;
+  color: white;
+  padding: 15px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: auto;
+  font-weight: bold;
 }
 
 /* Table Styles for Responsiveness */
