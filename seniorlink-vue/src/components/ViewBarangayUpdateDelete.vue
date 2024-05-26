@@ -32,6 +32,7 @@
             <th v-for="header in tableHeaders" :key="header">
               {{ header }}
             </th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -40,13 +41,13 @@
           </tr>
           <tr v-for="item in filteredTableData" :key="item.id"> 
             <td v-for="header in tableHeaders" :key="header">
-              {{ item[header] }}
+              {{ item[header.toLowerCase()] }}
             </td>
             <td>
               <div class="button-container">
-                <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
+                <!-- <router-link :to="{ name: 'ViewBarangay', params: { id: item.id }}">
                   <button class="view-button">View</button>
-                </router-link>
+                </router-link> -->
                 <router-link :to="{ name: 'UpdateBarangay', params: { username: item.username }}"> 
                   <button class="update-button">Update</button>
                 </router-link>
@@ -66,7 +67,7 @@
   export default {
     data() {
       return {
-        tableHeaders: ['Name', 'Username', 'Actions'],  // Default headers
+        tableHeaders: ['Name', 'Username'],  // Default headers
         tableData: [],
         searchQuery: '',
         loading: true,
@@ -89,9 +90,9 @@
     },
     async mounted() {
       try {
-        const response = await apiServices.get(`/town/{town_username}/show/barangay`);  //file should be in the `public` folder 
+        const town_username = sessionStorage.getItem('username');
+        const response = await apiServices.get(`/town/${town_username}/show/barangay`);  //file should be in the `public` folder 
         this.tableData = response.data;
-       
         this.loading = false;
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -106,7 +107,7 @@
     },
     navigateToTown(id) {
       console.log("Navigating to town with ID:", id);
-      this.$router.push({ name: 'ViewTown', params: { id: id } });
+      this.$router.push({ name: 'ViewTown', params: { id: id } }); // this should be viewbarangay
     }
 };
   </script>
@@ -365,6 +366,16 @@ padding: 8px;
   cursor: pointer;
   margin-top: 0cm;
   margin-left: 10px;
+}
+.update-button{
+padding: 0.5rem 1rem;
+background-color: #2c3e50;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+margin-top: 0cm;
+margin-left: 10px;
 }
 </style>
 

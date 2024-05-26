@@ -20,7 +20,7 @@
       </div>
     </header>
     <nav>
-      <ul class="nav-buttons">d
+      <ul class="nav-buttons">
         <li><router-link to='#' @click.prevent="redirectTo('CreateBarangay')">Create Account</router-link></li>
         <li @click="toggle('view')" class="dropdown" :class="{ active: activeDropdown === 'view' }">
           View Account

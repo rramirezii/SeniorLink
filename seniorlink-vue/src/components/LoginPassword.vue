@@ -41,6 +41,7 @@ export default {
         const response = await apiServices.post('/validate', { password: this.password, username: this.username }); 
         
         if (response.status === 200) {
+          sessionStorage.setItem('username', this.username);
           const role = response.data.role; // Assuming response.data.role contains the role
           this.$router.push(`/${role}/dashboard`);
         } else {

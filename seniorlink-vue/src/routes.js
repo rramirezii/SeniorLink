@@ -46,7 +46,7 @@ const routes = [
     { path: '/town/view/seniors', component: views.ViewClientList, name: 'ViewClientList' },
     // view transactions of senior per barngay
 
-    { path: '/town/update/barangay', component: views.UpdateBarangay, name: 'UpdateBarangay' },
+    { path: '/town/update/barangay/:username', component: views.UpdateBarangay, name: 'UpdateBarangay', props: true },
     // update town self
     { path: '/update-town-self', component: views.UpdateTownSelf, name: 'UpdateTownSelf' },  // update town self
 

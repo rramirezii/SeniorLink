@@ -30,9 +30,8 @@ export const globalMixin = {
             this.showProfileDropdown = !this.showProfileDropdown;
         },
         signOut() {
-        // Implement your sign-out logic here
-        // (e.g., clear tokens, redirect to login page)
-        console.log("Signing out...");
+            sessionStorage.removeItem('username');
+            this.$router.push({ name: 'ClientLogin' }); // Redirect to the login page
         },
         async confirmOnDelete(itemId, type) {
           const username = prompt("Please enter your username for verification:");

@@ -63,14 +63,16 @@ class TownController extends BaseController
 
         switch($client){
             case 'barangay': // maybe add statistics on the number of seniors
-                $fields = 'id, name, username';
-                $extraClause = 'WHERE town_id= :town_identification'; // dynamic suppmentation
+                $fields = 'barangay.id, barangay.name, barangay.username';
+                $extraClause = 'LEFT JOIN town
+                                ON town.id = barangay.town_id
+                                WHERE town.username= ?'; // dynamic suppmentation
                 break;
             case 'senior': //fix this to return seniors using the town_username and take the barangay name
                 $fields = 'senior.id, senior.osca_id, senior.fname, senior.mname, senior.lname, barangay.name as barangay_name, senior.birthdate, senior.contact_number, senior.username, senior.profile_image, senior.qr_image';
                 $extraClause = 'LEFT JOIN barangay 
                                 ON senior.barangay_id = barangay.id 
-                                WHERE barangay.town_id = :town_identification';
+                                WHERE barangay.town_id = ?';
                 break;
             default:
                 return response()->json(['error' => 'Unknown client type'], 404);
@@ -80,13 +82,7 @@ class TownController extends BaseController
             return response()->json(['error' => 'town_username parameter is required'], 400);
         }
 
-        try {
-            $town_username = $this -> getIdByUsername($town_username, 'barangay');
-        } catch (ModelNotFoundException $exception) {
-            return response()->json(['error' => $exception->getMessage()], 400);
-        }
-
-        return $this->generateReadResponse($fields, $extraClause, $client, ['town_identification' => $town_username]);
+        return $this->generateReadResponse($fields, $extraClause, $client, $town_username);
     }
 
     //read seniors from a barangay
