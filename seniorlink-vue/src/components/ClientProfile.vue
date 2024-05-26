@@ -102,6 +102,9 @@ export default {
       const date = new Date(dateString);
       return date.toLocaleDateString(undefined, options);
     },
+    goBack() {
+      this.$router.go(-1);
+    }
   },
 };
 </script>
