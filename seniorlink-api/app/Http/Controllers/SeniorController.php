@@ -72,9 +72,14 @@ class SeniorController extends BaseController
     // get /senior/username/{username}
     public function getSelfFromUsername($username)
     {
-        $senior = DB::table('senior')->where('username',$username)->first();
+        print($username);
+        if (empty($username)) {
+            return response()->json(['error' => 'Bad Request', 'message' => 'Username cannot be empty.'], 400);
+        }
 
-        if($senior){
+        $senior = DB::table('senior')->where('username', $username)->first();
+
+        if ($senior) {
             return response()->json($senior, 200);
         }else{
             return response()->json(['error'=>'Not Found.', 'message'=>'No Senior exists with that ID.'], 404);

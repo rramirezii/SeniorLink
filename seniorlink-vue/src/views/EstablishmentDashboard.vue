@@ -157,20 +157,19 @@ export default {
       scan();
     },
     async fetchProfileData(username) {
+      console.log(username);
       try {
-        const response = await apiServices.get(`/senior/username/${username}`);
+        const response = await apiServices.get(`/senior/username/ret/${username}`);
+        console.log(response);
+        if (response.status !== 200) {
+          throw new Error('Failed to fetch senior username');
+        }
         this.profileData = response.data;
-        
         var responseBar = await apiServices.get(`/barangay/${this.profileData.barangay_id}`);
         this.address = responseBar.data.name;
         responseBar = await apiServices.get(`/town/${responseBar.data.town_id}`);
         this.address = this.address +", "+ responseBar.data.name;
 
-        if(this.profileData.qr_image !== null){
-          const binaryData = new Uint8Array(this.profileData.qr_image.data);
-          const blob = new Blob([binaryData], { type: 'image/png' });
-          this.profileImage = URL.createObjectURL(blob);
-        }
         this.showInit = false;
         this.seniorProfile = true;
       } catch (error) {

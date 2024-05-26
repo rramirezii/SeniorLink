@@ -87,7 +87,7 @@ $router->group(['prefix' => 'senior'], function () use ($router) {
 
     $router->get('/{id}', 'SeniorController@getSelf'); // read
 
-    $router->get('/username/{username}', 'SeniorController@getSelfFromUsername'); // read
+    $router->get('/username/ret/{username}', 'SeniorController@getSelfFromUsername'); // read
 
     $router->post('/retrieve', 'SeniorController@getDetailFromQR');
 
