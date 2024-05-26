@@ -27,13 +27,25 @@
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="form-group">
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" v-model="quantity" required>
-      </div>
-      <div class="form-group">
-        <label for="price">Price:</label>
-        <input type="number" id="price" v-model="price" required>
-      </div>
+          <label for="quantity">Quantity:</label>
+          <input 
+            type="number" 
+            id="quantity" 
+            v-model="quantity" 
+            min="0"                
+            @input="handleNumberInput('quantity')"
+          >
+        </div>
+        <div class="form-group">
+          <label for="price">Price:</label>
+          <input 
+            type="number" 
+            id="price" 
+            v-model="price" 
+            min="0"                
+            @input="handleNumberInput('price')"
+          >
+        </div>
       <div class="form-group">
         <label for="name">Attendant:</label>
         <input type="text" id="name" v-model="name" required>
@@ -44,7 +56,7 @@
       </div>
     </div>
       <div class="form-actions">
-        <button type="submit">Update Information</button>
+        <button type="submit">Update Transaction</button>
       </div>
     </form>
   
@@ -52,16 +64,108 @@
 </template>
 
 <script>
+import apiServices from "@/services/apiServices";
+import { useRouter } from 'vue-router';
+
 export default {
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+  props: {
+    transactionId: {
+      type: [String, Number],
+      required: true
+    }
+  },
   data() {
     return {
       name: '',
-      quantity: '',
-      price: '',
-      attendant: '',
+      quantity: 0,
+      price: 0,
+      attendant: '', 
+      password: '', 
+      showSuccessMessage: false,
+      showErrorMessage: false,
+      errorMessage: "",
     };
   },
+  mounted() {
+    // Fetch the existing transaction data
+    apiServices.get(`/establishment/show/transaction/${this.transactionId}`)
+      .then(response => {
+        if (response.status === 200) {
+          const product = response.data.product; 
+          this.name = product.name;
+          this.quantity = product.quantity;
+          this.price = product.price;
+          this.attendant = response.data.transaction.attendant; // Assuming your API returns this field now
+        } else {
+          this.errorMessage = "Error loading transaction details.";
+          this.showErrorMessage = true;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching transaction details:', error);
+        this.errorMessage = "Error loading transaction details.";
+        this.showErrorMessage = true;
+      });
+  },
+  methods: {
+    handleNumberInput(field) {
+      this[field] = Math.max(0, this[field]); 
+    },
+
+    async handleSubmit() {
+      this.showSuccessMessage = false;
+      this.showErrorMessage = false;
+      this.errorMessage = "";
+
+      try {
+        // Input validation
+        if (!this.name || this.quantity <= 0 || this.price <= 0 || !this.attendant || !this.password) {
+          this.errorMessage = "Please fill in all fields with valid values.";
+          this.showErrorMessage = true;
+          return;
+        }
+
+        const response = await apiServices.post(
+          `/establishment/update/transaction`,
+          {
+            id: this.transactionId,
+            product: {
+              name: this.name,
+              quantity: this.quantity,
+              price: this.price
+            },
+            attendant: this.attendant, // Include the updated attendant
+            password: this.password,
+          }
+        );
+      if (response.status === 200) {
+          console.log("Transaction updated successfully:", response.data);
+          this.showSuccessMessage = true;
+
+          setTimeout(() => {
+            this.router.push({ name: "EstablishmentDashboard" });
+          }, 1500);
+        } else if (response.status === 401) {
+          // Specifically handle unauthorized access (e.g., wrong password)
+          this.errorMessage = response.data.message || "Unauthorized.";
+          this.showErrorMessage = true;
+        } else {
+          this.errorMessage = "Error updating transaction: " + response.data.message;
+          this.showErrorMessage = true;
+        }
+      } catch (error) {
+        this.showErrorMessage = true;
+        this.errorMessage = "An error occurred. Please try again later.";
+        console.error("Error:", error);
+      }
+    },
+  },
 };
+</script>
 </script>
 
 <style scoped>
