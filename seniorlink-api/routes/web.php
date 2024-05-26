@@ -56,7 +56,7 @@ $router->group(['prefix' => 'town'], function () use ($router) {
     $router->post('/create', 'TownController@create'); // create
 
     $router->group(['prefix' => '{town_username}/show'], function () use ($router) {
-        $router->get('/{client}', 'TownController@read'); // read
+        $router->get('/{client}[/{username}]', 'TownController@read'); // read
         $router->get('/barangay/{barangay_username}/senior', 'TownController@readSenior'); // read
     });
 

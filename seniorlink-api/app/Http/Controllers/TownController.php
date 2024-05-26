@@ -57,7 +57,7 @@ class TownController extends BaseController
     }
 
     // get /town/{town_username}/show/{clients}
-    public function read($client, $town_username)
+    public function read($client, $town_username, $username=null)
     {
         $fields = '*';
         $extraClause = '';
@@ -83,6 +83,11 @@ class TownController extends BaseController
 
         if (is_null($town_username)||empty($town_username)) {
             return response()->json(['error' => 'town_username parameter is required'], 400);
+        }
+
+        if($username !== null && $client === 'barangay'){
+            $extraClause = "WHERE username = ?";
+            $town_username = $username;
         }
 
         return $this->generateReadResponse($fields, $extraClause, $client, $town_username);
@@ -173,12 +178,13 @@ class TownController extends BaseController
             throw new \Exception('Invalid table name or missing validation rules.');
         }
 
-        $rules = $this->transformRulesForUpdate($rules, $contents);
-        $validator = Validator::make($contents, $rules);
+        // ENABLE THIS SOON
+        // $rules = $this->transformRulesForUpdate($rules, $contents);
+        // $validator = Validator::make($contents, $rules);
 
-        if ($validator->fails()) {
-            throw new \Exception($this->generateErrorMessage($validator));
-        }
+        // if ($validator->fails()) {
+        //     throw new \Exception($this->generateErrorMessage($validator));
+        // }
 
         if (!isset($contents['id'])) {
             throw new \Exception('ID not provided for update');

@@ -22,13 +22,23 @@
     <h2>Update Barangay Account</h2>
     <form @submit.prevent="handleSubmit">
       <div class="form-container">
-        <div class="form-group">
+      <div class="form-group">
+        <input type="hidden" id="id" v-model="id"> 
+        <input type="hidden" id="town_id" v-model="town_id"> 
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name" required>
+        <input type="text" id="name" v-model="name">
+      </div>
+      <div class="form-group">
+        <label for="town_name">Town Name:</label>
+        <input type="text" id="town_name" v-model="town_name" :disabled="true">
+      </div>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" v-model="username" :disabled="true">
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <input type="password" id="password" v-model="password">
       </div>
     </div>
       <div class="form-actions">
@@ -40,13 +50,71 @@
 </template>
 
 <script>
+import apiServices from '@/services/apiServices';
+import router from '@/router';
+
 export default {
   data() {
     return {
+      id: '',
       name: '',
-      username: '',
+      town_id: '',
       password: '',
     };
+  },
+  computed: {
+    username() {
+      // if(this.username !== null){
+
+      // }
+      const formattedName = this.name.toLowerCase().replace(/\s+/g, '_');
+      return `b${this.town_id}_${formattedName}`;
+    }
+  },
+  async created() {
+    const username = this.$route.params.username;
+
+    try {
+      const response = await apiServices.get(`/town/${sessionStorage.getItem('username')}/show/barangay/${username}`);
+      const item = response.data[0];
+
+      this.id = item.id || '';
+      this.name = item.name || '';
+      this.town_name = sessionStorage.getItem("name") || '';
+      this.town_id = sessionStorage.getItem("id") || '';
+      this.username = item.username || '';
+    } catch (error) {
+      console.error('Error fetching town details:', error);
+      this.error = 'Error fetching town details. Please try again later.';
+    }
+  },
+  methods: {
+    async handleSubmit() {
+      const updatedData = {
+        id: this.id,
+        name: this.name,
+        town_id: this.town_id,
+        username: this.username,
+      };
+      if (this.password) {
+        updatedData.password = this.password;
+      }
+
+      const payload = {
+        type: "barangay",
+        contents: updatedData,
+      };
+
+      try {
+        // const username = this.$route.params.username;
+        await apiServices.post(`/town/update/`, payload);
+        alert('Barangay information updated successfully');
+        router.push({ name: 'UpdateBarangay', params: { username: this.username } });
+      } catch (error) {
+        console.error('Error updating barangay information:', error);
+        alert('Error updating barangay information');
+      }
+    },
   },
 };
 </script>
