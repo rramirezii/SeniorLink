@@ -37,9 +37,14 @@
       </thead>
       <tbody>
         <tr v-for="item in filteredTableData" :key="item.id">
-          <td v-for="header in tableHeaders" :key="header">
-            {{ item[header.toLowerCase()] }}
-          </td>
+          <td>{{ item.fname }}</td>
+          <td>{{ item.mname }}</td>
+          <td>{{ item.lname }}</td>
+          <td>{{ item.osca_id }}</td>
+          <td>{{ item.birthdate }}</td>
+          <td>{{ item.contact_number }}</td>
+          <td>{{ item.username }}</td>
+          <td>{{ item.profile_image }}</td>
           <td> <div class="button-container">
               <router-link :to="{ name: 'UpdateClient', params: { id: item.id }}">
                 <button class="update-button">Update</button>
@@ -64,7 +69,7 @@ import apiServices from '@/services/apiServices';
 export default {
   data() {
     return {
-      tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Barangay', 'Birthday', 'Contact Number'],  // Default headers
+      tableHeaders: ['First Name', 'Middle Name', 'Last Name', 'OSCA ID', 'Birthday', 'Contact Number', 'Username', 'Profile'],  // Default headers
       tableData: [],
       searchQuery: '',
       loading: true,
@@ -89,7 +94,6 @@ export default {
     try {
       const response = await apiServices.get(`/barangay/${sessionStorage.getItem('username')}/show/senior`);  //file should be in the `public` folder 
       this.tableData = response.data;
-      console.log(this.tableData);
       this.loading = false;
     } catch (error) {
       console.error("Error fetching data:", error);
