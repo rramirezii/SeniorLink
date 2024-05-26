@@ -14,7 +14,7 @@ export { default as CreateSuperAdmin } from './components/CreateSuperAdmin.vue';
 export { default as CreateEstablishment } from './components/CreateEstablishment.vue'; //create establishment
 export { default as CreateBarangay } from './components/CreateBarangay.vue';
 export { default as CreateClient } from './components/CreateClient.vue';
-export { default as CreateTransaction } from './components/CreateTransaction.vue';
+export { default as CreateTransaction } from './components/CreateProductsInTransaction.vue';
 export { default as CreateProduct }  from './components/CreateProduct.vue'
 
 //view
