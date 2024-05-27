@@ -170,17 +170,17 @@ nav li:hover{
 .nav-buttons li {
   margin-right: 1rem; /* Adjust margin between buttons as needed */
   position: relative; /* Crucial for containing the dropdown */
-}
-
-a {
   text-decoration: none;
-  color: #000;
 }
 
-a:hover {
-  color: #2c3e50;
+.nav-buttons li a { /* Style for links within nav-buttons */
+  color: #ffffff; /* Default white color for other links */
 }
 
+.nav-buttons a {
+    color: #ffffff;
+    text-decoration: none; /* Remove underline for all buttons */
+}
 /* profile logo */
 .profile-link {
   display: flex;
@@ -207,7 +207,6 @@ a:hover {
   flex-direction: column; /* make linear top to bottom */
   margin-top: 5%;
   /* padding-left: 10%; */
-  height: fit-content;
 }
 
 .dropdown-content ul {
@@ -216,7 +215,6 @@ a:hover {
   align-items: center;  /* Center items horizontally */
   border: 1px black solid;
   padding: 0%;
-  height: fit-content;
 }
 
 
@@ -267,6 +265,7 @@ a:hover {
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
+
 
 /* Profile Dropdown */
 .dropdown-profile {
