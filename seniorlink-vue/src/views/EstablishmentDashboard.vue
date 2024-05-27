@@ -227,6 +227,31 @@ export default {
   z-index: 10; /* Ensure the header stays on top of other elements */
 }
 
+.senior-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px; /* Adjust margin to account for the fixed header */
+}
+
+.senior-input input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem; /* Spacing between input field and buttons */
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.button-container button {
+  flex: 1; /* Equal width for both buttons */
+  margin: 0 0.5rem; /* Adjust spacing between buttons */
+}
+
 .brand{
   padding-left: 2%;
 }
@@ -300,17 +325,17 @@ nav li:hover{
 .nav-buttons li {
   margin-right: 1rem; /* Adjust margin between buttons as needed */
   position: relative; /* Crucial for containing the dropdown */
+}
+
+a {
   text-decoration: none;
+  color: white;
 }
 
-.nav-buttons li a { /* Style for links within nav-buttons */
-  color: #ffffff; /* Default white color for other links */
+a:hover {
+  color: #2c3e50;
 }
 
-.nav-buttons a {
-    color: #ffffff;
-    text-decoration: none; /* Remove underline for all buttons */
-}
 /* profile logo */
 .profile-link {
   display: flex;
@@ -395,8 +420,17 @@ nav li:hover{
 .profile-container {
   position: relative; /* Allows absolute positioning of the dropdown */
 }
-
-
+button{
+    padding: 0.5rem 1rem;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0cm;
+    margin-left: 10px;
+    font-weight: bold;
+  }
 </style>
 
   <style>
